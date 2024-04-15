@@ -23,8 +23,8 @@ const config: Config = {
     },
     colors: {
       transparent: 'transparent',
-      'green': '#D2EF9A',
-      'black': '#1F1F1F',
+      'green': '#A0BA19',
+      'black': '#281F59',
       'secondary': '#696C70',
       'secondary2': '#A0A0A0',
       'white': '#ffffff',

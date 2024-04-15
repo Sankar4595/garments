@@ -14,7 +14,7 @@ import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
-
+import logo from "../../../../public/logo.jpg";
 interface Props {
   props: string;
 }
@@ -87,7 +87,9 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                 href={"/"}
                 className="flex items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
               >
-                <div className="heading4">Eezer</div>
+                <div className="heading4">
+                  <Image alt="logo" width={90} height={90} src={logo} />
+                </div>
               </Link>
               <div className="menu-main h-full max-lg:hidden">
                 <ul className="flex items-center gap-8 h-full">
@@ -1477,7 +1479,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                 </div>
                 <div
                   className="max-md:hidden wishlist-icon flex items-center cursor-pointer"
-                  onClick={openModalWishlist}
+                  // onClick={openModalWishlist}
                 >
                   <Icon.Heart size={24} color="black" />
                 </div>
@@ -2766,83 +2768,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     </a>
                   </li>
                   <li
-                    className={`${openSubNavMobile === 5 ? "open" : ""}`}
-                    onClick={() => handleOpenSubNavMobile(5)}
-                  >
-                    <a
-                      href={"#!"}
-                      className="text-xl font-semibold flex items-center justify-between mt-5"
-                    >
-                      Blog
-                      {/* <span className="text-right">
-                        <Icon.CaretRight size={20} />
-                      </span> */}
-                    </a>
-                    {/* <div className="sub-nav-mobile">
-                      <div
-                        className="back-btn flex items-center gap-3"
-                        onClick={() => handleOpenSubNavMobile(5)}
-                      >
-                        <Icon.CaretLeft />
-                        Back
-                      </div>
-                      <div className="list-nav-item w-full pt-2 pb-6">
-                        <ul className="w-full">
-                          <li>
-                            <Link
-                              href="/blog/default"
-                              className={`link text-secondary duration-300 ${
-                                pathname === "/blog/default" ? "active" : ""
-                              }`}
-                            >
-                              Blog Default
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/blog/list"
-                              className={`link text-secondary duration-300 ${
-                                pathname === "/blog/list" ? "active" : ""
-                              }`}
-                            >
-                              Blog List
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/blog/grid"
-                              className={`link text-secondary duration-300 ${
-                                pathname === "/blog/grid" ? "active" : ""
-                              }`}
-                            >
-                              Blog Grid
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/blog/detail1"
-                              className={`link text-secondary duration-300 ${
-                                pathname === "/blog/detail1" ? "active" : ""
-                              }`}
-                            >
-                              Blog Detail 1
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/blog/detail2"
-                              className={`link text-secondary duration-300 ${
-                                pathname === "/blog/detail2" ? "active" : ""
-                              }`}
-                            >
-                              Blog Detail 2
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                    </div> */}
-                  </li>
-                  <li
                     className={`${openSubNavMobile === 6 ? "open" : ""}`}
                     onClick={() => handleOpenSubNavMobile(6)}
                   >
@@ -2953,7 +2878,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                       href={"#!"}
                       className="text-xl font-semibold flex items-center justify-between mt-5"
                     >
-                      Conduct
+                      Contact
                     </a>
                   </li>
                 </ul>
