@@ -83,7 +83,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
 
   const handleDetailProduct = (productId: string) => {
     // redirect to shop with category selected
-    // router.push(`/product/default?id=${productId}`);
+    router.push(`/product/default?id=${productId}`);
   };
 
   let percentSale = Math.floor(100 - (data.price / data.originPrice) * 100);
@@ -119,7 +119,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    // handleAddToWishlist();
+                    handleAddToWishlist();
                   }}
                 >
                   <div className="tag-action bg-black text-white caption2 px-1.5 py-0.5 rounded-sm">
@@ -151,7 +151,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    // handleAddToCompare();
+                    handleAddToCompare();
                   }}
                 >
                   <div className="tag-action bg-black text-white caption2 px-1.5 py-0.5 rounded-sm">
@@ -203,7 +203,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                   className="quick-view-btn w-full text-button-uppercase py-2 text-center rounded-full duration-300 bg-white hover:bg-black hover:text-white"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // handleQuickviewOpen();
+                    handleQuickviewOpen();
                   }}
                 >
                   Quick View
@@ -213,7 +213,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
                     onClick={(e) => {
                       e.stopPropagation();
-                      //   handleAddToCart();
+                      handleAddToCart();
                     }}
                   >
                     Add To Cart
@@ -224,7 +224,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       className="quick-shop-btn text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // setOpenQuickShop(!openQuickShop);
+                        setOpenQuickShop(!openQuickShop);
                       }}
                     >
                       Quick Shop

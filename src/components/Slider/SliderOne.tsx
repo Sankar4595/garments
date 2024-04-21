@@ -33,8 +33,7 @@ const SliderOne = () => {
                       Summer Sale Collections
                     </div>
                     <Link
-                      // href="/shop/breadcrumb-img"
-                      href={"#"}
+                      href="/shop/breadcrumb-img"
                       className="button-main md:mt-8 mt-3"
                     >
                       Shop Now
@@ -61,8 +60,7 @@ const SliderOne = () => {
                       Fashion for Every Occasion
                     </div>
                     <Link
-                      // href="/shop/breadcrumb-img"
-                      href={"#"}
+                      href="/shop/breadcrumb-img"
                       className="button-main md:mt-8 mt-3"
                     >
                       Shop Now

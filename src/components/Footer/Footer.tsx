@@ -33,8 +33,8 @@ const Footer = () => {
                     <div className="text-button-uppercase pb-3">Infomation</div>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit"
-                      // href={"/pages/contact"}
-                      href={"#"}
+                      href={"/pages/contact"}
+                      // href={"#"}
                     >
                       Contact us
                     </Link>
@@ -46,22 +46,22 @@ const Footer = () => {
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/my-account"}
-                      href={"#"}
+                      href={"/my-account"}
+                      // href={"#"}
                     >
                       My Account
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/order-tracking"}
-                      href={"#"}
+                      href={"/order-tracking"}
+                      // href={"#"}
                     >
                       Order & Returns
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/pages/faqs"}
-                      href={"#"}
+                      href={"/pages/faqs"}
+                      // href={"#"}
                     >
                       FAQs
                     </Link>
@@ -70,36 +70,36 @@ const Footer = () => {
                     <div className="text-button-uppercase pb-3">Quick Shop</div>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit"
-                      // href={"/shop/breadcrumb1"}
-                      href={"#"}
+                      href={"/shop/breadcrumb1"}
+                      // href={"#"}
                     >
                       Women
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/shop/breadcrumb1"}
-                      href={"#"}
+                      href={"/shop/breadcrumb1"}
+                      // href={"#"}
                     >
                       Men
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/shop/breadcrumb1"}
-                      href={"#"}
+                      href={"/shop/breadcrumb1"}
+                      // href={"#"}
                     >
                       Clothes
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/shop/breadcrumb1"}
-                      href={"#"}
+                      href={"/shop/breadcrumb1"}
+                      // href={"#"}
                     >
                       Accessories
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/blog"}
-                      href={"#"}
+                      href={"/blog"}
+                      // href={"#"}
                     >
                       Blog
                     </Link>
@@ -110,29 +110,29 @@ const Footer = () => {
                     </div>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit"
-                      // href={"/pages/faqs"}
-                      href={"#"}
+                      href={"/pages/faqs"}
+                      // href={"#"}
                     >
                       Orders FAQs
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/pages/faqs"}
-                      href={"#"}
+                      href={"/pages/faqs"}
+                      // href={"#"}
                     >
                       Shipping
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/pages/faqs"}
-                      href={"#"}
+                      href={"/pages/faqs"}
+                      // href={"#"}
                     >
                       Privacy Policy
                     </Link>
                     <Link
                       className="caption1 has-line-before duration-300 w-fit pt-2"
-                      // href={"/order-tracking"}
-                      href={"#"}
+                      href={"/order-tracking"}
+                      // href={"#"}
                     >
                       Return & Refund
                     </Link>
