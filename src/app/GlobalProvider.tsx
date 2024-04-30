@@ -7,26 +7,34 @@ import { CompareProvider } from "@/context/CompareContext";
 import { ModalCompareProvider } from "@/context/ModalCompareContext";
 import { ModalSearchProvider } from "@/context/ModalSearchContext";
 import { ModalQuickviewProvider } from "@/context/ModalQuickviewContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProductProvider } from "@/context/ProductContext";
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <CartProvider>
-      <ModalCartProvider>
-        <WishlistProvider>
-          <ModalWishlistProvider>
-            <CompareProvider>
-              <ModalCompareProvider>
-                <ModalSearchProvider>
-                  <ModalQuickviewProvider>{children}</ModalQuickviewProvider>
-                </ModalSearchProvider>
-              </ModalCompareProvider>
-            </CompareProvider>
-          </ModalWishlistProvider>
-        </WishlistProvider>
-      </ModalCartProvider>
-    </CartProvider>
+    <AuthProvider>
+      <ProductProvider>
+        <CartProvider>
+          <ModalCartProvider>
+            <WishlistProvider>
+              <ModalWishlistProvider>
+                <CompareProvider>
+                  <ModalCompareProvider>
+                    <ModalSearchProvider>
+                      <ModalQuickviewProvider>
+                        {children}
+                      </ModalQuickviewProvider>
+                    </ModalSearchProvider>
+                  </ModalCompareProvider>
+                </CompareProvider>
+              </ModalWishlistProvider>
+            </WishlistProvider>
+          </ModalCartProvider>
+        </CartProvider>
+      </ProductProvider>
+    </AuthProvider>
   );
 };
 

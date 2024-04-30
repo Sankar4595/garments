@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductType } from "@/type/ProductType";
+import { IProduct, ProductType } from "@/type/ProductType";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
 import { useModalCartContext } from "@/context/ModalCartContext";
@@ -15,7 +15,7 @@ import { useModalQuickviewContext } from "@/context/ModalQuickviewContext";
 import { useRouter } from "next/navigation";
 
 interface ProductProps {
-  data: ProductType;
+  data: IProduct;
   type: string;
 }
 
@@ -41,12 +41,12 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
   };
 
   const handleAddToCart = () => {
-    if (!cartState.cartArray.find((item) => item.id === data.id)) {
-      addToCart({ ...data });
-      updateCart(data.id, data.quantityPurchase, activeSize, activeColor);
-    } else {
-      updateCart(data.id, data.quantityPurchase, activeSize, activeColor);
-    }
+    // if (!cartState.cartArray.find((item) => item.id === data._id)) {
+    //   addToCart({ ...data });
+    //   updateCart(data.id, data.quantityPurchase, activeSize, activeColor);
+    // } else {
+    //   updateCart(data.id, data.quantityPurchase, activeSize, activeColor);
+    // }
     openModalCart();
   };
 
@@ -56,7 +56,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
       removeFromWishlist(data.id);
     } else {
       // else, add to wishlist and set state to true
-      addToWishlist(data);
+      // addToWishlist(data);
     }
     openModalWishlist();
   };
@@ -68,7 +68,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
         removeFromCompare(data.id);
       } else {
         // else, add to wishlist and set state to true
-        addToCompare(data);
+        // addToCompare(data);
       }
     } else {
       alert("Compare up to 3 products");
@@ -78,7 +78,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
   };
 
   const handleQuickviewOpen = () => {
-    openQuickview(data);
+    // openQuickview(data);
   };
 
   const handleDetailProduct = (productId: string) => {
@@ -86,19 +86,19 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
     router.push(`/product/default?id=${productId}`);
   };
 
-  let percentSale = Math.floor(100 - (data.price / data.originPrice) * 100);
-  let percentSold = Math.floor((data.sold / data.quantity) * 100);
+  // let percentSale = Math.floor(100 - (data.price / data.originPrice) * 100);
+  // let percentSold = Math.floor((data.sold / data.quantity) * 100);
 
   return (
     <>
       {type === "grid" ? (
         <div className="product-item grid-type">
           <div
-            onClick={() => handleDetailProduct(data.id)}
+            onClick={() => handleDetailProduct(data._id)}
             className="product-main cursor-pointer block"
           >
             <div className="product-thumb bg-white relative overflow-hidden rounded-2xl">
-              {data.new && (
+              {/* {data.new && (
                 <div className="product-tag text-button-uppercase bg-green px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
                   New
                 </div>
@@ -107,12 +107,12 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 <div className="product-tag text-button-uppercase text-white bg-red px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
                   Sale
                 </div>
-              )}
+              )} */}
               <div className="list-action-right absolute top-3 right-3 max-lg:hidden">
                 <div
                   className={`add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full bg-white duration-300 relative ${
                     wishlistState.wishlistArray.some(
-                      (item) => item.id === data.id
+                      (item) => item.id === data._id
                     )
                       ? "active"
                       : ""
@@ -126,7 +126,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     Add To Wishlist
                   </div>
                   {wishlistState.wishlistArray.some(
-                    (item) => item.id === data.id
+                    (item) => item.id === data._id
                   ) ? (
                     <>
                       <Icon.Heart
@@ -144,7 +144,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 <div
                   className={`compare-btn w-[32px] h-[32px] flex items-center justify-center rounded-full bg-white duration-300 relative mt-2 ${
                     compareState.compareArray.some(
-                      (item) => item.id === data.id
+                      (item) => item.id === data._id
                     )
                       ? "active"
                       : ""
@@ -165,7 +165,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 </div>
               </div>
               <div className="product-img w-full h-full aspect-[3/4]">
-                {activeColor ? (
+                {/* {activeColor ? (
                   <>
                     {
                       <Image
@@ -182,21 +182,21 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       />
                     }
                   </>
-                ) : (
-                  <>
-                    {data.thumbImage.map((img, index) => (
-                      <Image
-                        key={index}
-                        src={img}
-                        width={500}
-                        height={500}
-                        priority={true}
-                        alt={data.name}
-                        className="w-full h-full object-cover duration-700"
-                      />
-                    ))}
-                  </>
-                )}
+                ) : ( */}
+                <>
+                  {data.images.map((img, index) => (
+                    <Image
+                      key={index}
+                      src={img.url}
+                      width={500}
+                      height={500}
+                      priority={true}
+                      alt={data.name}
+                      className="w-full h-full object-cover duration-700"
+                    />
+                  ))}
+                </>
+                {/* )} */}
               </div>
               <div className="list-action grid grid-cols-2 gap-3 px-5 absolute w-full bottom-5 max-lg:hidden">
                 <div
@@ -208,7 +208,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 >
                   Quick View
                 </div>
-                {data.action === "add to cart" ? (
+                {/* {data.action === "add to cart" ? (
                   <div
                     className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
                     onClick={(e) => {
@@ -261,7 +261,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
             </div>
             <div className="product-infor mt-4 lg:mb-7">
@@ -269,7 +269,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 <div className="progress bg-line h-1.5 w-full rounded-full overflow-hidden relative">
                   <div
                     className={`progress-sold bg-red absolute left-0 top-0 h-full`}
-                    style={{ width: `${percentSold}%` }}
+                    style={{ width: `${data.discount}%` }}
                   ></div>
                 </div>
                 <div className="flex items-center justify-between gap-3 gap-y-1 flex-wrap mt-2">
@@ -277,22 +277,20 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     <span className="text-secondary2 max-sm:text-xs">
                       Sold:{" "}
                     </span>
-                    <span className="max-sm:text-xs">{data.sold}</span>
+                    <span className="max-sm:text-xs">{data.maxPrice}</span>
                   </div>
                   <div className="text-button-uppercase">
                     <span className="text-secondary2 max-sm:text-xs">
                       Available:{" "}
                     </span>
-                    <span className="max-sm:text-xs">
-                      {data.quantity - data.sold}
-                    </span>
+                    <span className="max-sm:text-xs">{data.stock}</span>
                   </div>
                 </div>
               </div>
               <div className="product-name text-title duration-300">
                 {data.name}
               </div>
-              {data.variation.length > 0 && data.action === "add to cart" && (
+              {/* {data.variation.length > 0 && data.action === "add to cart" && (
                 <div className="list-color py-2 max-md:hidden flex items-center gap-3 flex-wrap duration-500">
                   {data.variation.map((item, index) => (
                     <div
@@ -340,17 +338,19 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
 
               <div className="product-price-block flex items-center gap-2 flex-wrap mt-1 duration-300 relative z-[1]">
-                <div className="product-price text-title">${data.price}.00</div>
-                {percentSale > 0 && (
+                <div className="product-price text-title">
+                  ${data.newPrice}.00
+                </div>
+                {data.discount > 0 && (
                   <>
                     <div className="product-origin-price caption1 text-secondary2">
-                      <del>${data.originPrice}.00</del>
+                      <del>${data.price}.00</del>
                     </div>
                     <div className="product-sale caption1 font-medium bg-green px-3 py-0.5 inline-block rounded-full">
-                      -{percentSale}%
+                      -{data.discount}%
                     </div>
                   </>
                 )}
@@ -360,7 +360,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
         </div>
       ) : (
         <>
-          {type === "list" ? (
+          {/* {type === "list" ? (
             <>
               <div className="product-item list-type">
                 <div className="product-main cursor-pointer flex lg:items-center sm:justify-between gap-7 max-lg:gap-5">
@@ -592,7 +592,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
             </>
           ) : (
             <></>
-          )}
+          )} */}
         </>
       )}
     </>

@@ -9,18 +9,24 @@ interface Props {
   data: Array<ProductType>;
   start: number;
   limit: number;
+  categoryState?: any;
 }
 
-const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
-  const [activeTab, setActiveTab] = useState<string>("t-shirt");
+const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
+  console.log("data: ", data);
+  console.log("categoryState: ", categoryState);
+  const [activeTab, setActiveTab] = useState<string>(categoryState[0]?.name);
 
   const handleTabClick = (type: string) => {
     setActiveTab(type);
   };
 
-  const filteredProducts = data.filter(
-    (product) => product.type === activeTab && product.category === "fashion"
+  const filteredProducts = data?.filter((product: any) =>
+    JSON.parse(product.categoryArr).map(
+      (val: { label: string }) => val.label === activeTab
+    )
   );
+  console.log("filteredProducts: ", filteredProducts);
 
   return (
     <>
@@ -29,13 +35,13 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
           <div className="heading flex flex-col items-center text-center">
             <div className="heading3">What{String.raw`'s`} new</div>
             <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6">
-              {["top", "t-shirt", "dress", "sets", "shirt"].map((type) => (
+              {categoryState?.categories?.map((type: any) => (
                 <div
-                  key={type}
+                  key={type._id}
                   className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
-                    activeTab === type ? "active" : ""
+                    activeTab === type.name ? "active" : ""
                   }`}
-                  onClick={() => handleTabClick(type)}
+                  onClick={() => handleTabClick(type.name)}
                 >
                   {activeTab === type && (
                     <motion.div
@@ -44,7 +50,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
                     ></motion.div>
                   )}
                   <span className="relative text-button-uppercase z-[1]">
-                    {type}
+                    {type.name}
                   </span>
                 </div>
               ))}
@@ -52,7 +58,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
           </div>
 
           <div className="list-product hide-product-sold grid lg:grid-cols-4 grid-cols-2 sm:gap-[30px] gap-[20px] md:mt-10 mt-6">
-            {filteredProducts.slice(start, limit).map((prd, index) => (
+            {filteredProducts.slice(start, limit).map((prd: any, index) => (
               <Product data={prd} type="grid" key={index} />
             ))}
           </div>

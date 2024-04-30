@@ -1,0 +1,81 @@
+"use client";
+// AuthContext.tsx
+import React, { createContext, useContext, useReducer } from "react";
+import axios from "axios";
+import { IUser } from "@/type/authTypes";
+
+interface AuthState {
+  user: IUser | null;
+  // Add more authentication-related state fields as needed
+}
+
+type AuthAction =
+  | { type: "LOGIN_SUCCESS"; payload: IUser }
+  | { type: "LOGOUT" };
+
+interface AuthContextProps {
+  authState: AuthState;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => void;
+}
+
+const initialAuthState: AuthState = {
+  user: null,
+  // Initialize other authentication-related state fields
+};
+
+const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+  switch (action.type) {
+    case "LOGIN_SUCCESS":
+      return { ...state, user: action.payload };
+    case "LOGOUT":
+      return { ...state, user: null };
+    default:
+      return state;
+  }
+};
+
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [authState, dispatch] = useReducer(authReducer, initialAuthState);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/signin`,
+        {
+          email,
+          password,
+        }
+      );
+
+      if (response.status === 200) {
+        dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+      } else {
+      }
+    } catch (error) {
+      // Handle network errors or login failure
+    }
+  };
+
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+  };
+
+  return (
+    <AuthContext.Provider value={{ authState, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
