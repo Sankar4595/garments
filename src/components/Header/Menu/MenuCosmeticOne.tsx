@@ -846,7 +846,11 @@ const MenuCosmeticOne: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "cosmetic"
+                                  item.category.some((val: any) =>
+                                    val.label.some(
+                                      (val: any) => val.label === "cosmetic"
+                                    )
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1119,7 +1123,11 @@ const MenuCosmeticOne: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "cosmetic"
+                                  item.category.some((val: any) =>
+                                    val.label.some(
+                                      (val: any) => val.label === "cosmetic"
+                                    )
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2194,7 +2202,11 @@ const MenuCosmeticOne: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "cosmetic"
+                                    item.category.some((val: any) =>
+                                      val.label.some(
+                                        (val: any) => val.label === "cosmetic"
+                                      )
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2477,7 +2489,11 @@ const MenuCosmeticOne: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "cosmetic"
+                                    item.category.some((val: any) =>
+                                      val.label.some(
+                                        (val: any) => val.label === "cosmetic"
+                                      )
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

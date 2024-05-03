@@ -807,7 +807,9 @@ const MenuCosmeticThree = () => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "cosmetic"
+                                  item.category.some(
+                                    (val: any) => val.label === "cosmetic"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1075,7 +1077,9 @@ const MenuCosmeticThree = () => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "cosmetic"
+                                  item.category.some(
+                                    (val: any) => val.label === "cosmetic"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2158,7 +2162,9 @@ const MenuCosmeticThree = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "cosmetic"
+                                    item.category.some(
+                                      (val: any) => val.label === "cosmetic"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2441,7 +2447,9 @@ const MenuCosmeticThree = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "cosmetic"
+                                    item.category.some(
+                                      (val: any) => val.label === "cosmetic"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

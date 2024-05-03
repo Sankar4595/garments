@@ -1038,7 +1038,9 @@ const MenuOrganic = () => {
                                   .filter(
                                     (item) =>
                                       item.action === "add to cart" &&
-                                      item.category === "organic"
+                                      item.category.some(
+                                        (val: any) => val.label === "organic"
+                                      )
                                   )
                                   .slice(0, 2)
                                   .map((prd, index) => (
@@ -1312,7 +1314,9 @@ const MenuOrganic = () => {
                                   .filter(
                                     (item) =>
                                       item.action === "add to cart" &&
-                                      item.category === "organic"
+                                      item.category.some(
+                                        (val: any) => val.label === "organic"
+                                      )
                                   )
                                   .slice(0, 2)
                                   .map((prd, index) => (
@@ -2343,7 +2347,9 @@ const MenuOrganic = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "organic"
+                                    item.category.some(
+                                      (val: any) => val.label === "organic"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2626,7 +2632,9 @@ const MenuOrganic = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "organic"
+                                    item.category.some(
+                                      (val: any) => val.label === "organic"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

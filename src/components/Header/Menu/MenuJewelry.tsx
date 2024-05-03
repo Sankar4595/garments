@@ -835,7 +835,9 @@ const MenuJewelry: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "jewelry"
+                                  item.category.some(
+                                    (val: any) => val.label === "jewelry"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1108,7 +1110,9 @@ const MenuJewelry: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "jewelry"
+                                  item.category.some(
+                                    (val: any) => val.label === "jewelry"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2173,7 +2177,9 @@ const MenuJewelry: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "jewelry"
+                                    item.category.some(
+                                      (val: any) => val.label === "jewelry"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2456,7 +2462,9 @@ const MenuJewelry: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "jewelry"
+                                    item.category.some(
+                                      (val: any) => val.label === "jewelry"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

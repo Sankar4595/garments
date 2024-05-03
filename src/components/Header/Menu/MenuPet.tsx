@@ -1011,7 +1011,9 @@ const MenuPet = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "pet"
+                                    item.category.some(
+                                      (val: any) => val.label === "pet"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -1281,7 +1283,9 @@ const MenuPet = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "pet"
+                                    item.category.some(
+                                      (val: any) => val.label === "pet"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2310,7 +2314,9 @@ const MenuPet = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "pet"
+                                    item.category.some(
+                                      (val: any) => val.label === "pet"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2593,7 +2599,9 @@ const MenuPet = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "pet"
+                                    item.category.some(
+                                      (val: any) => val.label === "pet"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

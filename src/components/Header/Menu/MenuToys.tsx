@@ -841,7 +841,9 @@ const MenuToys: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "toys-kid"
+                                  item.category.some(
+                                    (val: any) => val.label === "toys-kid"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1114,7 +1116,9 @@ const MenuToys: React.FC<Props> = ({ props }) => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "toys-kid"
+                                  item.category.some(
+                                    (val: any) => val.label === "toys-kid"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2185,7 +2189,9 @@ const MenuToys: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "toys-kid"
+                                    item.category.some(
+                                      (val: any) => val.label === "toys-kid"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2468,7 +2474,9 @@ const MenuToys: React.FC<Props> = ({ props }) => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "toys-kid"
+                                    item.category.some(
+                                      (val: any) => val.label === "toys-kid"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (

@@ -28,7 +28,9 @@ const FeaturedProduct: React.FC<Props> = ({ data, start, limit }) => {
           <div className="content flex items-center justify-between max-sm:flex-col gap-8 bg-surface md:p-[60px] p-10 rounded-[28px]">
             <div className="left bg-product sm:w-1/2">
               {data
-                .filter((item) => item.category === "toys-kid")
+                .filter((item) =>
+                  item.category.some((val: any) => val.label === "toys-kid")
+                )
                 .slice(start, limit)
                 .map((prd, index) => (
                   <div
@@ -59,7 +61,9 @@ const FeaturedProduct: React.FC<Props> = ({ data, start, limit }) => {
                   onSlideChange={handleSlideChange}
                 >
                   {data
-                    .filter((item) => item.category === "toys-kid")
+                    .filter((item) =>
+                      item.category.some((val: any) => val.label === "toys-kid")
+                    )
                     .slice(start, limit)
                     .map((prd) => (
                       <SwiperSlide key={prd._id} data-item={prd._id}>

@@ -797,7 +797,9 @@ const MenuYoga = () => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "yoga"
+                                  item.category.some(
+                                    (val: any) => val.label === "yoga"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1065,7 +1067,9 @@ const MenuYoga = () => {
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
-                                  item.category === "yoga"
+                                  item.category.some(
+                                    (val: any) => val.label === "yoga"
+                                  )
                               )
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2138,7 +2142,9 @@ const MenuYoga = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "yoga"
+                                    item.category.some(
+                                      (val: any) => val.label === "yoga"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
@@ -2421,7 +2427,9 @@ const MenuYoga = () => {
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
-                                    item.category === "yoga"
+                                    item.category.some(
+                                      (val: any) => val.label === "yoga"
+                                    )
                                 )
                                 .slice(0, 2)
                                 .map((prd, index) => (
