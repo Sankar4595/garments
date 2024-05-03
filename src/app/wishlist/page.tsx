@@ -35,7 +35,7 @@ const Wishlist = () => {
   let filteredData = wishlistState.wishlistArray.filter((product) => {
     let isTypeMatched = true;
     if (type) {
-      isTypeMatched = product.type === type;
+      isTypeMatched = product.type.some((val) => val.label === type);
     }
 
     return isTypeMatched;
@@ -45,31 +45,7 @@ const Wishlist = () => {
   const selectedType = type;
 
   if (filteredData.length === 0) {
-    filteredData = [
-      {
-        _id: "no-data",
-        category: "no-data",
-        type: "no-data",
-        name: "no-data",
-        gender: "no-data",
-        new: false,
-        sale: false,
-        rate: 0,
-        price: 0,
-        originPrice: 0,
-        brand: "no-data",
-        sold: 0,
-        quantity: 0,
-        quantityPurchase: 0,
-        sizes: [],
-        variation: [],
-        thumbImage: [],
-        images: [],
-        description: "no-data",
-        action: "no-data",
-        slug: "no-data",
-      },
-    ];
+    filteredData = [];
   }
 
   // Tạo một bản sao của mảng đã lọc để sắp xếp
