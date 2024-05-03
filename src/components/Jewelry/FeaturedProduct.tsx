@@ -90,7 +90,7 @@ const FeaturedProduct: React.FC<Props> = ({ data }) => {
           </div>
           <div className="product-infor md:w-1/2 w-full lg:pl-16 md:pl-6">
             <div className="caption2 text-secondary font-semibold uppercase">
-              {productMain.type}
+              {productMain.type.map((val) => val.label)}
             </div>
             <div className="heading4 mt-1">{productMain.name}</div>
             <div className="flex items-center mt-3">
@@ -155,15 +155,15 @@ const FeaturedProduct: React.FC<Props> = ({ data }) => {
                   </div>
                 </div>
                 <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                  {productMain.sizes.map((item, index) => (
+                  {productMain.variation.map((item, index) => (
                     <div
                       className={`size-item w-12 h-12 flex items-center justify-center text-button rounded-full bg-white border border-line ${
-                        activeSize === item ? "active" : ""
+                        activeSize === item.size ? "active" : ""
                       }`}
                       key={index}
-                      onClick={() => handleActiveSize(item)}
+                      onClick={() => handleActiveSize(item.size)}
                     >
-                      {item}
+                      {item.size}
                     </div>
                   ))}
                 </div>

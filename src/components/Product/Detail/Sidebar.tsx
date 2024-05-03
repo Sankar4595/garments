@@ -184,8 +184,10 @@ const Sidebar: React.FC<Props> = ({ data, productId }) => {
                         {
                           data.filter(
                             (dataItem) =>
-                              dataItem.type === item &&
-                              dataItem.category === "fashion"
+                              dataItem.type.some((val) => val.label === item) &&
+                              dataItem.category.some(
+                                (val) => val.label === "fashion"
+                              )
                           ).length
                         }
                         )
@@ -314,7 +316,7 @@ const Sidebar: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex justify-between">
                     <div>
                       <div className="caption2 text-secondary font-semibold uppercase">
-                        {productMain.type}
+                        {productMain.type.map((val) => val.label)}
                       </div>
                       <div className="heading4 mt-1">{productMain.name}</div>
                     </div>
@@ -416,17 +418,19 @@ const Sidebar: React.FC<Props> = ({ data, productId }) => {
                         />
                       </div>
                       <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                        {productMain.sizes.map((item, index) => (
+                        {productMain.variation.map((item, index) => (
                           <div
                             className={`size-item ${
-                              item === "freesize" ? "px-3 py-2" : "w-12 h-12"
+                              item.size === "freesize"
+                                ? "px-3 py-2"
+                                : "w-12 h-12"
                             } flex items-center justify-center text-button rounded-full bg-white border border-line ${
-                              activeSize === item ? "active" : ""
+                              activeSize === item.size ? "active" : ""
                             }`}
                             key={index}
-                            onClick={() => handleActiveSize(item)}
+                            onClick={() => handleActiveSize(item.size)}
                           >
-                            {item}
+                            {item.size}
                           </div>
                         ))}
                       </div>
@@ -517,12 +521,15 @@ const Sidebar: React.FC<Props> = ({ data, productId }) => {
                       <div className="flex items-center gap-1 mt-3">
                         <div className="text-title">Categories:</div>
                         <div className="text-secondary">
-                          {productMain.category}, {productMain.gender}
+                          {productMain.category.map((val) => val.label)},{" "}
+                          {productMain.gender}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 mt-3">
                         <div className="text-title">Tag:</div>
-                        <div className="text-secondary">{productMain.type}</div>
+                        <div className="text-secondary">
+                          {productMain.type.map((val) => val.label)}
+                        </div>
                       </div>
                     </div>
                     <div className="list-payment mt-7">

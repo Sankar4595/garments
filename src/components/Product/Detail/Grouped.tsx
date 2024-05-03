@@ -194,7 +194,7 @@ const Grouped: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {productMain.type}
+                    {productMain.type.map((val) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -394,12 +394,15 @@ const Grouped: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Categories:</div>
                     <div className="text-secondary">
-                      {productMain.category}, {productMain.gender}
+                      {productMain.category.map((val) => val.label)},{" "}
+                      {productMain.gender}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Tag:</div>
-                    <div className="text-secondary">{productMain.type}</div>
+                    <div className="text-secondary">
+                      {productMain.type.map((val) => val.label)}
+                    </div>
                   </div>
                 </div>
                 <div className="list-payment mt-7">
