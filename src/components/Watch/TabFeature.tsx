@@ -22,7 +22,9 @@ const TabFeature: React.FC<Props> = ({ data, start, limit }) => {
   };
 
   const filteredProducts = data.filter(
-    (product) => product.gender === activeTab && product.category === "watch"
+    (product) =>
+      product.gender === activeTab &&
+      product.category.some((val) => val.label === "watch")
   );
 
   return (

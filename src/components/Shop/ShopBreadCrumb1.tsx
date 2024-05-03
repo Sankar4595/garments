@@ -88,23 +88,25 @@ const ShopBreadCrumb1: React.FC<Props> = ({
 
     let isDataCategoryMatched = true;
     if (category) {
-      isDataCategoryMatched = product.category === category;
+      isDataCategoryMatched = product.category.some(
+        (val) => val.label === category
+      );
     }
 
     let isDataTypeMatched = true;
     if (dataType) {
-      isDataTypeMatched = product.type === dataType;
+      isDataTypeMatched = product.type.some((val) => val.label === dataType);
     }
 
     let isTypeMatched = true;
     if (type) {
       dataType = type;
-      isTypeMatched = product.type === type;
+      isTypeMatched = product.type.some((val) => val.label === type);
     }
 
     let isSizeMatched = true;
     if (size) {
-      isSizeMatched = product.sizes.includes(size);
+      // isSizeMatched = product.variation.includes(size);
     }
 
     let isPriceRangeMatched = true;
@@ -166,31 +168,7 @@ const ShopBreadCrumb1: React.FC<Props> = ({
   const selectedBrand = brand;
 
   if (filteredData.length === 0) {
-    filteredData = [
-      {
-        _id: "no-data",
-        category: "no-data",
-        type: "no-data",
-        name: "no-data",
-        gender: "no-data",
-        new: false,
-        sale: false,
-        rate: 0,
-        price: 0,
-        originPrice: 0,
-        brand: "no-data",
-        sold: 0,
-        quantity: 0,
-        quantityPurchase: 0,
-        sizes: [],
-        variation: [],
-        thumbImage: [],
-        images: [],
-        description: "no-data",
-        action: "no-data",
-        slug: "no-data",
-      },
-    ];
+    filteredData = [];
   }
 
   // Find page number base on filteredData
@@ -297,8 +275,10 @@ const ShopBreadCrumb1: React.FC<Props> = ({
                         {
                           data.filter(
                             (dataItem) =>
-                              dataItem.type === item &&
-                              dataItem.category === "fashion"
+                              dataItem.type.some((val) => val.label === item) &&
+                              dataItem.category.some(
+                                (val) => val.label === "fashion"
+                              )
                           ).length
                         }
                         )
@@ -463,7 +443,9 @@ const ShopBreadCrumb1: React.FC<Props> = ({
                             data.filter(
                               (dataItem) =>
                                 dataItem.brand === item &&
-                                dataItem.category === "fashion"
+                                dataItem.category.some(
+                                  (val) => val.label === "fashion"
+                                )
                             ).length
                           }
                           )

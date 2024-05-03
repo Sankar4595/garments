@@ -74,8 +74,12 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type === "accessories" &&
-                          product.category === "fashion"
+                          product.type.some(
+                            (val) => val.label === "accessories"
+                          ) &&
+                          product.category.some(
+                            (val) => val.label === "fashion"
+                          )
                       )
                       .slice(0, 2)
                       .map((product) => (
@@ -119,8 +123,12 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type === "accessories" &&
-                          product.category === "fashion"
+                          product.type.some(
+                            (val) => val.label === "accessories"
+                          ) &&
+                          product.category.some(
+                            (val) => val.label === "fashion"
+                          )
                       )
                       .slice(2, 4)
                       .map((product) => (
@@ -164,8 +172,12 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type === "accessories" &&
-                          product.category === "fashion"
+                          product.type.some(
+                            (val) => val.label === "accessories"
+                          ) &&
+                          product.category.some(
+                            (val) => val.label === "fashion"
+                          )
                       )
                       .slice(4, 6)
                       .map((product) => (

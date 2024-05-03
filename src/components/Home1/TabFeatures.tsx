@@ -24,19 +24,23 @@ const TabFeatures: React.FC<Props> = ({ data, start, limit }) => {
   const getFilterData = () => {
     if (activeTab === "on sale") {
       return data.filter(
-        (product) => product.sale && product.category === "fashion"
+        (product) =>
+          product.sale &&
+          product.category.some((val) => val.label === "fashion")
       );
     }
 
     if (activeTab === "new arrivals") {
-      return data.filter(
-        (product) => product.new && product.category === "fashion"
+      return data.filter((product) =>
+        product.category.some((val) => val.label === "fashion")
       );
     }
 
     if (activeTab === "best sellers") {
       return data
-        .filter((product) => product.category === "fashion")
+        .filter((product) =>
+          product.category.some((val) => val.label === "fashion")
+        )
         .slice()
         .sort((a, b) => b.sold - a.sold);
     }
