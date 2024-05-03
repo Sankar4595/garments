@@ -14,6 +14,7 @@ import { useModalCartContext } from "@/context/ModalCartContext";
 import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
+import { useProduct } from "@/context/ProductContext";
 
 const MenuPet = () => {
   const pathname = usePathname();
@@ -26,6 +27,7 @@ const MenuPet = () => {
   const { cartState } = useCart();
   const { openModalWishlist } = useModalWishlistContext();
   const { openModalSearch } = useModalSearchContext();
+  const { productState } = useProduct();
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const router = useRouter();
@@ -1005,7 +1007,7 @@ const MenuPet = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
@@ -1275,7 +1277,7 @@ const MenuPet = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
@@ -2304,7 +2306,7 @@ const MenuPet = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
@@ -2587,7 +2589,7 @@ const MenuPet = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
