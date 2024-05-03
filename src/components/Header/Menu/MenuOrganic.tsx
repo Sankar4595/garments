@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
 import Product from "@/components/Product/Product";
-import productData from "@/data/Product.json";
 import useLoginPopup from "@/store/useLoginPopup";
 import useShopDepartmentPopup from "@/store/useShopDepartmentPopup";
 import useMenuMobile from "@/store/useMenuMobile";
 import { useModalCartContext } from "@/context/ModalCartContext";
 import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useCart } from "@/context/CartContext";
+import { useProduct } from "@/context/ProductContext";
 
 const MenuOrganic = () => {
   const pathname = usePathname();
@@ -25,7 +25,7 @@ const MenuOrganic = () => {
   const { openModalCart } = useModalCartContext();
   const { cartState } = useCart();
   const { openModalWishlist } = useModalWishlistContext();
-
+  const { productState } = useProduct();
   const [searchKeyword, setSearchKeyword] = useState("");
   const router = useRouter();
 
@@ -1034,7 +1034,7 @@ const MenuOrganic = () => {
                                 Recent Products
                               </div>
                               <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                                {productData
+                                {productState.products
                                   .filter(
                                     (item) =>
                                       item.action === "add to cart" &&
@@ -1308,7 +1308,7 @@ const MenuOrganic = () => {
                                 Recent Products
                               </div>
                               <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                                {productData
+                                {productState.products
                                   .filter(
                                     (item) =>
                                       item.action === "add to cart" &&
@@ -2339,7 +2339,7 @@ const MenuOrganic = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
@@ -2622,7 +2622,7 @@ const MenuOrganic = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&

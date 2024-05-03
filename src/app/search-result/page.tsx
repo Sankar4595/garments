@@ -6,18 +6,17 @@ import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
-import { ProductType } from "@/type/ProductType";
-import productData from "@/data/Product.json";
 import Product from "@/components/Product/Product";
 import HandlePagination from "@/components/Other/HandlePagination";
-import * as Icon from "@phosphor-icons/react/dist/ssr";
+import { useProduct } from "@/context/ProductContext";
 
 const SearchResult = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(0);
+  const { productState } = useProduct();
   const productsPerPage = 8;
   const offset = currentPage * productsPerPage;
-  let filteredData = productData;
+  let filteredData = productState.products;
 
   const router = useRouter();
 
@@ -32,7 +31,7 @@ const SearchResult = () => {
   if (query === null) {
     query = "dress";
   } else {
-    filteredData = productData.filter(
+    filteredData = productState.products.filter(
       (product) =>
         product.name.toLowerCase().includes(query.toLowerCase()) ||
         product.type.toLowerCase().includes(query.toLowerCase())
@@ -40,31 +39,7 @@ const SearchResult = () => {
   }
 
   if (filteredData.length === 0) {
-    filteredData = [
-      {
-        id: "no-data",
-        category: "no-data",
-        type: "no-data",
-        name: "no-data",
-        gender: "no-data",
-        new: false,
-        sale: false,
-        rate: 0,
-        price: 0,
-        originPrice: 0,
-        brand: "no-data",
-        sold: 0,
-        quantity: 0,
-        quantityPurchase: 0,
-        sizes: [],
-        variation: [],
-        thumbImage: [],
-        images: [],
-        description: "no-data",
-        action: "no-data",
-        slug: "no-data",
-      },
-    ];
+    filteredData = [];
   }
 
   // Find page number base on filteredData

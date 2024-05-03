@@ -6,7 +6,6 @@ import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
 import Product from "@/components/Product/Product";
-import productData from "@/data/Product.json";
 import useLoginPopup from "@/store/useLoginPopup";
 import useMenuMobile from "@/store/useMenuMobile";
 import { useModalCartContext } from "@/context/ModalCartContext";

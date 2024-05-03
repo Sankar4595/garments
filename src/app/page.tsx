@@ -8,7 +8,6 @@ import Collection from "@/components/Home1/Collection";
 import TabFeatures from "@/components/Home1/TabFeatures";
 import Banner from "@/components/Home1/Banner";
 import Benefit from "@/components/Home1/Benefit";
-import testimonialData from "@/data/Testimonial.json";
 import Testimonial from "@/components/Home1/Testimonial";
 import Brand from "@/components/Home1/Brand";
 import Footer from "@/components/Footer/Footer";
@@ -27,7 +26,7 @@ export default function Home() {
         <SliderOne />
       </div>
       <WhatNewOne
-        categoryState={categoryState}
+        categoryState={categoryState.categories}
         data={productState?.products}
         start={0}
         limit={4}
@@ -36,7 +35,7 @@ export default function Home() {
       <TabFeatures data={[]} start={0} limit={6} />
       <Banner />
       <Benefit props="md:py-20 py-10" />
-      <Testimonial data={testimonialData} limit={6} />
+      <Testimonial data={[]} limit={6} />
       {/* <Instagram /> */}
       <Brand />
       <Footer />

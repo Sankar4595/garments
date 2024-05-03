@@ -6,7 +6,6 @@ import MenuTwo from '@/components/Header/Menu/MenuTwo'
 import SliderThree from '@/components/Slider/SliderThree'
 import BannerTop from '@/components/Home3/BannerTop'
 import TrendingProduct from '@/components/Home3/TrendingProduct'
-import productData from '@/data/Product.json'
 import Collection from '@/components/Home2/Collection'
 import Benefit from '@/components/Home1/Benefit'
 import FlashSale from '@/components/Home3/FlashSale'
@@ -25,7 +24,7 @@ export default function HomeThree() {
                 <BannerTop props="bg-black py-3" textColor='text-white' bgLine='bg-white' />
                 <SliderThree />
             </div>
-            <TrendingProduct data={productData} start={10} limit={18} />
+            <TrendingProduct data={[]} start={10} limit={18} />
             <Collection props="md:pt-20 pt-10" />
             <FlashSale />
             <NewsInsight data={blogData} start={0} limit={3} />

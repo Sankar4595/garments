@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import TopNavOne from '@/components/Header/TopNav/TopNavOne'
 import MenuOne from '@/components/Header/Menu/MenuOne'
 import ShopSidebarList from '@/components/Shop/ShopSidebarList'
-import productData from '@/data/Product.json'
 import Footer from '@/components/Footer/Footer'
 
 export default function SidebarList() {
@@ -19,7 +18,7 @@ export default function SidebarList() {
             <div id="header" className='relative w-full'>
                 <MenuOne props="bg-transparent" />
             </div>
-            <ShopSidebarList data={productData} productPerPage={4} dataType={type} />
+            <ShopSidebarList data={[]} productPerPage={4} dataType={type} />
             <Footer />
         </>
     )

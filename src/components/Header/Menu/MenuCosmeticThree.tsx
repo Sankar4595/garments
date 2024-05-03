@@ -6,7 +6,6 @@ import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
 import Product from "@/components/Product/Product";
-import productData from "@/data/Product.json";
 import useLoginPopup from "@/store/useLoginPopup";
 import useMenuMobile from "@/store/useMenuMobile";
 import { useModalCartContext } from "@/context/ModalCartContext";
@@ -15,6 +14,7 @@ import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useRouter } from "next/navigation";
+import { useProduct } from "@/context/ProductContext";
 
 const MenuCosmeticThree = () => {
   const pathname = usePathname();
@@ -26,7 +26,7 @@ const MenuCosmeticThree = () => {
   const { cartState } = useCart();
   const { openModalWishlist } = useModalWishlistContext();
   const { openModalSearch } = useModalSearchContext();
-
+  const { productState } = useProduct();
   const handleOpenSubNavMobile = (index: number) => {
     setOpenSubNavMobile(openSubNavMobile === index ? null : index);
   };
@@ -803,7 +803,7 @@ const MenuCosmeticThree = () => {
                             Recent Products
                           </div>
                           <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                            {productData
+                            {productState.products
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
@@ -1071,7 +1071,7 @@ const MenuCosmeticThree = () => {
                             Recent Products
                           </div>
                           <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                            {productData
+                            {productState.products
                               .filter(
                                 (item) =>
                                   item.action === "add to cart" &&
@@ -2154,7 +2154,7 @@ const MenuCosmeticThree = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&
@@ -2437,7 +2437,7 @@ const MenuCosmeticThree = () => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData
+                              {productState.products
                                 .filter(
                                   (item) =>
                                     item.action === "add to cart" &&

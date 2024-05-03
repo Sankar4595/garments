@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import TopNavOne from '@/components/Header/TopNav/TopNavOne'
 import MenuOne from '@/components/Header/Menu/MenuOne'
 import ShopFilterCanvas from '@/components/Shop/ShopFilterCanvas'
-import productData from '@/data/Product.json'
 import Footer from '@/components/Footer/Footer'
 
 export default function FilterCanvas() {
@@ -19,7 +18,7 @@ export default function FilterCanvas() {
             <div id="header" className='relative w-full'>
                 <MenuOne props="bg-transparent" />
             </div>
-            <ShopFilterCanvas data={productData} productPerPage={12} dataType={type} />
+            <ShopFilterCanvas data={[]} productPerPage={12} dataType={type} />
             <Footer />
         </>
     )

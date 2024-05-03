@@ -6,7 +6,6 @@ import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
 import Product from "@/components/Product/Product";
-import productData from "@/data/Product.json";
 import useLoginPopup from "@/store/useLoginPopup";
 import useMenuMobile from "@/store/useMenuMobile";
 import { useModalCartContext } from "@/context/ModalCartContext";
@@ -14,6 +13,7 @@ import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { useProduct } from "@/context/ProductContext";
 
 interface Props {
   props: string;
@@ -30,7 +30,7 @@ const MenuFour: React.FC<Props> = ({ props }) => {
   const { openModalSearch } = useModalSearchContext();
   const [searchKeyword, setSearchKeyword] = useState("");
   const router = useRouter();
-
+  const { productState } = useProduct();
   const handleSearch = (value: string) => {
     router.push(`/search-result?query=${value}`);
     setSearchKeyword("");
@@ -1004,7 +1004,7 @@ const MenuFour: React.FC<Props> = ({ props }) => {
                             Recent Products
                           </div>
                           <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                            {productData
+                            {productState.products
                               .filter((item) => item.action === "add to cart")
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -1273,7 +1273,7 @@ const MenuFour: React.FC<Props> = ({ props }) => {
                             Recent Products
                           </div>
                           <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                            {productData
+                            {productState.products
                               .filter((item) => item.action === "add to cart")
                               .slice(0, 2)
                               .map((prd, index) => (
@@ -2460,9 +2460,11 @@ const MenuFour: React.FC<Props> = ({ props }) => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData.slice(0, 2).map((prd, index) => (
-                                <Product key={index} data={prd} type="grid" />
-                              ))}
+                              {productState.products
+                                .slice(0, 2)
+                                .map((prd, index) => (
+                                  <Product key={index} data={prd} type="grid" />
+                                ))}
                             </div>
                           </div>
                         </div>
@@ -2736,9 +2738,11 @@ const MenuFour: React.FC<Props> = ({ props }) => {
                               Recent Products
                             </div>
                             <div className="list-product hide-product-sold  grid grid-cols-2 gap-5 mt-3">
-                              {productData.slice(0, 2).map((prd, index) => (
-                                <Product key={index} data={prd} type="grid" />
-                              ))}
+                              {productState.products
+                                .slice(0, 2)
+                                .map((prd, index) => (
+                                  <Product key={index} data={prd} type="grid" />
+                                ))}
                             </div>
                           </div>
                         </div>
