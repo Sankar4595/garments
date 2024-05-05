@@ -41,9 +41,6 @@ const Default: React.FC<Props> = ({ data, productId }) => {
   const productMain = data.find(
     (product) => product._id === productId
   ) as ProductType;
-  const percentSale = Math.floor(
-    100 - (productMain.price / productMain.originPrice) * 100
-  );
 
   const handleOpenSizeGuide = () => {
     setOpenSizeGuide(true);
@@ -156,7 +153,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 modules={[Thumbs]}
                 className="mySwiper2 rounded-2xl overflow-hidden"
               >
-                {productMain.images.map((item, index) => (
+                {productMain?.images.map((item, index) => (
                   <SwiperSlide key={index}>
                     <Image
                       src={item}
@@ -177,7 +174,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 modules={[Navigation, Thumbs]}
                 className="mySwiper"
               >
-                {productMain.images.map((item, index) => (
+                {productMain?.images.map((item, index) => (
                   <SwiperSlide key={index}>
                     <Image
                       src={item}
@@ -194,7 +191,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {productMain.type.map((val) => val.label)}
+                    {productMain?.type.map((val) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -239,7 +236,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 </div>
                 {productMain.originPrice && (
                   <div className="product-sale caption2 font-semibold bg-green px-3 py-0.5 inline-block rounded-full">
-                    -{percentSale}%
+                    -{productMain.discount}%
                   </div>
                 )}
                 <div className="desc text-secondary mt-3">

@@ -37,6 +37,7 @@ export interface ProductType {
   description: string;
   action: string;
   slug: string;
+  discount: string;
 }
 
 // export interface IProduct {

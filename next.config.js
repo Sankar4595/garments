@@ -7,7 +7,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "eezer-api.onrender.com",
         port: "",
-        pathname: "/public/uploads/**",
+        pathname: "/public/**",
       },
     ],
   },

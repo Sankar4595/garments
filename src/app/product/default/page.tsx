@@ -1,21 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import BreadcrumbProduct from "@/components/Breadcrumb/BreadcrumbProduct";
 import Default from "@/components/Product/Detail/Default";
 import Footer from "@/components/Footer/Footer";
-import { ProductType } from "@/type/ProductType";
+import { useProduct } from "@/context/ProductContext";
 
 const ProductDefault = () => {
   const searchParams = useSearchParams();
   let productId = searchParams.get("id");
-
-  if (productId === null) {
-    productId = "1";
-  }
+  const { productState, categoryState } = useProduct();
 
   return (
     <>
@@ -26,12 +22,12 @@ const ProductDefault = () => {
       <div id="header" className="relative w-full">
         <MenuOne props="bg-white" />
         <BreadcrumbProduct
-          data={[]}
+          data={productState.products}
           productPage="default"
           productId={productId}
         />
       </div>
-      <Default data={[]} productId={productId} />
+      <Default data={productState.products} productId={productId} />
       <Footer />
     </>
   );

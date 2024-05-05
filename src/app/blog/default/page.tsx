@@ -43,23 +43,7 @@ const BlogDefault = () => {
   });
 
   if (filteredData.length === 0) {
-    filteredData = [
-      {
-        id: "no-data",
-        category: "no-data",
-        tag: "no-data",
-        title: "no-data",
-        date: "no-data",
-        author: "no-data",
-        avatar: "no-data",
-        thumbImg: "",
-        coverImg: "",
-        subImg: ["", ""],
-        shortDesc: "no-data",
-        description: "no-data",
-        slug: "no-data",
-      },
-    ];
+    filteredData = [];
   }
 
   const pageCount = Math.ceil(filteredData.length / productsPerPage);
