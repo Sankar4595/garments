@@ -15,6 +15,7 @@ import { useProduct } from "@/context/ProductContext";
 
 export default function Home() {
   const { productState, categoryState } = useProduct();
+  console.log("productState: ", productState);
   return (
     <>
       <TopNavOne

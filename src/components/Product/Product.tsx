@@ -346,7 +346,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 {percentSale > 0 && (
                   <>
                     <div className="product-origin-price caption1 text-secondary2">
-                      <del>${data.originPrice}.00</del>
+                      <del>₹{data.originPrice}.00</del>
                     </div>
                     <div className="product-sale caption1 font-medium bg-green px-3 py-0.5 inline-block rounded-full">
                       -{percentSale}%
@@ -438,10 +438,10 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       </div>
                       <div className="product-price-block flex items-center gap-2 flex-wrap mt-2 duration-300 relative z-[1]">
                         <div className="product-price text-title">
-                          ${data.price}.00
+                          ₹{data.price}.00
                         </div>
                         <div className="product-origin-price caption1 text-secondary2">
-                          <del>${data.originPrice}.00</del>
+                          <del>₹{data.originPrice}.00</del>
                         </div>
                         {data.originPrice && (
                           <div className="product-sale caption1 font-medium bg-green px-3 py-0.5 inline-block rounded-full">
