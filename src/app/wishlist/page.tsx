@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
@@ -32,47 +32,54 @@ const Wishlist = () => {
   };
 
   // Filter product data by type
-  let filteredData = wishlistState.wishlistArray.filter((product) => {
-    let isTypeMatched = true;
-    if (type) {
-      isTypeMatched = product.type.some((val) => val.label === type);
-    }
+  let filteredData: any;
 
-    return isTypeMatched;
-  });
+  useEffect(() => {
+    filteredData = wishlistState.wishlistArray.filter((product) => {
+      let isTypeMatched = true;
+      if (type) {
+        isTypeMatched = product.type.some((val) => val.label === type);
+      }
 
-  const totalProducts = filteredData.length;
+      return isTypeMatched;
+    });
+  }, [type]);
+
+  const totalProducts = filteredData?.length;
   const selectedType = type;
 
-  if (filteredData.length === 0) {
+  if (filteredData?.length === 0) {
     filteredData = [];
   }
-
-  // Tạo một bản sao của mảng đã lọc để sắp xếp
-  let sortedData = [...filteredData];
+  let sortedData: any;
+  useEffect(() => {
+    if (filteredData?.length > 0) {
+      sortedData = [...filteredData];
+    }
+  }, [filteredData]);
 
   if (sortOption === "soldQuantityHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.sold - a.sold);
+    filteredData = sortedData?.sort((a: any, b: any) => b.sold - a.sold);
   }
 
   if (sortOption === "discountHighToLow") {
-    filteredData = sortedData.sort(
-      (a, b) =>
+    filteredData = sortedData?.sort(
+      (a: any, b: any) =>
         Math.floor(100 - (b.price / b.originPrice) * 100) -
         Math.floor(100 - (a.price / a.originPrice) * 100)
     );
   }
 
   if (sortOption === "priceHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.price - a.price);
+    filteredData = sortedData?.sort((a: any, b: any) => b.price - a.price);
   }
 
   if (sortOption === "priceLowToHigh") {
-    filteredData = sortedData.sort((a, b) => a.price - b.price);
+    filteredData = sortedData?.sort((a: any, b: any) => a.price - b.price);
   }
 
   // Find page number base on filteredData
-  const pageCount = Math.ceil(filteredData.length / productsPerPage);
+  const pageCount = Math.ceil(filteredData?.length / productsPerPage);
 
   // If page number 0, set current page = 0
   if (pageCount === 0) {
@@ -82,8 +89,8 @@ const Wishlist = () => {
   // Get product data for current page
   let currentProducts: ProductType[];
 
-  if (filteredData.length > 0) {
-    currentProducts = filteredData.slice(offset, offset + productsPerPage);
+  if (filteredData?.length > 0) {
+    currentProducts = filteredData?.slice(offset, offset + productsPerPage);
   } else {
     currentProducts = [];
   }
@@ -254,7 +261,7 @@ const Wishlist = () => {
             <div
               className={`list-product hide-product-sold grid lg:grid-cols-${layoutCol} sm:grid-cols-3 grid-cols-2 sm:gap-[30px] gap-[20px] mt-7`}
             >
-              {currentProducts.map((item) =>
+              {currentProducts?.map((item) =>
                 item._id === "no-data" ? (
                   <div key={item._id} className="no-data-product">
                     No products match the selected criteria.

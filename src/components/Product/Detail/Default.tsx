@@ -240,7 +240,12 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                   </div>
                 )}
                 <div className="desc text-secondary mt-3">
-                  {productMain.description}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: productMain.description,
+                    }}
+                  />
+                  {/* {productMain.description} */}
                 </div>
               </div>
               <div className="list-action mt-6">
