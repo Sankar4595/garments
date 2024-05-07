@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +8,7 @@ import Product from "../Product/Product";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import HandlePagination from "../Other/HandlePagination";
+import { useProduct } from "@/context/ProductContext";
 
 interface Props {
   data: Array<ProductType>;
@@ -36,6 +36,8 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = productPerPage;
   const offset = currentPage * productsPerPage;
+  const { categoryState } = useProduct();
+  const [filteredData, setFilteredData] = useState<any>([]);
 
   const handleLayoutCol = (col: number) => {
     setLayoutCol(col);
@@ -83,106 +85,76 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
     setCurrentPage(0);
   };
 
-  // Filter product
-  let filteredData = data.filter((product) => {
-    let isShowOnlySaleMatched = true;
-    if (showOnlySale) {
-      isShowOnlySaleMatched = product.sale;
+  // Function to filter data based on current filters
+  // const filterData = () => {
+  //   const newData = data.filter((product) => {
+  //     const isShowOnlySaleMatched = !showOnlySale || product.sale;
+  //     const isDataTypeMatched =
+  //       !dataType || product.type.some((val) => val.label === dataType);
+  //     const isTypeMatched =
+  //       !type || product.type.some((val) => val.label === type);
+  //     const isSizeMatched =
+  //       !size || product.variation.some((val) => val.size === size);
+  //     const isPriceRangeMatched =
+  //       product.price >= priceRange.min && product.price <= priceRange.max;
+  //     const isColorMatched =
+  //       !color || product.variation.some((item) => item.color === color);
+  //     const isBrandMatched = !brand || product.brand === brand;
+
+  //     return (
+  //       isShowOnlySaleMatched &&
+  //       isDataTypeMatched &&
+  //       isTypeMatched &&
+  //       isSizeMatched &&
+  //       isColorMatched &&
+  //       isBrandMatched &&
+  //       isPriceRangeMatched &&
+  //       product.category.some((val) => val.label !== "")
+  //     );
+  //   });
+  //   console.log("newData: ", newData);
+  //   setFilteredData(newData);
+  // };
+
+  // Function to sort data based on current sort option
+  const sortData = () => {
+    const sortedData = [...filteredData];
+    if (sortOption === "soldQuantityHighToLow") {
+      sortedData.sort((a, b) => b.sold - a.sold);
+    } else if (sortOption === "discountHighToLow") {
+      sortedData.sort(
+        (a, b) => b.price / b.originPrice - a.price / a.originPrice
+      );
+    } else if (sortOption === "priceHighToLow") {
+      sortedData.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "priceLowToHigh") {
+      sortedData.sort((a, b) => a.price - b.price);
     }
+    setFilteredData(sortedData);
+  };
 
-    let isDataTypeMatched = true;
-    if (dataType) {
-      isDataTypeMatched = product.type.some((val) => val.label === dataType);
+  useEffect(() => {
+    if (data.length > 0) {
+      setFilteredData(data);
     }
+  }, [data]);
+  // useEffect(() => {
+  //   filterData();
+  // }, [showOnlySale, dataType, type, size, color, brand, priceRange]);
 
-    let isTypeMatched = true;
-    if (type) {
-      dataType = type;
-      isTypeMatched = product.type.some((val) => val.label === type);
-    }
-
-    let isSizeMatched = true;
-    if (size) {
-      // isSizeMatched = product.sizes.includes(size);
-    }
-
-    let isPriceRangeMatched = true;
-    if (priceRange.min !== 0 || priceRange.max !== 100) {
-      isPriceRangeMatched =
-        product.price >= priceRange.min && product.price <= priceRange.max;
-    }
-
-    let isColorMatched = true;
-    if (color) {
-      isColorMatched = product.variation.some((item) => item.color === color);
-    }
-
-    let isBrandMatched = true;
-    if (brand) {
-      isBrandMatched = product.brand === brand;
-    }
-
-    return (
-      isShowOnlySaleMatched &&
-      isDataTypeMatched &&
-      isTypeMatched &&
-      isSizeMatched &&
-      isColorMatched &&
-      isBrandMatched &&
-      isPriceRangeMatched &&
-      product.category.some((val) => val.label === "fashion")
-    );
-  });
-
-  // Create a copy array filtered to sort
-  let sortedData = [...filteredData];
-
-  if (sortOption === "soldQuantityHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.sold - a.sold);
-  }
-
-  if (sortOption === "discountHighToLow") {
-    filteredData = sortedData.sort(
-      (a, b) =>
-        Math.floor(100 - (b.price / b.originPrice) * 100) -
-        Math.floor(100 - (a.price / a.originPrice) * 100)
-    );
-  }
-
-  if (sortOption === "priceHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.price - a.price);
-  }
-
-  if (sortOption === "priceLowToHigh") {
-    filteredData = sortedData.sort((a, b) => a.price - b.price);
-  }
+  useEffect(() => {
+    sortData();
+  }, [sortOption]);
 
   const totalProducts = filteredData.length;
   const selectedType = type;
   const selectedSize = size;
   const selectedColor = color;
   const selectedBrand = brand;
-
-  if (filteredData.length === 0) {
-    filteredData = [];
-  }
-
-  // Find page number base on filteredData
+  // Pagination
   const pageCount = Math.ceil(filteredData.length / productsPerPage);
 
-  // If page number 0, set current page = 0
-  if (pageCount === 0) {
-    setCurrentPage(0);
-  }
-
-  // Get product data for current page
-  let currentProducts: ProductType[];
-
-  if (filteredData.length > 0) {
-    currentProducts = filteredData.slice(offset, offset + productsPerPage);
-  } else {
-    currentProducts = [];
-  }
+  const currentProducts = filteredData.slice(offset, offset + productsPerPage);
 
   const handlePageChange = (selected: number) => {
     setCurrentPage(selected);
@@ -219,19 +191,17 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
                 </div>
               </div>
               <div className="list-tab flex flex-wrap items-center justify-center gap-y-5 gap-8 lg:mt-[70px] mt-12 overflow-hidden">
-                {["t-shirt", "dress", "top", "swimwear", "shirt"].map(
-                  (item, index) => (
-                    <div
-                      key={index}
-                      className={`tab-item text-button-uppercase cursor-pointer has-line-before line-2px ${
-                        dataType === item ? "active" : ""
-                      }`}
-                      onClick={() => handleType(item)}
-                    >
-                      {item}
-                    </div>
-                  )
-                )}
+                {categoryState.categories.slice(0, 5).map((item, index) => (
+                  <div
+                    key={index}
+                    className={`tab-item text-button-uppercase cursor-pointer has-line-before line-2px ${
+                      dataType === item.name ? "active" : ""
+                    }`}
+                    onClick={() => handleType(item.name)}
+                  >
+                    {item.name}
+                  </div>
+                ))}
               </div>
             </div>
             <div className="bg-img absolute top-2 -right-6 max-lg:bottom-0 max-lg:top-auto w-1/3 max-lg:w-[26%] z-[0] max-sm:w-[45%]">
@@ -709,7 +679,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
             <div
               className={`list-product hide-product-sold grid lg:grid-cols-${layoutCol} sm:grid-cols-3 grid-cols-2 sm:gap-[30px] gap-[20px] mt-7`}
             >
-              {currentProducts.map((item) =>
+              {currentProducts.map((item: ProductType) =>
                 item._id === "no-data" ? (
                   <div key={item._id} className="no-data-product">
                     No products match the selected criteria.

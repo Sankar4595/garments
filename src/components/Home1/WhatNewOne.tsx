@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Product from "../Product/Product";
 import { ProductType } from "@/type/ProductType";
 import { motion } from "framer-motion";
@@ -15,12 +15,19 @@ interface Props {
 const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
   const [activeTab, setActiveTab] = useState<string>("");
 
+  useEffect(() => {
+    if (data.length > 0) {
+      let s: any = data[0]?.category;
+      let r: any = JSON.parse(s);
+      setActiveTab(r[0]?.label.toLowerCase());
+    }
+  }, [data]);
   const handleTabClick = (type: string) => {
     setActiveTab(type);
   };
 
-  const filteredProducts = data.filter((product) =>
-    product.category.map((val) => val.label === activeTab)
+  const filteredProducts = data.filter((product: any) =>
+    JSON.parse(product.category).some((val: any) => val.label === activeTab)
   );
 
   return (

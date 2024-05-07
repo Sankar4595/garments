@@ -12,10 +12,13 @@ import Testimonial from "@/components/Home1/Testimonial";
 import Brand from "@/components/Home1/Brand";
 import Footer from "@/components/Footer/Footer";
 import { useProduct } from "@/context/ProductContext";
+import WifiLoader from "@/components/Loading";
 
 export default function Home() {
   const { productState, categoryState } = useProduct();
-  console.log("productState: ", productState);
+  if (productState.loading) {
+    return <WifiLoader />;
+  }
   return (
     <>
       <TopNavOne
@@ -36,7 +39,7 @@ export default function Home() {
       <TabFeatures data={[]} start={0} limit={6} />
       <Banner />
       <Benefit props="md:py-20 py-10" />
-      <Testimonial data={[]} limit={6} />
+      {/* <Testimonial data={[]} limit={6} /> */}
       {/* <Instagram /> */}
       <Brand />
       <Footer />

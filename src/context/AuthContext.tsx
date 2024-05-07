@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/signin`,
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/auth/signin`,
         {
           email,
           password,
@@ -54,15 +54,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (response.status === 200) {
         dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+        return response.data;
       } else {
       }
     } catch (error) {
-      // Handle network errors or login failure
+      return error;
     }
   };
 
-  const logout = () => {
-    dispatch({ type: "LOGOUT" });
+  const logout = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/auth/logout`
+      );
+
+      if (response.status === 200) {
+        dispatch({ type: "LOGOUT" });
+        return response.data;
+      } else {
+      }
+    } catch (error) {
+      return error;
+    }
   };
 
   return (

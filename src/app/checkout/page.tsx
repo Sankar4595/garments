@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
@@ -43,9 +44,12 @@ const Checkout = () => {
                   <span className="text-on-surface-variant1 pr-4">
                     Already have an account?{" "}
                   </span>
-                  <span className="text-button text-on-surface hover-underline cursor-pointer">
+                  <Link
+                    href={"/login"}
+                    className="text-button text-on-surface hover-underline cursor-pointer"
+                  >
                     Login
-                  </span>
+                  </Link>
                 </div>
                 <div className="right">
                   <i className="ph ph-caret-down fs-20 d-block cursor-pointer"></i>

@@ -1,13 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
+import { useAuth } from "@/context/AuthContext";
+import { IUser } from "@/type/authTypes";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const { login, authState } = useAuth();
+  const [loginData, setLoginData] = useState<IUser>({
+    email: "",
+    password: "",
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    if (authState.user !== null) {
+      router.push("/");
+    }
+  }, [authState.user]);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      let res = await login(loginData.email, loginData.password);
+      console.log("res: ", res);
+      toast.success("Login successful!");
+    } catch (error) {
+      console.log("error: ", error);
+      toast.error("Login Failed!");
+    }
+  };
   return (
     <>
       <TopNavOne
@@ -31,6 +59,14 @@ const Login = () => {
                     type="email"
                     placeholder="Username or email address *"
                     required
+                    onChange={(e) => {
+                      setLoginData((prev: any) => {
+                        return {
+                          ...prev,
+                          email: e.target.value,
+                        };
+                      });
+                    }}
                   />
                 </div>
                 <div className="pass mt-5">
@@ -40,6 +76,14 @@ const Login = () => {
                     type="password"
                     placeholder="Password *"
                     required
+                    onChange={(e) => {
+                      setLoginData((prev: any) => {
+                        return {
+                          ...prev,
+                          password: e.target.value,
+                        };
+                      });
+                    }}
                   />
                 </div>
                 <div className="flex items-center justify-between mt-5">
@@ -64,7 +108,12 @@ const Login = () => {
                   </Link>
                 </div>
                 <div className="block-button md:mt-7 mt-4">
-                  <button className="button-main">Login</button>
+                  <button
+                    onClick={(e) => handleSubmit(e)}
+                    className="button-main"
+                  >
+                    Login
+                  </button>
                 </div>
               </form>
             </div>

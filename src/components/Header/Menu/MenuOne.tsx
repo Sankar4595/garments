@@ -14,6 +14,7 @@ import { useModalSearchContext } from "@/context/ModalSearchContext";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import logo from "../../../../public/logo.jpg";
+import { useAuth } from "@/context/AuthContext";
 interface Props {
   props: string;
 }
@@ -27,6 +28,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
   const [openSubNavMobile, setOpenSubNavMobile] = useState<number | null>(null);
   const { openModalCart } = useModalCartContext();
   const { cartState } = useCart();
+  const { authState, logout } = useAuth();
   const { openModalWishlist } = useModalWishlistContext();
   const { openModalSearch } = useModalSearchContext();
 
@@ -342,16 +344,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                         pathname.includes("/product/") ? "active" : ""
                       }`}
                     >
-                      For Men
-                    </Link>
-                  </li>
-                  <li className="h-full">
-                    <Link
-                      href="#!"
-                      className={`text-button-uppercase duration-300 h-full flex items-center justify-center ${
-                        pathname.includes("/product/") ? "active" : ""
-                      }`}
-                    >
                       For Women
                     </Link>
                   </li>
@@ -398,21 +390,33 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     className={`login-popup absolute top-[74px] w-[320px] p-7 rounded-xl bg-white box-shadow-small 
                                             ${openLoginPopup ? "open" : ""}`}
                   >
-                    <Link
-                      href={"/login"}
-                      className="button-main w-full text-center"
-                    >
-                      Login
-                    </Link>
-                    <div className="text-secondary text-center mt-3 pb-4">
-                      Don’t have an account?
+                    {authState.user !== null ? (
                       <Link
-                        href={"/register"}
-                        className="text-black pl-1 hover:underline"
+                        onClick={() => logout()}
+                        href={"#"}
+                        className="button-main w-full text-center"
                       >
-                        Register
+                        Logout
                       </Link>
-                    </div>
+                    ) : (
+                      <>
+                        <Link
+                          href={"/login"}
+                          className="button-main w-full text-center"
+                        >
+                          Login
+                        </Link>
+                        <div className="text-secondary text-center mt-3 pb-4">
+                          Don’t have an account?
+                          <Link
+                            href={"/register"}
+                            className="text-black pl-1 hover:underline"
+                          >
+                            Register
+                          </Link>
+                        </div>
+                      </>
+                    )}
                     <div className="bottom pt-4 border-t border-line"></div>
                     <Link href={"#!"} className="body1 hover:underline">
                       Support

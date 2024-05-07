@@ -6,12 +6,13 @@ import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import ShopBreadCrumbImg from "@/components/Shop/ShopBreadCrumbImg";
 import Footer from "@/components/Footer/Footer";
+import { useProduct } from "@/context/ProductContext";
 
 export default function Default() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const category = searchParams.get("category");
-
+  const { productState } = useProduct();
   return (
     <>
       <TopNavOne
@@ -21,7 +22,11 @@ export default function Default() {
       <div id="header" className="relative w-full">
         <MenuOne props="bg-transparent" />
       </div>
-      <ShopBreadCrumbImg data={[]} productPerPage={12} dataType={type} />
+      <ShopBreadCrumbImg
+        data={productState.products}
+        productPerPage={12}
+        dataType={type}
+      />
       <Footer />
     </>
   );
