@@ -52,6 +52,9 @@ const Checkout = () => {
 
   useEffect(() => {
     if (cartState.cartArray.length > 0) {
+      const totalPrice = cartState.cartArray.reduce((acc, val) => {
+        return acc + val.price * val.quantityPurchase;
+      }, 0);
       setOrderData((prev: IOrder) => {
         return {
           ...prev,
@@ -63,6 +66,7 @@ const Checkout = () => {
               quantity: val.quantityPurchase,
             };
           }),
+          total: totalPrice,
         };
       });
     }
