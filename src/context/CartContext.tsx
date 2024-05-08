@@ -133,6 +133,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           );
           dispatch({ type: "ADD_TO_CART", payload: item });
         }
+      } else {
+        dispatch({ type: "ADD_TO_CART", payload: item });
       }
     } catch (error) {
       console.log("error: ", error);
