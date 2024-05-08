@@ -48,7 +48,9 @@ const HotProduct: React.FC<Props> = ({ data, start, limit }) => {
             >
               {data
                 .filter((product) =>
-                  product.category.some((val) => val.label === "cosmetic")
+                  JSON.parse(product.category).some(
+                    (val: any) => val.label === "cosmetic"
+                  )
                 )
                 .slice(start, limit)
                 .map((prd, index) => (

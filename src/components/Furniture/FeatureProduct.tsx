@@ -20,8 +20,8 @@ const FeatureProduct: React.FC<Props> = ({ data, start, limit }) => {
 
   const filteredProducts = data.filter(
     (product) =>
-      product.type.some((val) => val.label === activeTab) &&
-      product.category.some((val) => val.label === "furniture")
+      JSON.parse(product.type).some((val: any) => val.label === activeTab) &&
+      JSON.parse(product.category).some((val: any) => val.label === "furniture")
   );
 
   return (

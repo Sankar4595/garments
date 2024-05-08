@@ -26,7 +26,9 @@ const TabFeatures: React.FC<Props> = ({ data, start, limit }) => {
       return data.filter(
         (product) =>
           product.sale &&
-          product.category.some((val) => val.label === "cosmetic")
+          JSON.parse(product.category).some(
+            (val: any) => val.label === "cosmetic"
+          )
       );
     }
 
@@ -34,14 +36,18 @@ const TabFeatures: React.FC<Props> = ({ data, start, limit }) => {
       return data.filter(
         (product) =>
           product.new &&
-          product.category.some((val) => val.label === "cosmetic")
+          JSON.parse(product.category).some(
+            (val: any) => val.label === "cosmetic"
+          )
       );
     }
 
     if (activeTab === "best sellers") {
       return data
         .filter((product) =>
-          product.category.some((val) => val.label === "cosmetic")
+          JSON.parse(product.category).some(
+            (val: any) => val.label === "cosmetic"
+          )
         )
         .slice()
         .sort((a, b) => b.sold - a.sold);
