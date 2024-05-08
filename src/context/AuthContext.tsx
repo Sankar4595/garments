@@ -1,12 +1,11 @@
 "use client";
-// AuthContext.tsx
-import React, { createContext, useContext, useReducer } from "react";
+// AuthProvider.tsx
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 import axios from "axios";
 import { IUser } from "@/type/authTypes";
 
 interface AuthState {
   user: IUser | null;
-  // Add more authentication-related state fields as needed
 }
 
 type AuthAction =
@@ -53,9 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (response.status === 200) {
-        dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+        dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
         return response.data;
-      } else {
       }
     } catch (error) {
       return error;
@@ -72,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         dispatch({ type: "LOGOUT" });
         return response.data;
       } else {
+        // Handle other status codes if needed
       }
     } catch (error) {
       return error;

@@ -9,22 +9,52 @@ import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { IUser } from "@/type/authTypes";
+import { toast } from "react-toastify";
+import { IOrder } from "@/type/OrderType";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
   let discount = searchParams.get("discount");
   let ship = searchParams.get("ship");
-
+  const { authState, login } = useAuth();
   const { cartState } = useCart();
   let [totalCart, setTotalCart] = useState<number>(0);
   const [activePayment, setActivePayment] = useState<string>("credit-card");
-
+  const [loginData, setLoginData] = useState<IUser>({
+    email: "",
+    password: "",
+  });
+  const [orderData, setOrderData] = useState<IOrder>({
+    user: "",
+    items: [],
+    name: "",
+    lastName: "",
+    total: 0,
+    totalItem: 0,
+    voucher: "",
+    taxFee: 0,
+    shippingAddress: "",
+    shippingCost: 0,
+    phoneNumber: "",
+    email: "",
+    paymentMethod: "cod",
+  });
   cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
 
   const handlePayment = (item: string) => {
     setActivePayment(item);
   };
-
+  const handleSubmitLogin = async (e: any) => {
+    e.preventDefault();
+    try {
+      let res = await login(loginData?.email, loginData?.password);
+      toast.success("Login Successful");
+    } catch (error) {
+      toast.error("Login Failed!");
+    }
+  };
   return (
     <>
       <TopNavOne
@@ -39,51 +69,74 @@ const Checkout = () => {
         <div className="container">
           <div className="content-main flex justify-between">
             <div className="left w-1/2">
-              <div className="login bg-surface py-3 px-4 flex justify-between rounded-lg">
-                <div className="left flex items-center">
-                  <span className="text-on-surface-variant1 pr-4">
-                    Already have an account?{" "}
-                  </span>
-                  <Link
-                    href={"/login"}
-                    className="text-button text-on-surface hover-underline cursor-pointer"
-                  >
-                    Login
-                  </Link>
-                </div>
-                <div className="right">
-                  <i className="ph ph-caret-down fs-20 d-block cursor-pointer"></i>
-                </div>
-              </div>
-              <div className="form-login-block mt-3">
-                <form className="p-5 border border-line rounded-lg">
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div className="email ">
-                      <input
-                        className="border-line px-4 pt-3 pb-3 w-full rounded-lg"
-                        id="username"
-                        type="email"
-                        placeholder="Username or email"
-                        required
-                      />
+              {authState.user === null && (
+                <>
+                  <div className="login bg-surface py-3 px-4 flex justify-between rounded-lg">
+                    <div className="left flex items-center">
+                      <span className="text-on-surface-variant1 pr-4">
+                        New to Eezer?{" "}
+                      </span>
+                      <Link
+                        href={"/register"}
+                        className="text-button text-on-surface hover-underline cursor-pointer"
+                      >
+                        Signup
+                      </Link>
                     </div>
-                    <div className="pass ">
-                      <input
-                        className="border-line px-4 pt-3 pb-3 w-full rounded-lg"
-                        id="password"
-                        type="password"
-                        placeholder="Password"
-                        required
-                      />
+                    <div className="right">
+                      <i className="ph ph-caret-down fs-20 d-block cursor-pointer"></i>
                     </div>
                   </div>
-                  <div className="block-button mt-3">
-                    <button className="button-main button-blue-hover">
-                      Login
-                    </button>
+                  <div className="form-login-block mt-3">
+                    <form className="p-5 border border-line rounded-lg">
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <div className="email ">
+                          <input
+                            className="border-line px-4 pt-3 pb-3 w-full rounded-lg"
+                            id="username"
+                            type="email"
+                            placeholder="Username or email"
+                            required
+                            onChange={(e) => {
+                              setLoginData((prev: any) => {
+                                return {
+                                  ...prev,
+                                  email: e.target.value,
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+                        <div className="pass ">
+                          <input
+                            className="border-line px-4 pt-3 pb-3 w-full rounded-lg"
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                            required
+                            onChange={(e) => {
+                              setLoginData((prev: any) => {
+                                return {
+                                  ...prev,
+                                  password: e.target.value,
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="block-button mt-3">
+                        <button
+                          onClick={(e) => handleSubmitLogin(e)}
+                          className="button-main button-blue-hover"
+                        >
+                          Login
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                </form>
-              </div>
+                </>
+              )}
               <div className="information mt-5">
                 <div className="heading5">Information</div>
                 <div className="form-checkout mt-5">
@@ -195,7 +248,7 @@ const Checkout = () => {
                     </div>
                     <div className="payment-block md:mt-10 mt-6">
                       <div className="heading5">Choose payment Option:</div>
-                      <div className="list-payment mt-5">
+                      {/* <div className="list-payment mt-5">
                         <div
                           className={`type bg-surface p-5 border border-line rounded-lg ${
                             activePayment === "credit-card" ? "open" : ""
@@ -294,7 +347,7 @@ const Checkout = () => {
                             </div>
                             <div className="row">
                               <div className="col-12 mt-3">
-                                {/* <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div> */}
+                                <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div>
                                 <label htmlFor="cardNumberDelivery">
                                   Card Numbers
                                 </label>
@@ -366,7 +419,7 @@ const Checkout = () => {
                             </div>
                             <div className="row">
                               <div className="col-12 mt-3">
-                                {/* <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div> */}
+                                <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div>
                                 <label htmlFor="cardNumberApple">
                                   Card Numbers
                                 </label>
@@ -482,7 +535,7 @@ const Checkout = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="block-button md:mt-10 mt-6">
                       <button className="button-main w-full">Payment</button>
@@ -503,7 +556,7 @@ const Checkout = () => {
                         <div className="item flex items-center justify-between w-full pb-5 border-b border-line gap-6 mt-5">
                           <div className="bg-img w-[100px] aspect-square flex-shrink-0 rounded-lg overflow-hidden">
                             <Image
-                              src={product.thumbImage[0]}
+                              src={product.images[0]}
                               width={500}
                               height={500}
                               alt="img"
@@ -528,10 +581,10 @@ const Checkout = () => {
                             </div>
                             <div className="text-title">
                               <span className="quantity">
-                                {product.quantity}
+                                {product.quantityPurchase}
                               </span>
                               <span className="px-1">x</span>
-                              <span>${product.price}.00</span>
+                              <span>₹{product.price}.00</span>
                             </div>
                           </div>
                         </div>
@@ -541,10 +594,14 @@ const Checkout = () => {
                 </div>
                 <div className="discount-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Discounts</div>
-                  <div className="text-title">
-                    -$<span className="discount">{discount}</span>
-                    <span>.00</span>
-                  </div>
+                  {cartState.cartArray.map((product) => (
+                    <>
+                      <div className="text-title">
+                        -<span className="discount">{product.discount}</span>
+                        <span>%</span>
+                      </div>
+                    </>
+                  ))}
                 </div>
                 <div className="ship-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Shipping</div>
@@ -554,8 +611,18 @@ const Checkout = () => {
                 </div>
                 <div className="total-cart-block pt-5 flex justify-between">
                   <div className="heading5">Total</div>
-                  <div className="heading5 total-cart">
-                    ${totalCart - Number(discount) + Number(ship)}.00
+                  <div
+                    style={{ display: "flex", gap: "10px" }}
+                    className="heading5 total-cart"
+                  >
+                    {cartState.cartArray.map((product, index) => (
+                      <div key={index}>
+                        <del style={{ fontSize: "12px", opacity: "0.8" }}>
+                          ₹{product.quantityPurchase * product.originPrice}.00
+                        </del>{" "}
+                        ₹{product.quantityPurchase * product.price}.00
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

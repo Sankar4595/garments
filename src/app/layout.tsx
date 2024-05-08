@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "@/styles/styles.scss";
+import "react-toastify/dist/ReactToastify.css";
 import GlobalProvider from "./GlobalProvider";
 import ModalCart from "@/components/Modal/ModalCart";
 import ModalWishlist from "@/components/Modal/ModalWishlist";

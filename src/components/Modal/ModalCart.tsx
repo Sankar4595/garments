@@ -47,8 +47,6 @@ const ModalCart = ({
   let [totalCart, setTotalCart] = useState<number>(0);
   let [discountCart, setDiscountCart] = useState<number>(0);
 
-  cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
-
   return (
     <>
       <div className={`modal-cart-block`} onClick={closeModalCart}>
@@ -80,10 +78,10 @@ const ModalCart = ({
                       <div className="name text-button">{product.name}</div>
                       <div className="flex items-center gap-2 mt-2">
                         <div className="product-price text-title">
-                          ${product.price}.00
+                          ₹{product.price}.00
                         </div>
                         <div className="product-origin-price text-title text-secondary2">
-                          <del>${product.originPrice}.00</del>
+                          <del>₹{product.originPrice}.00</del>
                         </div>
                       </div>
                     </div>
@@ -111,7 +109,7 @@ const ModalCart = ({
                 <Icon.X size={14} />
               </div>
             </div>
-            <div className="time px-6">
+            {/* <div className="time px-6">
               <div className=" flex items-center gap-3 px-5 py-3 bg-green rounded-lg">
                 <p className="text-3xl">🔥</p>
                 <div className="caption1">
@@ -127,13 +125,13 @@ const ModalCart = ({
                   Please checkout now before your items sell out!
                 </div>
               </div>
-            </div>
-            <div className="heading banner mt-3 px-6">
+            </div> */}
+            {/* <div className="heading banner mt-3 px-6">
               <div className="text">
                 Buy{" "}
                 <span className="text-button">
                   {" "}
-                  $
+                  ₹
                   <span className="more-price">
                     {moneyForFreeship - totalCart > 0 ? (
                       <>{moneyForFreeship - totalCart}</>
@@ -157,7 +155,7 @@ const ModalCart = ({
                   }}
                 ></div>
               </div>
-            </div>
+            </div> */}
             <div className="list-product px-6">
               {cartState.cartArray.map((product) => (
                 <div
@@ -187,10 +185,11 @@ const ModalCart = ({
                       <div className="flex items-center justify-between gap-2 mt-3 w-full">
                         <div className="flex items-center text-secondary2 capitalize">
                           {product.selectedSize}/
-                          {product.selectedColor || product.variation[0].color}
+                          {product.selectedColor ||
+                            JSON.parse(product.variation)[0].color}
                         </div>
                         <div className="product-price text-title">
-                          ${product.price}.00
+                          {product.quantityPurchase} x ₹{product.price}.00
                         </div>
                       </div>
                     </div>
@@ -223,8 +222,14 @@ const ModalCart = ({
                 </div>
               </div>
               <div className="flex items-center justify-between pt-6 px-6">
-                <div className="heading5">Subtotal</div>
-                <div className="heading5">$135.00</div>
+                {cartState.cartArray.map((product) => (
+                  <>
+                    <div className="heading5">Subtotal</div>
+                    <div className="heading5">
+                      ₹{product.price * product.quantityPurchase}
+                    </div>
+                  </>
+                ))}
               </div>
               <div className="block-button text-center p-6">
                 <div className="flex items-center gap-4">

@@ -18,8 +18,8 @@ interface ICategory {
 
 export interface ProductType {
   _id: string;
-  category: ICategory[];
-  type: Itype[];
+  category: ICategory[] | any;
+  type: Itype[] | any;
   name: string;
   gender: string;
   new: boolean;
@@ -31,13 +31,14 @@ export interface ProductType {
   sold: number;
   quantity: number;
   quantityPurchase: number;
-  variation: Variation[];
+  variation: Variation[] | any;
   thumbImage: Array<string>;
   images: Array<string>;
   description: string;
   action: string;
   slug: string;
   discount: string;
+  shippingdays?: number;
 }
 
 // export interface IProduct {

@@ -9,6 +9,9 @@ import React, {
   useEffect,
 } from "react";
 import { ProductType } from "@/type/ProductType";
+import axios from "axios";
+import { useAuth } from "./AuthContext";
+import { useProduct } from "./ProductContext";
 
 interface CartItem extends ProductType {
   quantity: number;
@@ -22,6 +25,7 @@ interface CartState {
 
 type CartAction =
   | { type: "ADD_TO_CART"; payload: ProductType }
+  | { type: "SUCCESS_CART"; payload: any }
   | { type: "REMOVE_FROM_CART"; payload: string }
   | {
       type: "UPDATE_CART";
@@ -96,26 +100,89 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [cartState, dispatch] = useReducer(cartReducer, { cartArray: [] });
+  const { authState } = useAuth();
+  const { productState } = useProduct();
 
-  const addToCart = (item: ProductType) => {
-    dispatch({ type: "ADD_TO_CART", payload: item });
+  const addToCart = async (item: ProductType) => {
+    try {
+      if (authState.user !== null) {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
+          {
+            userId: authState.user._id,
+            productId: item._id,
+            quantity: item.quantityPurchase,
+          }
+        );
+      }
+      dispatch({ type: "ADD_TO_CART", payload: item });
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
 
-  const removeFromCart = (itemId: string) => {
-    dispatch({ type: "REMOVE_FROM_CART", payload: itemId });
+  const removeFromCart = async (itemId: string) => {
+    try {
+      if (authState.user !== null) {
+        const response = await axios.delete(
+          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart/${authState.user._id}`
+        );
+      }
+
+      dispatch({ type: "REMOVE_FROM_CART", payload: itemId });
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
 
-  const updateCart = (
+  const updateCart = async (
     itemId: string,
     quantity: number,
     selectedSize: string,
     selectedColor: string
   ) => {
-    dispatch({
-      type: "UPDATE_CART",
-      payload: { itemId, quantity, selectedSize, selectedColor },
-    });
+    try {
+      if (authState.user !== null) {
+        const response = await axios.patch(
+          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
+          {
+            userId: authState.user._id,
+            productId: itemId,
+            quantity: quantity,
+          }
+        );
+      }
+      dispatch({
+        type: "UPDATE_CART",
+        payload: { itemId, quantity, selectedSize, selectedColor },
+      });
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
+
+  const getCart = async (id: any) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart/${id}`
+      );
+      let json = response.data.data.items.map((val: any) => {
+        return val.product;
+      });
+
+      json.map((val: any) => {
+        dispatch({ type: "ADD_TO_CART", payload: val });
+      });
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (authState.user !== null) {
+      getCart(authState.user._id);
+    }
+  }, [authState]);
 
   return (
     <CartContext.Provider

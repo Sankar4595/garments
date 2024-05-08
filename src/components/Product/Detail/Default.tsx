@@ -191,7 +191,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {productMain?.type.map((val) => val.label)}
+                    {JSON.parse(productMain?.type).map((val: any) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -228,11 +228,11 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               </div>
               <div className="flex items-center gap-3 flex-wrap mt-5 pb-6 border-b border-line">
                 <div className="product-price heading5">
-                  ${productMain.price}.00
+                  ₹{productMain.price}.00
                 </div>
                 <div className="w-px h-4 bg-line"></div>
                 <div className="product-origin-price font-normal text-secondary2">
-                  <del>${productMain.originPrice}.00</del>
+                  <del>₹{productMain.originPrice}.00</del>
                 </div>
                 {productMain.originPrice && (
                   <div className="product-sale caption2 font-semibold bg-green px-3 py-0.5 inline-block rounded-full">
@@ -252,32 +252,46 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 <div className="choose-color">
                   <div className="text-title">
                     Colors:{" "}
-                    <span className="text-title color">{activeColor}</span>
+                    {/* <span className="text-title color">{activeColor}</span> */}
                   </div>
                   <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                    {productMain.variation.map((item, index) => (
-                      <div
-                        className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
-                          activeColor === item.color ? "active" : ""
-                        }`}
-                        key={index}
-                        datatype={item.image}
-                        onClick={() => {
-                          handleActiveColor(item.color);
-                        }}
-                      >
-                        <Image
-                          src={item.colorImage}
-                          width={100}
-                          height={100}
-                          alt="color"
-                          className="rounded-xl"
-                        />
-                        <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                          {item.color}
-                        </div>
-                      </div>
-                    ))}
+                    {JSON.parse(productMain.variation).map(
+                      (item: any, index: any) => (
+                        console.log("item: ", item),
+                        (
+                          <div
+                            className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
+                              activeColor === item.color ? "active" : ""
+                            }`}
+                            key={index}
+                            // datatype={item.image}
+                            onClick={() => {
+                              handleActiveColor(item.color);
+                            }}
+                          >
+                            <input
+                              className="rounded-xl"
+                              disabled
+                              type="color"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                padding: 0,
+                                margin: 0,
+                                border: "none",
+                              }}
+                              value={item?.colorCode}
+                              onClick={() => {
+                                handleActiveColor(item.color);
+                              }}
+                            />
+                            {/* <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                            {item.color}
+                          </div> */}
+                          </div>
+                        )
+                      )
+                    )}
                   </div>
                 </div>
                 <div className="choose-size mt-5">
@@ -299,19 +313,21 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                     />
                   </div>
                   <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                    {productMain.variation.map((item, index) => (
-                      <div
-                        className={`size-item ${
-                          item.size === "freesize" ? "px-3 py-2" : "w-12 h-12"
-                        } flex items-center justify-center text-button rounded-full bg-white border border-line ${
-                          activeSize === item.size ? "active" : ""
-                        }`}
-                        key={index}
-                        onClick={() => handleActiveSize(item.size)}
-                      >
-                        {item.size}
-                      </div>
-                    ))}
+                    {JSON.parse(productMain.variation).map(
+                      (item: any, index: any) => (
+                        <div
+                          className={`size-item ${
+                            item.size === "freesize" ? "px-3 py-2" : "w-12 h-12"
+                          } flex items-center justify-center text-button rounded-full bg-white border border-line ${
+                            activeSize === item.size ? "active" : ""
+                          }`}
+                          key={index}
+                          onClick={() => handleActiveSize(item.size)}
+                        >
+                          {item.size}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
                 <div className="text-title mt-5">Quantity:</div>
@@ -380,16 +396,16 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                     <Icon.Timer className="body1" />
                     <div className="text-title">Estimated Delivery:</div>
                     <div className="text-secondary">
-                      14 January - 18 January
+                      {productMain.shippingdays} days
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 mt-3">
+                  {/* <div className="flex items-center gap-1 mt-3">
                     <Icon.Eye className="body1" />
                     <div className="text-title">38</div>
                     <div className="text-secondary">
                       people viewing this product right now!
                     </div>
-                  </div>
+                  </div> */}
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">SKU:</div>
                     <div className="text-secondary">53453412</div>
@@ -397,14 +413,18 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Categories:</div>
                     <div className="text-secondary">
-                      {productMain.category.map((val) => val.label)},{" "}
-                      {productMain.gender}
+                      {JSON.parse(productMain.category).map(
+                        (val: any) => val.label
+                      )}
+                      , {productMain.gender}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Tag:</div>
                     <div className="text-secondary">
-                      {productMain.type.map((val) => val.label)}
+                      {JSON.parse(productMain.type).map(
+                        (val: any) => val.label
+                      )}
                     </div>
                   </div>
                 </div>
@@ -479,7 +499,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                   <div>
                     <div className="text-title">Free shipping</div>
                     <div className="caption1 text-secondary mt-1">
-                      Free shipping on orders over $75.
+                      Free shipping on orders over ₹1500.
                     </div>
                   </div>
                 </div>
@@ -495,10 +515,10 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 <div className="item flex items-center gap-3 mt-4">
                   <div className="icon-return text-4xl"></div>
                   <div>
-                    <div className="text-title">100 Day Returns</div>
+                    <div className="text-title">5 Day Returns</div>
                     <div className="caption1 text-secondary mt-1">
-                      Not impressed? Get a refund. You have 100 days to break
-                      our hearts.
+                      Not impressed? Get a refund. You have 5 days to break our
+                      hearts.
                     </div>
                   </div>
                 </div>
@@ -555,14 +575,14 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 >
                   Description
                 </div>
-                <div
+                {/* <div
                   className={`tab-item heading5 has-line-before text-secondary2 hover:text-black duration-300 ${
                     activeTab === "specifications" ? "active" : ""
                   }`}
                   onClick={() => handleActiveTab("specifications")}
                 >
                   Specifications
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="desc-block mt-8">
@@ -571,22 +591,18 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                   activeTab === "description" ? "open" : ""
                 }`}
               >
-                <div className="grid md:grid-cols-2 gap-8 gap-y-5">
+                <div className="grid md:grid-cols-1 gap-8 gap-y-5">
                   <div className="left">
                     <div className="heading6">Description</div>
                     <div className="text-secondary mt-2">
-                      Keep your home organized, yet elegant with storage
-                      cabinets by Onita Patio Furniture. These cabinets not only
-                      make a great storage units, but also bring a great
-                      decorative accent to your decor. Traditionally designed,
-                      they are perfect to be used in the hallway, living room,
-                      bedroom, office or any place where you need to store or
-                      display things. Made of high quality materials, they are
-                      sturdy and durable for years. Bring one-of-a-kind look to
-                      your interior with furniture from Onita Furniture!
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: productMain.description,
+                        }}
+                      />
                     </div>
                   </div>
-                  <div className="right">
+                  {/* <div className="right">
                     <div className="heading6">About This Products</div>
                     <div className="list-feature">
                       <div className="item flex gap-1 text-secondary mt-1">
@@ -623,7 +639,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="grid lg:grid-cols-4 grid-cols-2 gap-[30px] md:mt-10 mt-6">
                   <div className="item">
@@ -788,7 +804,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
             </div>
           </div>
         </div>
-        <div className="review-block md:py-20 py-10 bg-surface">
+        {/* <div className="review-block md:py-20 py-10 bg-surface">
           <div className="container">
             <div className="heading flex items-center justify-between flex-wrap gap-4">
               <div className="heading4">Customer Review</div>
@@ -1230,16 +1246,14 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               </form>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="related-product md:py-20 py-10">
           <div className="container">
             <div className="heading3 text-center">Related Products</div>
             <div className="list-product hide-product-sold  grid lg:grid-cols-4 grid-cols-2 md:gap-[30px] gap-5 md:mt-10 mt-6">
-              {data
-                .slice(Number(productId), Number(productId) + 4)
-                .map((item, index) => (
-                  <Product key={index} data={item} type="grid" />
-                ))}
+              {data.slice(0, 5).map((item, index) => (
+                <Product key={index} data={item} type="grid" />
+              ))}
             </div>
           </div>
         </div>

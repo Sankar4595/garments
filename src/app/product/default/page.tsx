@@ -12,7 +12,6 @@ const ProductDefault = () => {
   const searchParams = useSearchParams();
   let productId = searchParams.get("id");
   const { productState, categoryState } = useProduct();
-
   return (
     <>
       <TopNavOne

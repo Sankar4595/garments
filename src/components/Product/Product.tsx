@@ -167,17 +167,21 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 {activeColor ? (
                   <>
                     {
-                      <Image
-                        src={
-                          data.variation.find(
-                            (item) => item.color === activeColor
-                          )?.image ?? ""
+                      <input
+                        type="color"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          padding: 0,
+                          margin: 0,
+                          border: "none",
+                        }}
+                        value={
+                          JSON.parse(data.variation).find(
+                            (item: any) => item.color === activeColor
+                          )?.colorCode ?? ""
                         }
-                        width={500}
-                        height={500}
-                        alt={data.name}
-                        priority={true}
-                        className="w-full h-full object-cover duration-700"
+                        disabled
                       />
                     }
                   </>
@@ -237,17 +241,19 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       }}
                     >
                       <div className="list-size flex items-center justify-center flex-wrap gap-2">
-                        {data.variation.map((item, index) => (
-                          <div
-                            className={`size-item w-10 h-10 rounded-full flex items-center justify-center text-button bg-white border border-line ${
-                              activeSize === item.size ? "active" : ""
-                            }`}
-                            key={index}
-                            onClick={() => handleActiveSize(item.size)}
-                          >
-                            {item.size}
-                          </div>
-                        ))}
+                        {JSON.parse(data.variation).map(
+                          (item: any, index: any) => (
+                            <div
+                              className={`size-item w-10 h-10 rounded-full flex items-center justify-center text-button bg-white border border-line ${
+                                activeSize === item.size ? "active" : ""
+                              }`}
+                              key={index}
+                              onClick={() => handleActiveSize(item.size)}
+                            >
+                              {item.size}
+                            </div>
+                          )
+                        )}
                       </div>
                       <div
                         className="button-main w-full text-center rounded-full py-3 mt-4"
@@ -293,7 +299,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
               </div>
               {data.variation.length > 0 && data.action === "add to cart" && (
                 <div className="list-color py-2 max-md:hidden flex items-center gap-3 flex-wrap duration-500">
-                  {data.variation.map((item, index) => (
+                  {JSON.parse(data.variation).map((item: any, index: any) => (
                     <div
                       key={index}
                       className={`color-item w-8 h-8 rounded-full duration-300 relative ${
@@ -314,7 +320,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
               )}
               {data.variation.length > 0 && data.action === "quick shop" && (
                 <div className="list-color-image max-md:hidden flex items-center gap-3 flex-wrap duration-500">
-                  {data.variation.map((item, index) => (
+                  {JSON.parse(data.variation).map((item: any, index: any) => (
                     <div
                       className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
                         activeColor === item.color ? "active" : ""
@@ -325,13 +331,17 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                         handleActiveColor(item.color);
                       }}
                     >
-                      <Image
-                        src={item.colorImage}
-                        width={100}
-                        height={100}
-                        alt="color"
-                        priority={true}
-                        className="rounded-xl w-full h-full object-cover"
+                      <input
+                        type="color"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          padding: 0,
+                          margin: 0,
+                          border: "none",
+                        }}
+                        disabled
+                        value={item.colorCode}
                       />
                       <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
                         {item.color}
@@ -400,21 +410,23 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                         }}
                       >
                         <div className="list-size flex items-center justify-center flex-wrap gap-2">
-                          {data.variation.map((item, index) => (
-                            <div
-                              className={`size-item ${
-                                item.size !== "freesize"
-                                  ? "w-10 h-10"
-                                  : "h-10 px-4"
-                              } flex items-center justify-center text-button bg-white rounded-full border border-line ${
-                                activeSize === item.size ? "active" : ""
-                              }`}
-                              key={index}
-                              onClick={() => handleActiveSize(item.size)}
-                            >
-                              {item.size}
-                            </div>
-                          ))}
+                          {JSON.parse(data.variation).map(
+                            (item: any, index: any) => (
+                              <div
+                                className={`size-item ${
+                                  item.size !== "freesize"
+                                    ? "w-10 h-10"
+                                    : "h-10 px-4"
+                                } flex items-center justify-center text-button bg-white rounded-full border border-line ${
+                                  activeSize === item.size ? "active" : ""
+                                }`}
+                                key={index}
+                                onClick={() => handleActiveSize(item.size)}
+                              >
+                                {item.size}
+                              </div>
+                            )
+                          )}
                         </div>
                         <div
                           className="button-main w-full text-center rounded-full py-3 mt-4"
@@ -452,17 +464,19 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       {data.variation.length > 0 &&
                       data.action === "add to cart" ? (
                         <div className="list-color max-md:hidden py-2 mt-5 mb-1 flex items-center gap-3 flex-wrap duration-300">
-                          {data.variation.map((item, index) => (
-                            <div
-                              key={index}
-                              className={`color-item w-8 h-8 rounded-full duration-300 relative`}
-                              style={{ backgroundColor: `${item.colorCode}` }}
-                            >
-                              <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                                {item.color}
+                          {JSON.parse(data.variation).map(
+                            (item: any, index: any) => (
+                              <div
+                                key={index}
+                                className={`color-item w-8 h-8 rounded-full duration-300 relative`}
+                                style={{ backgroundColor: `${item.colorCode}` }}
+                              >
+                                <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                                  {item.color}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            )
+                          )}
                         </div>
                       ) : (
                         <>
@@ -470,30 +484,38 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                           data.action === "quick shop" ? (
                             <>
                               <div className="list-color flex items-center gap-2 flex-wrap mt-5">
-                                {data.variation.map((item, index) => (
-                                  <div
-                                    className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
-                                      activeColor === item.color ? "active" : ""
-                                    }`}
-                                    key={index}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleActiveColor(item.color);
-                                    }}
-                                  >
-                                    <Image
-                                      src={item.colorImage}
-                                      width={100}
-                                      height={100}
-                                      alt="color"
-                                      priority={true}
-                                      className="rounded-xl"
-                                    />
-                                    <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                                      {item.color}
+                                {JSON.parse(data.variation).map(
+                                  (item: any, index: any) => (
+                                    <div
+                                      className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
+                                        activeColor === item.color
+                                          ? "active"
+                                          : ""
+                                      }`}
+                                      key={index}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleActiveColor(item.color);
+                                      }}
+                                    >
+                                      <input
+                                        disabled
+                                        type="color"
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                          padding: 0,
+                                          margin: 0,
+                                          border: "none",
+                                        }}
+                                        value={item.colorCode}
+                                      />
+                                      <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                                        {item.color}
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  )
+                                )}
                               </div>
                             </>
                           ) : (
