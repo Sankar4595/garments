@@ -6,26 +6,22 @@ import React, {
   useReducer,
   useEffect,
 } from "react";
-import { ProductType } from "@/type/ProductType";
-
-interface OrderItem extends ProductType {
-  quantity: number;
-}
+import axios, { Axios } from "axios";
+import { IOrder } from "@/type/OrderType";
 
 interface OrderState {
-  orderArray: OrderItem[];
+  orderArray: IOrder[];
 }
 
 type OrderAction =
-  | { type: "ADD_TO_ORDER"; payload: ProductType }
+  | { type: "ADD_TO_ORDER"; payload: IOrder }
   | { type: "REMOVE_FROM_ORDER"; payload: string }
   | { type: "UPDATE_ORDER"; payload: { itemId: string; quantity: number } }
-  | { type: "LOAD_ORDER"; payload: OrderItem[] };
+  | { type: "LOAD_ORDER"; payload: IOrder[] };
 
 interface OrderContextProps {
   orderState: OrderState;
-  addToOrder: (item: ProductType) => void;
-  removeFromOrder: (itemId: string) => void;
+  addToOrder: (item: IOrder) => void;
   updateOrder: (itemId: string, quantity: number) => void;
 }
 
@@ -34,9 +30,8 @@ const OrderContext = createContext<OrderContextProps | undefined>(undefined);
 const orderReducer = (state: OrderState, action: OrderAction): OrderState => {
   switch (action.type) {
     case "ADD_TO_ORDER":
-      const newItem: OrderItem = {
+      const newItem: IOrder = {
         ...action.payload,
-        quantity: 1,
       };
       return {
         ...state,
@@ -73,12 +68,17 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [orderState, dispatch] = useReducer(orderReducer, { orderArray: [] });
 
-  const addToOrder = (item: ProductType) => {
+  const addToOrder = async (item: IOrder) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/order`,
+        item
+      );
+      console.log("response: ", response);
+    } catch (error) {
+      console.log("error: ", error);
+    }
     dispatch({ type: "ADD_TO_ORDER", payload: item });
-  };
-
-  const removeFromOrder = (itemId: string) => {
-    dispatch({ type: "REMOVE_FROM_ORDER", payload: itemId });
   };
 
   const updateOrder = (itemId: string, quantity: number) => {
@@ -89,9 +89,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <OrderContext.Provider
-      value={{ orderState, addToOrder, removeFromOrder, updateOrder }}
-    >
+    <OrderContext.Provider value={{ orderState, addToOrder, updateOrder }}>
       {children}
     </OrderContext.Provider>
   );

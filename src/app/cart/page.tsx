@@ -25,18 +25,20 @@ const Cart = () => {
 
   const { cartState, updateCart, removeFromCart } = useCart();
 
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    // Tìm sản phẩm trong giỏ hàng
+  const handleQuantityChange = (
+    productId: string,
+    quantityPurchase: number
+  ) => {
+    console.log("quantity: ", quantityPurchase);
     const itemToUpdate = cartState.cartArray.find(
       (item) => item._id === productId
     );
+    console.log("itemToUpdate: ", itemToUpdate);
 
-    // Kiểm tra xem sản phẩm có tồn tại không
     if (itemToUpdate) {
-      // Truyền giá trị hiện tại của selectedSize và selectedColor
       updateCart(
         productId,
-        quantity,
+        quantityPurchase,
         itemToUpdate.selectedSize,
         itemToUpdate.selectedColor
       );
@@ -48,8 +50,6 @@ const Cart = () => {
   let [discountCart, setDiscountCart] = useState<number>(0);
   let [shipCart, setShipCart] = useState<number>(30);
   let [applyCode, setApplyCode] = useState<number>(0);
-
-  cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
 
   const handleApplyCode = (minValue: number, discount: number) => {
     if (totalCart > minValue) {
@@ -193,34 +193,40 @@ const Cart = () => {
                             <div className="quantity-block bg-surface md:p-3 p-2 flex items-center justify-between rounded-lg border border-line md:w-[100px] flex-shrink-0 w-20">
                               <Icon.Minus
                                 onClick={() => {
-                                  if (product.quantity > 1) {
+                                  if (product.quantityPurchase > 1) {
                                     handleQuantityChange(
                                       product._id,
-                                      product.quantity - 1
+                                      product.quantityPurchase - 1
                                     );
                                   }
                                 }}
                                 className={`text-base max-md:text-sm ${
-                                  product.quantity === 1 ? "disabled" : ""
+                                  product.quantityPurchase === 1
+                                    ? "disabled"
+                                    : ""
                                 }`}
                               />
                               <div className="text-button quantity">
-                                {product.quantity}
+                                {product.quantityPurchase}
                               </div>
                               <Icon.Plus
-                                onClick={() =>
-                                  handleQuantityChange(
-                                    product._id,
-                                    product.quantity + 1
-                                  )
-                                }
+                                onClick={() => {
+                                  if (
+                                    product.quantityPurchase < product.quantity
+                                  ) {
+                                    handleQuantityChange(
+                                      product._id,
+                                      product.quantityPurchase + 1
+                                    );
+                                  }
+                                }}
                                 className="text-base max-md:text-sm"
                               />
                             </div>
                           </div>
                           <div className="w-1/6 flex total-price items-center justify-center">
                             <div className="text-title text-center">
-                              ₹{product.quantity * product.price}.00
+                              ₹{product.quantityPurchase * product.price}.00
                             </div>
                           </div>
                           <div className="w-1/12 flex items-center justify-center">

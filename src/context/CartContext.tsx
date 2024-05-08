@@ -14,9 +14,8 @@ import { useAuth } from "./AuthContext";
 import { useProduct } from "./ProductContext";
 
 interface CartItem extends ProductType {
-  quantity: number;
-  selectedSize: string;
-  selectedColor: string;
+  selectedSize?: string | any;
+  selectedColor?: string | any;
 }
 
 interface CartState {
@@ -31,9 +30,9 @@ type CartAction =
       type: "UPDATE_CART";
       payload: {
         itemId: string;
-        quantity: number;
-        selectedSize: string;
-        selectedColor: string;
+        quantityPurchase: number;
+        selectedSize?: string;
+        selectedColor?: string;
       };
     }
   | { type: "LOAD_CART"; payload: CartItem[] };
@@ -57,7 +56,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case "ADD_TO_CART":
       const newItem: CartItem = {
         ...action.payload,
-        quantity: 1,
+        quantityPurchase: 1,
         selectedSize: "",
         selectedColor: "",
       };
@@ -79,7 +78,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           item._id === action.payload.itemId
             ? {
                 ...item,
-                quantity: action.payload.quantity,
+                quantityPurchase: action.payload.quantityPurchase,
                 selectedSize: action.payload.selectedSize,
                 selectedColor: action.payload.selectedColor,
               }
@@ -106,16 +105,35 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const addToCart = async (item: ProductType) => {
     try {
       if (authState.user !== null) {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
-          {
-            userId: authState.user._id,
-            productId: item._id,
-            quantity: item.quantityPurchase,
-          }
+        const existingItem = cartState.cartArray.find(
+          (cartItem) => cartItem._id === item._id
         );
+        if (existingItem) {
+          const updatedQuantity: any = existingItem.quantityPurchase + 1; // Increase quantity
+          const response = await axios.patch(
+            `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
+            {
+              userId: authState.user._id,
+              productId: item._id,
+              quantityPurchase: updatedQuantity,
+            }
+          );
+          dispatch({
+            type: "UPDATE_CART",
+            payload: { itemId: item._id, quantityPurchase: updatedQuantity },
+          });
+        } else {
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
+            {
+              userId: authState.user._id,
+              productId: item._id,
+              quantity: item.quantityPurchase,
+            }
+          );
+          dispatch({ type: "ADD_TO_CART", payload: item });
+        }
       }
-      dispatch({ type: "ADD_TO_CART", payload: item });
     } catch (error) {
       console.log("error: ", error);
     }
@@ -125,7 +143,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       if (authState.user !== null) {
         const response = await axios.delete(
-          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart/${authState.user._id}`
+          `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart/${authState.user._id}/${itemId}`
         );
       }
 
@@ -137,7 +155,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCart = async (
     itemId: string,
-    quantity: number,
+    quantityPurchase: number,
     selectedSize: string,
     selectedColor: string
   ) => {
@@ -148,13 +166,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           {
             userId: authState.user._id,
             productId: itemId,
-            quantity: quantity,
+            quantityPurchase: quantityPurchase,
           }
         );
       }
       dispatch({
         type: "UPDATE_CART",
-        payload: { itemId, quantity, selectedSize, selectedColor },
+        payload: { itemId, quantityPurchase, selectedSize, selectedColor },
       });
     } catch (error) {
       console.log("error: ", error);

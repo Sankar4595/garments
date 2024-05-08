@@ -9,6 +9,7 @@ import { ModalSearchProvider } from "@/context/ModalSearchContext";
 import { ModalQuickviewProvider } from "@/context/ModalQuickviewContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProductProvider } from "@/context/ProductContext";
+import { OrderProvider } from "@/context/OrderContext";
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -17,21 +18,23 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
     <AuthProvider>
       <ProductProvider>
         <CartProvider>
-          <ModalCartProvider>
-            <WishlistProvider>
-              <ModalWishlistProvider>
-                <CompareProvider>
-                  <ModalCompareProvider>
-                    <ModalSearchProvider>
-                      <ModalQuickviewProvider>
-                        {children}
-                      </ModalQuickviewProvider>
-                    </ModalSearchProvider>
-                  </ModalCompareProvider>
-                </CompareProvider>
-              </ModalWishlistProvider>
-            </WishlistProvider>
-          </ModalCartProvider>
+          <OrderProvider>
+            <ModalCartProvider>
+              <WishlistProvider>
+                <ModalWishlistProvider>
+                  <CompareProvider>
+                    <ModalCompareProvider>
+                      <ModalSearchProvider>
+                        <ModalQuickviewProvider>
+                          {children}
+                        </ModalQuickviewProvider>
+                      </ModalSearchProvider>
+                    </ModalCompareProvider>
+                  </CompareProvider>
+                </ModalWishlistProvider>
+              </WishlistProvider>
+            </ModalCartProvider>
+          </OrderProvider>
         </CartProvider>
       </ProductProvider>
     </AuthProvider>

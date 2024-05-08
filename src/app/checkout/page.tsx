@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
@@ -7,12 +7,13 @@ import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Footer from "@/components/Footer/Footer";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { IUser } from "@/type/authTypes";
 import { toast } from "react-toastify";
 import { IOrder } from "@/type/OrderType";
+import { useOrder } from "@/context/OrderContext";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
@@ -20,12 +21,14 @@ const Checkout = () => {
   let ship = searchParams.get("ship");
   const { authState, login } = useAuth();
   const { cartState } = useCart();
+  const { addToOrder } = useOrder();
   let [totalCart, setTotalCart] = useState<number>(0);
   const [activePayment, setActivePayment] = useState<string>("credit-card");
   const [loginData, setLoginData] = useState<IUser>({
     email: "",
     password: "",
   });
+  const router = useRouter();
   const [orderData, setOrderData] = useState<IOrder>({
     user: "",
     items: [],
@@ -40,11 +43,41 @@ const Checkout = () => {
     phoneNumber: "",
     email: "",
     paymentMethod: "cod",
+    country: "",
+    city: "",
+    state: "",
+    pincode: "",
+    notes: "",
   });
-  cartState.cartArray.map((item) => (totalCart += item.price * item.quantity));
 
-  const handlePayment = (item: string) => {
-    setActivePayment(item);
+  useEffect(() => {
+    if (cartState.cartArray.length > 0) {
+      setOrderData((prev: IOrder) => {
+        return {
+          ...prev,
+          user: authState.user?._id,
+          items: cartState.cartArray.map((val) => {
+            return {
+              product: val._id,
+              price: val.price * val.quantityPurchase,
+              quantity: val.quantityPurchase,
+            };
+          }),
+        };
+      });
+    }
+  }, [cartState]);
+
+  const handlePayment = async (e: any) => {
+    e.preventDefault;
+    try {
+      let res = await addToOrder(orderData);
+      console.log("res: ", res);
+
+      router.push("/");
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
   const handleSubmitLogin = async (e: any) => {
     e.preventDefault();
@@ -149,6 +182,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="First Name *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                name: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="">
@@ -158,6 +199,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="Last Name *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                lastName: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="">
@@ -167,6 +216,14 @@ const Checkout = () => {
                           type="email"
                           placeholder="Email Address *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                email: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="">
@@ -176,6 +233,14 @@ const Checkout = () => {
                           type="number"
                           placeholder="Phone Numbers *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                phoneNumber: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="col-span-full select-block">
@@ -184,6 +249,15 @@ const Checkout = () => {
                           id="region"
                           name="region"
                           defaultValue={"default"}
+                          onChange={(e) => {
+                            console.log("se1: ", e);
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                country: e.target.value,
+                              };
+                            });
+                          }}
                         >
                           <option value="default" disabled>
                             Choose Country/Region
@@ -201,6 +275,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="Town/City *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                city: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="">
@@ -210,6 +292,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="Street,..."
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                shippingAddress: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="select-block">
@@ -218,6 +308,14 @@ const Checkout = () => {
                           id="country"
                           name="country"
                           defaultValue={"default"}
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                state: e.target.value,
+                              };
+                            });
+                          }}
                         >
                           <option value="default" disabled>
                             Choose State
@@ -235,6 +333,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="Postal Code *"
                           required
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                pincode: e.target.value,
+                              };
+                            });
+                          }}
                         />
                       </div>
                       <div className="col-span-full">
@@ -243,6 +349,14 @@ const Checkout = () => {
                           id="note"
                           name="note"
                           placeholder="Write note..."
+                          onChange={(e) => {
+                            setOrderData((prev: any) => {
+                              return {
+                                ...prev,
+                                notes: e.target.value,
+                              };
+                            });
+                          }}
                         ></textarea>
                       </div>
                     </div>
@@ -538,7 +652,12 @@ const Checkout = () => {
                       </div> */}
                     </div>
                     <div className="block-button md:mt-10 mt-6">
-                      <button className="button-main w-full">Payment</button>
+                      <button
+                        onClick={(e) => handlePayment(e)}
+                        className="button-main w-full"
+                      >
+                        Payment
+                      </button>
                     </div>
                   </form>
                 </div>

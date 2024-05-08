@@ -1,5 +1,3 @@
-"use client";
-// AuthProvider.tsx
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import axios from "axios";
 import { IUser } from "@/type/authTypes";
@@ -14,13 +12,12 @@ type AuthAction =
 
 interface AuthContextProps {
   authState: AuthState;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
 const initialAuthState: AuthState = {
   user: null,
-  // Initialize other authentication-related state fields
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -41,6 +38,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
+  useEffect(() => {
+    // Check if user data exists in sessionStorage
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+      dispatch({ type: "LOGIN_SUCCESS", payload: JSON.parse(storedUser) });
+    }
+  }, []);
+
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post(
@@ -52,7 +57,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (response.status === 200) {
-        dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
+        const user = response.data.user;
+        // Store user data in sessionStorage
+        sessionStorage.setItem("user", JSON.stringify(user));
+        dispatch({ type: "LOGIN_SUCCESS", payload: user });
         return response.data;
       }
     } catch (error) {
@@ -67,6 +75,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (response.status === 200) {
+        // Remove user data from sessionStorage
+        sessionStorage.removeItem("user");
         dispatch({ type: "LOGOUT" });
         return response.data;
       } else {

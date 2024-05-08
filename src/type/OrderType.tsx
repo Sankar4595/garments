@@ -24,4 +24,9 @@ export interface IOrder {
   status?: string;
   createDate?: string;
   modifyDate?: string;
+  country?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  notes?: string;
 }
