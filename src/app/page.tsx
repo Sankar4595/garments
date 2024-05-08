@@ -35,7 +35,7 @@ export default function Home() {
         start={0}
         limit={4}
       />
-      <Collection categoryState={categoryState.categories} />
+      <Collection />
       <TabFeatures data={[]} start={0} limit={6} />
       <Banner />
       <Benefit props="md:py-20 py-10" />

@@ -7,14 +7,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import { useRouter } from "next/navigation";
+import { useProduct } from "@/context/ProductContext";
 // import Fade from 'react-reveal'
 
-const Collection = (categoryState: any) => {
+const Collection = () => {
   const router = useRouter();
 
   const handleTypeClick = (type: string) => {
     router.push(`/shop/breadcrumb1?type=${type}`);
   };
+
+  const { categoryState } = useProduct();
 
   return (
     <>
@@ -45,7 +48,7 @@ const Collection = (categoryState: any) => {
             }}
             className="h-full"
           >
-            {categoryState?.map((val: any, idx: any) => (
+            {categoryState.categories.map((val: any, idx: any) => (
               <>
                 <SwiperSlide key={idx}>
                   <div

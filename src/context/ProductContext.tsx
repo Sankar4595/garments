@@ -14,6 +14,12 @@ interface CategoryState {
   error: string | null;
 }
 
+interface SubCategoryState {
+  subCategories: any[];
+  loading: boolean;
+  error: string | null;
+}
+
 type ProductAction =
   | { type: "SET_PRODUCTS"; payload: any }
   | { type: "FETCH_PRODUCTS_REQUEST" }
@@ -26,11 +32,19 @@ type CategoryAction =
   | { type: "FETCH_CATEGORIES_SUCCESS"; payload: any }
   | { type: "FETCH_CATEGORIES_FAILURE"; payload: string };
 
+type SubCategoryAction =
+  | { type: "SET_SUBCATEGORIES"; payload: any }
+  | { type: "FETCH_SUBCATEGORIES_REQUEST" }
+  | { type: "FETCH_SUBCATEGORIES_SUCCESS"; payload: any }
+  | { type: "FETCH_SUBCATEGORIES_FAILURE"; payload: string };
+
 interface ProductContextProps {
   productState: ProductState;
   categoryState: CategoryState;
+  subCategoryState: SubCategoryState;
   setProducts: (products: any[]) => void;
   setCategories: (categories: any[]) => void;
+  setSubCategories: (subCategories: any[]) => void;
 }
 
 const initialProductState: ProductState = {
@@ -41,6 +55,11 @@ const initialProductState: ProductState = {
 
 const initialCategoryState: CategoryState = {
   categories: [],
+  loading: false,
+  error: null,
+};
+const initialSubCategoryState: SubCategoryState = {
+  subCategories: [],
   loading: false,
   error: null,
 };
@@ -91,6 +110,29 @@ const categoryReducer = (
   }
 };
 
+const subCategoryReducer = (
+  state: SubCategoryState,
+  action: SubCategoryAction
+): SubCategoryState => {
+  switch (action.type) {
+    case "FETCH_SUBCATEGORIES_REQUEST":
+      return { ...state, loading: true, error: null };
+    case "FETCH_SUBCATEGORIES_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        subCategories: action.payload.data,
+        error: null,
+      };
+    case "FETCH_SUBCATEGORIES_FAILURE":
+      return { ...state, loading: false, error: action.payload };
+    case "SET_SUBCATEGORIES":
+      return { ...state, subCategories: action.payload };
+    default:
+      return state;
+  }
+};
+
 const ProductContext = createContext<ProductContextProps | undefined>(
   undefined
 );
@@ -106,6 +148,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   const [categoryState, categoryDispatch] = useReducer(
     categoryReducer,
     initialCategoryState
+  );
+
+  const [subCategoryState, subCategoryDispatch] = useReducer(
+    subCategoryReducer,
+    initialSubCategoryState
   );
 
   const fetchProducts = async () => {
@@ -144,9 +191,29 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const fetchSubCategories = async () => {
+    subCategoryDispatch({ type: "FETCH_SUBCATEGORIES_REQUEST" });
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/subCategory`
+      );
+      subCategoryDispatch({
+        type: "FETCH_SUBCATEGORIES_SUCCESS",
+        payload: response.data,
+      });
+    } catch (error: any) {
+      subCategoryDispatch({
+        type: "FETCH_SUBCATEGORIES_FAILURE",
+        payload:
+          error.response?.data?.message || "Failed to fetch subcategories",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
+    fetchSubCategories();
   }, []);
 
   const setProducts = (products: any[]) => {
@@ -157,9 +224,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     categoryDispatch({ type: "SET_CATEGORIES", payload: categories });
   };
 
+  const setSubCategories = (subCategories: any[]) => {
+    subCategoryDispatch({ type: "SET_SUBCATEGORIES", payload: subCategories });
+  };
+
   return (
     <ProductContext.Provider
-      value={{ productState, categoryState, setProducts, setCategories }}
+      value={{
+        productState,
+        categoryState,
+        subCategoryState,
+        setProducts,
+        setCategories,
+        setSubCategories,
+      }}
     >
       {children}
     </ProductContext.Provider>
