@@ -74,11 +74,11 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type.some(
-                            (val) => val.label === "accessories"
+                          JSON.parse(product.type).some(
+                            (val: any) => val.label === "accessories"
                           ) &&
-                          product.category.some(
-                            (val) => val.label === "fashion"
+                          JSON.parse(product.category).some(
+                            (val: any) => val.label === "fashion"
                           )
                       )
                       .slice(0, 2)
@@ -123,11 +123,11 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type.some(
-                            (val) => val.label === "accessories"
+                          JSON.parse(product.type).some(
+                            (val: any) => val.label === "accessories"
                           ) &&
-                          product.category.some(
-                            (val) => val.label === "fashion"
+                          JSON.parse(product.category).some(
+                            (val: any) => val.label === "fashion"
                           )
                       )
                       .slice(2, 4)
@@ -172,11 +172,11 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          product.type.some(
-                            (val) => val.label === "accessories"
+                          JSON.parse(product.type).some(
+                            (val: any) => val.label === "accessories"
                           ) &&
-                          product.category.some(
-                            (val) => val.label === "fashion"
+                          JSON.parse(product.category).some(
+                            (val: any) => val.label === "fashion"
                           )
                       )
                       .slice(4, 6)

@@ -80,13 +80,17 @@ const ShopSidebarList: React.FC<Props> = ({
 
     let isDataTypeMatched = true;
     if (dataType) {
-      isDataTypeMatched = product.type.some((val) => val.label === dataType);
+      isDataTypeMatched = JSON.parse(product.type).some(
+        (val: any) => val.label === dataType
+      );
     }
 
     let isTypeMatched = true;
     if (type) {
       dataType = type;
-      isTypeMatched = product.type.some((val) => val.label === type);
+      isTypeMatched = JSON.parse(product.type).some(
+        (val: any) => val.label === type
+      );
     }
 
     let isSizeMatched = true;
@@ -102,7 +106,9 @@ const ShopSidebarList: React.FC<Props> = ({
 
     let isColorMatched = true;
     if (color) {
-      isColorMatched = product.variation.some((item) => item.color === color);
+      isColorMatched = JSON.parse(product.variation).some(
+        (item: any) => item.color === color
+      );
     }
 
     let isBrandMatched = true;
@@ -118,7 +124,7 @@ const ShopSidebarList: React.FC<Props> = ({
       isColorMatched &&
       isBrandMatched &&
       isPriceRangeMatched &&
-      product.category.some((val) => val.label === "fashion")
+      JSON.parse(product.category).some((val: any) => val.label === "fashion")
     );
   });
 
@@ -257,9 +263,11 @@ const ShopSidebarList: React.FC<Props> = ({
                         {
                           data.filter(
                             (dataItem) =>
-                              dataItem.type.some((val) => val.label === item) &&
-                              dataItem.category.some(
-                                (val) => val.label === "fashion"
+                              JSON.parse(dataItem.type).some(
+                                (val: any) => val.label === item
+                              ) &&
+                              JSON.parse(dataItem.category).some(
+                                (val: any) => val.label === "fashion"
                               )
                           ).length
                         }
@@ -425,8 +433,8 @@ const ShopSidebarList: React.FC<Props> = ({
                             data.filter(
                               (dataItem) =>
                                 dataItem.brand === item &&
-                                dataItem.category.some(
-                                  (val) => val.label === "fashion"
+                                JSON.parse(dataItem.category).some(
+                                  (val: any) => val.label === "fashion"
                                 )
                             ).length
                           }

@@ -199,7 +199,7 @@ const OutOfStock: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {productMain.type.map((val) => val.label)}
+                    {JSON.parse(productMain.type).map((val: any) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -258,23 +258,25 @@ const OutOfStock: React.FC<Props> = ({ data, productId }) => {
                     <span className="text-title color">Out of stock</span>
                   </div>
                   <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                    {productMain.variation.map((item, index) => (
-                      <div
-                        className={`color-item w-12 h-12 rounded-xl duration-300 relative`}
-                        key={index}
-                      >
-                        <Image
-                          src={item.colorImage}
-                          width={100}
-                          height={100}
-                          alt="color"
-                          className="rounded-xl"
-                        />
-                        <div className="tag-action whitespace-nowrap bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                          Out of stock
+                    {JSON.parse(productMain.variation).map(
+                      (item: any, index: any) => (
+                        <div
+                          className={`color-item w-12 h-12 rounded-xl duration-300 relative`}
+                          key={index}
+                        >
+                          <Image
+                            src={item.colorImage}
+                            width={100}
+                            height={100}
+                            alt="color"
+                            className="rounded-xl"
+                          />
+                          <div className="tag-action whitespace-nowrap bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                            Out of stock
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
                 <div className="choose-size mt-5">
@@ -296,16 +298,18 @@ const OutOfStock: React.FC<Props> = ({ data, productId }) => {
                     />
                   </div>
                   <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                    {productMain.variation.map((item, index) => (
-                      <div
-                        className={`size-item ${
-                          item.size === "freesize" ? "px-3 py-2" : "w-12 h-12"
-                        } relative flex items-center justify-center text-button rounded-full bg-surface text-secondary2`}
-                        key={index}
-                      >
-                        {item.size}
-                      </div>
-                    ))}
+                    {JSON.parse(productMain.variation).map(
+                      (item: any, index: any) => (
+                        <div
+                          className={`size-item ${
+                            item.size === "freesize" ? "px-3 py-2" : "w-12 h-12"
+                          } relative flex items-center justify-center text-button rounded-full bg-surface text-secondary2`}
+                          key={index}
+                        >
+                          {item.size}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
                 <div className="text-title mt-5">Quantity:</div>
@@ -373,14 +377,18 @@ const OutOfStock: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Categories:</div>
                     <div className="text-secondary">
-                      {productMain.category.map((val) => val.label)},{" "}
-                      {productMain.gender}
+                      {JSON.parse(productMain.category).map(
+                        (val: any) => val.label
+                      )}
+                      , {productMain.gender}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Tag:</div>
                     <div className="text-secondary">
-                      {productMain.type.map((val) => val.label)}
+                      {JSON.parse(productMain.type).map(
+                        (val: any) => val.label
+                      )}
                     </div>
                   </div>
                 </div>
