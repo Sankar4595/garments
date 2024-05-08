@@ -127,7 +127,7 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize">
-                          {item.type.map((val) => val.label)}
+                          {JSON.parse(item.type).map((val: any) => val.label)}
                         </div>
                       </td>
                     ))}
@@ -151,12 +151,14 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-1">
-                          {item.variation.map((size, i) => (
-                            <p key={i}>
-                              {size.size}
-                              <span>,</span>
-                            </p>
-                          ))}
+                          {JSON.parse(item.variation).map(
+                            (size: any, i: any) => (
+                              <p key={i}>
+                                {size.size}
+                                <span>,</span>
+                              </p>
+                            )
+                          )}
                         </div>
                       </td>
                     ))}
@@ -168,15 +170,17 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-2">
-                          {item.variation.map((colorItem, i) => (
-                            <span
-                              key={i}
-                              className={`w-6 h-6 rounded-full`}
-                              style={{
-                                backgroundColor: `${colorItem.colorCode}`,
-                              }}
-                            ></span>
-                          ))}
+                          {JSON.parse(item.variation).map(
+                            (colorItem: any, i: any) => (
+                              <span
+                                key={i}
+                                className={`w-6 h-6 rounded-full`}
+                                style={{
+                                  backgroundColor: `${colorItem.colorCode}`,
+                                }}
+                              ></span>
+                            )
+                          )}
                         </div>
                       </td>
                     ))}
