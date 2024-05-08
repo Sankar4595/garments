@@ -69,6 +69,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
     setSelectedType(type);
     router.push(`/shop/breadcrumb1?type=${type}`);
   };
+  let lastCategoryName: string | null = null;
 
   return (
     <>
@@ -119,32 +120,55 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                           <div className="nav-link basis-2/3 grid grid-cols-4 gap-y-8">
                             {subCategoryState.subCategories.map(
                               (val: any, idx: any) => {
-                                // Finding the category corresponding to the subcategory
                                 let r: any = categoryState.categories.find(
                                   (item: any) => item._id === val.category
                                 );
 
-                                return (
-                                  <div key={idx} className="nav-item">
-                                    <div className="text-button-uppercase pb-2">
-                                      {/* Displaying the name of the category */}
-                                      {r ? r.name : "Category Not Found"}
+                                if (r && r.name !== lastCategoryName) {
+                                  lastCategoryName = r.name;
+                                  return (
+                                    <div
+                                      key={`category-${r._id}`}
+                                      className="nav-item"
+                                    >
+                                      <div className="text-button-uppercase pb-2">
+                                        {r.name}
+                                      </div>
+                                      <ul>
+                                        <li key={val._id}>
+                                          <div
+                                            onClick={() =>
+                                              handleGenderClick(val.name)
+                                            }
+                                            className="link text-secondary duration-300 cursor-pointer"
+                                          >
+                                            {val.name}
+                                          </div>
+                                        </li>
+                                      </ul>
                                     </div>
-                                    <ul>
-                                      <li key={val._id}>
-                                        {/* Handling click event */}
-                                        <div
-                                          onClick={() =>
-                                            handleGenderClick(val.name)
-                                          }
-                                          className="link text-secondary duration-300 cursor-pointer"
-                                        >
-                                          {val.name}
-                                        </div>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                );
+                                  );
+                                } else {
+                                  return (
+                                    <div
+                                      key={`subcategory-${val._id}`}
+                                      className="nav-item"
+                                    >
+                                      <ul>
+                                        <li key={val._id}>
+                                          <div
+                                            onClick={() =>
+                                              handleGenderClick(val.name)
+                                            }
+                                            className="link text-secondary duration-300 cursor-pointer"
+                                          >
+                                            {val.name}
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  );
+                                }
                               }
                             )}
                           </div>
