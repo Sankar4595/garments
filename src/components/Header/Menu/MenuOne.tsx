@@ -118,59 +118,40 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                       <div className="container">
                         <div className="flex justify-between py-8">
                           <div className="nav-link basis-2/3 grid grid-cols-4 gap-y-8">
-                            {subCategoryState.subCategories.map(
-                              (val: any, idx: any) => {
-                                let r: any = categoryState.categories.find(
-                                  (item: any) => item._id === val.category
+                            {categoryState.categories.map((val) => {
+                              const subCategory =
+                                subCategoryState.subCategories.filter(
+                                  (item) => item.category === val._id
                                 );
 
-                                if (r && r.name !== lastCategoryName) {
-                                  lastCategoryName = r.name;
-                                  return (
-                                    <div
-                                      key={`category-${r._id}`}
-                                      className="nav-item"
-                                    >
-                                      <div className="text-button-uppercase pb-2">
-                                        {r.name}
-                                      </div>
-                                      <ul>
-                                        <li key={val._id}>
-                                          <div
-                                            onClick={() =>
-                                              handleGenderClick(val.name)
-                                            }
-                                            className="link text-secondary duration-300 cursor-pointer"
-                                          >
-                                            {val.name}
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  );
-                                } else {
-                                  return (
-                                    <div
-                                      key={`subcategory-${val._id}`}
-                                      className="nav-item"
-                                    >
-                                      <ul>
-                                        <li key={val._id}>
-                                          <div
-                                            onClick={() =>
-                                              handleGenderClick(val.name)
-                                            }
-                                            className="link text-secondary duration-300 cursor-pointer"
-                                          >
-                                            {val.name}
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  );
-                                }
-                              }
-                            )}
+                              return (
+                                <div
+                                  key={`category-${val._id}`}
+                                  className="nav-item"
+                                >
+                                  <div className="text-button-uppercase pb-2">
+                                    {val.name}
+                                  </div>
+                                  <ul>
+                                    {subCategory &&
+                                      subCategory.map((i, idx) => {
+                                        return (
+                                          <li key={i._id}>
+                                            <div
+                                              onClick={() =>
+                                                handleGenderClick(i.name)
+                                              }
+                                              className="link text-secondary duration-300 cursor-pointer"
+                                            >
+                                              {i.name}
+                                            </div>
+                                          </li>
+                                        );
+                                      })}
+                                  </ul>
+                                </div>
+                              );
+                            })}
                           </div>
                           <div className="banner-ads-block pl-2.5 basis-1/3">
                             <div
@@ -179,7 +160,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                             >
                               <div className="text-content py-14 pl-8 relative z-[1]">
                                 <div className="text-button-uppercase text-white bg-red px-2 py-0.5 inline-block rounded-sm">
-                                  Save $10
+                                  Save ₹750
                                 </div>
                                 <div className="heading6 mt-2">
                                   Dive into Savings <br />
@@ -187,7 +168,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 </div>
                                 <div className="body1 mt-3 text-secondary">
                                   Starting at{" "}
-                                  <span className="text-red">$59.99</span>
+                                  <span className="text-red">₹1099</span>
                                 </div>
                               </div>
                               <Image
@@ -198,7 +179,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 className="basis-1/3 absolute right-0 top-0 duration-700"
                               />
                             </div>
-                            <div
+                            {/* <div
                               className="banner-ads-item bg-linear rounded-2xl relative overflow-hidden cursor-pointer mt-8"
                               onClick={() => handleTypeClick("accessories")}
                             >
@@ -222,7 +203,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 alt="bg-img"
                                 className="basis-1/3 absolute right-0 top-0 duration-700"
                               />
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -420,150 +401,40 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                       </div>
                       <div className="list-nav-item w-full pt-3 pb-12">
                         <div className="nav-link grid grid-cols-2 gap-5 gap-y-6">
-                          <div className="nav-item">
-                            <div className="text-button-uppercase pb-1">
-                              For Men
-                            </div>
-                            <ul>
-                              <li>
-                                <div
-                                  onClick={() => handleGenderClick("men")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Starting From 50% Off
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("outerwear")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Outerwear | Coats
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("sweater")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Sweaters | Cardigans
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("shirt")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Shirt | Sweatshirts
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleGenderClick("men")}
-                                  className={`link text-secondary duration-300 view-all-btn`}
-                                >
-                                  View All
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
+                          {categoryState.categories.map((val) => {
+                            const subCategory =
+                              subCategoryState.subCategories.filter(
+                                (item) => item.category === val._id
+                              );
 
-                          <div className="nav-item">
-                            <div className="text-button-uppercase pb-1">
-                              For Women
-                            </div>
-                            <ul>
-                              <li>
-                                <div
-                                  onClick={() => handleGenderClick("women")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Starting From 60% Off
+                            return (
+                              <div
+                                key={`category-${val._id}`}
+                                className="nav-item"
+                              >
+                                <div className="text-button-uppercase pb-1">
+                                  {val.name}
                                 </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("dress")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Dresses | Jumpsuits
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("t-shirt")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  T-shirts | Sweatshirts
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("accessories")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Accessories | Jewelry
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleGenderClick("women")}
-                                  className={`link text-secondary duration-300 view-all-btn`}
-                                >
-                                  View All
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="nav-item">
-                            <div className="text-button-uppercase pb-1">
-                              For Kid
-                            </div>
-                            <ul>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("bed")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Kids Bed
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("toy")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Boy{String.raw`'s`} Toy
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("blanket")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Baby Blanket
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() => handleTypeClick("clothing")}
-                                  className={`link text-secondary duration-300 cursor-pointer`}
-                                >
-                                  Newborn Clothing
-                                </div>
-                              </li>
-                              <li>
-                                <div
-                                  onClick={() =>
-                                    handleCategoryClick("toys-kid")
-                                  }
-                                  className={`link text-secondary duration-300 view-all-btn`}
-                                >
-                                  View All
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
+                                <ul>
+                                  {subCategory &&
+                                    subCategory.map((i, idx) => {
+                                      return (
+                                        <li key={i._id}>
+                                          <div
+                                            onClick={() =>
+                                              handleGenderClick(i.name)
+                                            }
+                                            className={`link text-secondary duration-300 cursor-pointer`}
+                                          >
+                                            {i.name}
+                                          </div>
+                                        </li>
+                                      );
+                                    })}
+                                </ul>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>

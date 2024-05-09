@@ -181,9 +181,6 @@ const ShopBreadCrumb1: React.FC<Props> = ({
   const pageCount = Math.ceil(filteredData.length / productsPerPage);
 
   // If page number 0, set current page = 0
-  if (pageCount === 0) {
-    setCurrentPage(0);
-  }
 
   // Get product data for current page
   let currentProducts: ProductType[];

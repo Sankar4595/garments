@@ -36,7 +36,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = productPerPage;
   const offset = currentPage * productsPerPage;
-  const { categoryState } = useProduct();
+  const { categoryState, subCategoryState } = useProduct();
   const [filteredData, setFilteredData] = useState<any>([]);
 
   const handleLayoutCol = (col: number) => {
@@ -394,25 +394,16 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
               <div className="filter-type">
                 <div className="heading6">Products Type</div>
                 <div className="list-type mt-4">
-                  {[
-                    "t-shirt",
-                    "dress",
-                    "top",
-                    "swimwear",
-                    "shirt",
-                    "underwear",
-                    "sets",
-                    "accessories",
-                  ].map((item, index) => (
+                  {subCategoryState.subCategories.map((item, index) => (
                     <div
                       key={index}
                       className={`item flex items-center justify-between cursor-pointer ${
-                        dataType === item ? "active" : ""
+                        dataType === item.name ? "active" : ""
                       }`}
-                      onClick={() => handleType(item)}
+                      onClick={() => handleType(item.name)}
                     >
                       <div className="text-secondary has-line-before hover:text-black capitalize">
-                        {item}
+                        {item.name}
                       </div>
                       <div className="text-secondary2">
                         (
@@ -420,10 +411,10 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
                           data.filter(
                             (dataItem) =>
                               JSON.parse(dataItem.type).some(
-                                (val: any) => val.label === item
+                                (val: any) => val.label === item.name
                               ) &&
                               JSON.parse(dataItem.category).some(
-                                (val: any) => val.label === "fashion"
+                                (val: any) => val.value === item.category
                               )
                           ).length
                         }
@@ -474,13 +465,13 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
                     <div className="min flex items-center gap-1">
                       <div>Min price:</div>
                       <div className="price-min">
-                        $<span>{priceRange.min}</span>
+                        ₹<span>{priceRange.min}</span>
                       </div>
                     </div>
                     <div className="min flex items-center gap-1">
                       <div>Max price:</div>
                       <div className="price-max">
-                        $<span>{priceRange.max}</span>
+                        ₹<span>{priceRange.max}</span>
                       </div>
                     </div>
                   </div>

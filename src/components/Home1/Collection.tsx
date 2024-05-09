@@ -52,10 +52,11 @@ const Collection = () => {
               <>
                 <SwiperSlide key={idx}>
                   <div
+                    style={{ height: "100%" }}
                     className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer"
                     onClick={() => handleTypeClick(val.name)}
                   >
-                    <div className="bg-img">
+                    <div className="bg-img" style={{ height: "100%" }}>
                       <Image
                         src={val.images}
                         width={1000}

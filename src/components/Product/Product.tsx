@@ -305,7 +305,9 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       className={`color-item w-8 h-8 rounded-full duration-300 relative ${
                         activeColor === item.color ? "active" : ""
                       }`}
-                      style={{ backgroundColor: `${item.colorCode}` }}
+                      style={{
+                        backgroundColor: `${item.colorCode}`,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleActiveColor(item.color);
@@ -339,9 +341,15 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                           padding: 0,
                           margin: 0,
                           border: "none",
+                          borderRadius: "50%",
+                          cursor: "pointer",
                         }}
                         disabled
                         value={item.colorCode}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleActiveColor(item.color);
+                        }}
                       />
                       <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
                         {item.color}
