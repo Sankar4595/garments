@@ -14,12 +14,11 @@ interface Props {
 
 const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
   const [activeTab, setActiveTab] = useState<string>("");
-
   useEffect(() => {
     if (data.length > 0) {
       let s: any = data[0]?.category;
       let r: any = JSON.parse(s);
-      setActiveTab(r[0]?.label.toLowerCase());
+      setActiveTab(r[0]?.label);
     }
   }, [data]);
   const handleTabClick = (type: string) => {
@@ -41,7 +40,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
                 <div
                   key={type._id}
                   className={`tab-item relative text-secondary text-button-uppercase py-2 px-5 cursor-pointer duration-500 hover:text-black ${
-                    activeTab === type ? "active" : ""
+                    activeTab === type.name ? "active" : ""
                   }`}
                   onClick={() => handleTabClick(type.name)}
                 >

@@ -53,14 +53,14 @@ const Collection = () => {
                 <SwiperSlide key={idx}>
                   <div
                     className="collection-item block relative rounded-2xl overflow-hidden cursor-pointer"
-                    onClick={() => handleTypeClick("swimwear")}
+                    onClick={() => handleTypeClick(val.name)}
                   >
                     <div className="bg-img">
                       <Image
                         src={val.images}
                         width={1000}
                         height={600}
-                        alt="swimwear"
+                        alt={val.name}
                       />
                     </div>
                     <div className="collection-name heading5 text-center sm:bottom-8 bottom-4 lg:w-[200px] md:w-[160px] w-[100px] md:py-3 py-1.5 bg-white rounded-xl duration-500">
