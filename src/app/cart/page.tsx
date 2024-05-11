@@ -24,7 +24,6 @@ const Cart = () => {
   }, []);
 
   const { cartState, updateCart, removeFromCart } = useCart();
-
   const handleQuantityChange = (
     productId: string,
     quantityPurchase: number,

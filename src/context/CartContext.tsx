@@ -63,10 +63,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       const newItem: CartItem = {
         ...action.payload,
         quantityPurchase: 1,
-        selectedSize: "",
-        selectedColor: "",
-        originPrice: 0,
-        price: 0,
       };
       return {
         ...state,
@@ -112,13 +108,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const { authState } = useAuth();
   const { productState } = useProduct();
 
-  const addToCart = async (item: ProductType) => {
+  const addToCart = async (item: CartItem) => {
     try {
       if (authState.user !== null) {
         const existingItem = cartState.cartArray.find(
           (cartItem) => cartItem._id === item._id
         );
-        if (existingItem) {
+        if (existingItem !== undefined) {
           const updatedQuantity: any = existingItem.quantityPurchase + 1; // Increase quantity
           const response = await axios.patch(
             `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart`,
@@ -126,6 +122,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
               userId: authState.user._id,
               productId: item._id,
               quantityPurchase: updatedQuantity,
+              selectedSize: item.selectedSize,
+              selectedColor: item.selectedColor,
+              originPrice: item.originPrice,
+              price: item.price,
             }
           );
           dispatch({
@@ -139,6 +139,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
               userId: authState.user._id,
               productId: item._id,
               quantity: item.quantityPurchase,
+              selectedSize: item.selectedSize,
+              selectedColor: item.selectedColor,
+              originPrice: item.originPrice,
+              price: item.price,
             }
           );
           dispatch({ type: "ADD_TO_CART", payload: item });
@@ -180,7 +184,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           {
             userId: authState.user._id,
             productId: itemId,
-            quantityPurchase: quantityPurchase,
+            quantity: quantityPurchase,
+            selectedSize: selectedSize,
+            selectedColor: selectedColor,
+            originPrice: originPrice,
+            price: price,
           }
         );
       }
@@ -206,9 +214,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/cart/${id}`
       );
       let json = response.data.data.items.map((val: any) => {
-        return val.product;
+        return {
+          ...val.product,
+          quantityPurchase: val.quantity,
+          selectedSize: val.selectedSize,
+          selectedColor: val.selectedColor,
+          originPrice: val.originPrice,
+          price: val.price,
+        };
       });
-
+      console.log("json: ", json);
       json.map((val: any) => {
         dispatch({ type: "ADD_TO_CART", payload: val });
       });
