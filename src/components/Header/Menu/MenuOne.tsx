@@ -221,9 +221,9 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                   </li>
                   <li className="h-full">
                     <Link
-                      href="#!"
+                      href="/for-men"
                       className={`text-button-uppercase duration-300 h-full flex items-center justify-center ${
-                        pathname.includes("/product/") ? "active" : ""
+                        pathname.includes("/for-men") ? "active" : ""
                       }`}
                     >
                       For Men
@@ -231,9 +231,9 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                   </li>
                   <li className="h-full">
                     <Link
-                      href="#!"
+                      href="/for-women"
                       className={`text-button-uppercase duration-300 h-full flex items-center justify-center ${
-                        pathname.includes("/product/") ? "active" : ""
+                        pathname.includes("/for-women") ? "active" : ""
                       }`}
                     >
                       For Women
@@ -454,23 +454,23 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     className={`${openSubNavMobile === 4 ? "open" : ""}`}
                     onClick={() => handleOpenSubNavMobile(4)}
                   >
-                    <a
-                      href={"#!"}
+                    <Link
+                      href={"/for-men"}
                       className="text-xl font-semibold flex items-center justify-between mt-5"
                     >
                       For Men
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className={`${openSubNavMobile === 4 ? "open" : ""}`}
                     onClick={() => handleOpenSubNavMobile(4)}
                   >
-                    <a
-                      href={"#!"}
+                    <Link
+                      href={"for-women"}
                       className="text-xl font-semibold flex items-center justify-between mt-5"
                     >
                       For Women
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className={`${openSubNavMobile === 6 ? "open" : ""}`}
