@@ -76,10 +76,9 @@ const Checkout = () => {
     e.preventDefault;
     try {
       let res = await addToOrder(orderData);
-      console.log("res: ", res);
-
       router.push("/");
     } catch (error) {
+      router.push("/");
       console.log("error: ", error);
     }
   };
