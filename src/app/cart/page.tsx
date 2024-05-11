@@ -27,20 +27,22 @@ const Cart = () => {
 
   const handleQuantityChange = (
     productId: string,
-    quantityPurchase: number
+    quantityPurchase: number,
+    price: any,
+    orginPrice: any
   ) => {
-    console.log("quantity: ", quantityPurchase);
     const itemToUpdate = cartState.cartArray.find(
       (item) => item._id === productId
     );
-    console.log("itemToUpdate: ", itemToUpdate);
 
     if (itemToUpdate) {
       updateCart(
         productId,
         quantityPurchase,
         itemToUpdate.selectedSize,
-        itemToUpdate.selectedColor
+        itemToUpdate.selectedColor,
+        price,
+        orginPrice
       );
     }
   };
@@ -76,6 +78,13 @@ const Cart = () => {
   const redirectToCheckout = () => {
     router.push(`/checkout?discount=${discountCart}&ship=${shipCart}`);
   };
+
+  let totalPrice = 0;
+
+  cartState.cartArray.map((product: any) => {
+    const productPrice = product.quantityPurchase * product.price;
+    totalPrice += productPrice;
+  });
 
   return (
     <>
@@ -196,7 +205,9 @@ const Cart = () => {
                                   if (product.quantityPurchase > 1) {
                                     handleQuantityChange(
                                       product._id,
-                                      product.quantityPurchase - 1
+                                      product.quantityPurchase - 1,
+                                      product.price,
+                                      product.originPrice
                                     );
                                   }
                                 }}
@@ -216,7 +227,9 @@ const Cart = () => {
                                   ) {
                                     handleQuantityChange(
                                       product._id,
-                                      product.quantityPurchase + 1
+                                      product.quantityPurchase + 1,
+                                      product.price,
+                                      product.originPrice
                                     );
                                   }
                                 }}
@@ -436,11 +449,9 @@ const Cart = () => {
                 </div>
                 <div className="total-cart-block pt-4 pb-4 flex justify-between">
                   <div className="heading5">Total</div>
+
                   <div className="heading5">
-                    ₹
-                    <span className="total-cart heading5">
-                      {totalCart - discountCart + shipCart}
-                    </span>
+                    ₹<span className="total-cart heading5">{totalPrice}</span>
                     <span className="heading5">.00</span>
                   </div>
                 </div>

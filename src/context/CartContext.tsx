@@ -16,6 +16,8 @@ import { useProduct } from "./ProductContext";
 interface CartItem extends ProductType {
   selectedSize?: string | any;
   selectedColor?: string | any;
+  originPrice: any;
+  price: any;
 }
 
 interface CartState {
@@ -33,6 +35,8 @@ type CartAction =
         quantityPurchase: number;
         selectedSize?: string;
         selectedColor?: string;
+        originPrice?: number;
+        price?: number;
       };
     }
   | { type: "LOAD_CART"; payload: CartItem[] };
@@ -45,7 +49,9 @@ interface CartContextProps {
     itemId: string,
     quantity: number,
     selectedSize: string,
-    selectedColor: string
+    selectedColor: string,
+    originPrice?: any,
+    price?: any
   ) => void;
 }
 
@@ -59,6 +65,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         quantityPurchase: 1,
         selectedSize: "",
         selectedColor: "",
+        originPrice: 0,
+        price: 0,
       };
       return {
         ...state,
@@ -81,6 +89,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
                 quantityPurchase: action.payload.quantityPurchase,
                 selectedSize: action.payload.selectedSize,
                 selectedColor: action.payload.selectedColor,
+                originPrice: action.payload.originPrice,
+                price: action.payload.price,
               }
             : item
         ),
@@ -159,7 +169,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     itemId: string,
     quantityPurchase: number,
     selectedSize: string,
-    selectedColor: string
+    selectedColor: string,
+    price?: any,
+    originPrice?: any
   ) => {
     try {
       if (authState.user !== null) {
@@ -174,7 +186,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       dispatch({
         type: "UPDATE_CART",
-        payload: { itemId, quantityPurchase, selectedSize, selectedColor },
+        payload: {
+          itemId,
+          quantityPurchase,
+          selectedSize,
+          selectedColor,
+          price: price,
+          originPrice: originPrice,
+        },
       });
     } catch (error) {
       console.log("error: ", error);

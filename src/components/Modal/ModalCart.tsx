@@ -164,13 +164,35 @@ const ModalCart = ({
                 >
                   <div className="infor flex items-center gap-3 w-full">
                     <div className="bg-img w-[100px] aspect-square flex-shrink-0 rounded-lg overflow-hidden">
-                      <Image
-                        src={product.images[0]}
-                        width={300}
-                        height={300}
-                        alt={product.name}
-                        className="w-full h-full"
-                      />
+                      {product.selectedColor ? (
+                        <>
+                          {JSON.parse(product.variation)
+                            .filter((item: any, idx: any) => {
+                              return (
+                                item.color === product.selectedColor &&
+                                item.size === product.selectedSize
+                              );
+                            })
+                            .map((filteredItem: any, idx: any) => (
+                              <Image
+                                key={idx}
+                                src={filteredItem.image}
+                                width={300}
+                                height={300}
+                                alt={product.name}
+                                className="w-full h-full"
+                              />
+                            ))}
+                        </>
+                      ) : (
+                        <Image
+                          src={product.images[0]}
+                          width={300}
+                          height={300}
+                          alt={product.name}
+                          className="w-full h-full"
+                        />
+                      )}
                     </div>
                     <div className="w-full">
                       <div className="flex items-center justify-between w-full">

@@ -85,21 +85,32 @@ const Default: React.FC<Props> = ({ data, productId }) => {
     }
   };
 
+  let price =
+    productMain &&
+    JSON.parse(productMain.variation).find(
+      (item: any) => item.size === activeSize && item.color === activeColor
+    );
   const handleAddToCart = () => {
+    let newPrice = parseInt(price.price);
+    let oldPrice = parseInt(price.oldPrice);
     if (!cartState.cartArray.find((item) => item._id === productMain._id)) {
       addToCart({ ...productMain });
       updateCart(
         productMain._id,
         productMain.quantityPurchase,
         activeSize,
-        activeColor
+        activeColor,
+        newPrice,
+        oldPrice
       );
     } else {
       updateCart(
         productMain._id,
         productMain.quantityPurchase,
         activeSize,
-        activeColor
+        activeColor,
+        newPrice,
+        oldPrice
       );
     }
     openModalCart();
@@ -153,6 +164,27 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 modules={[Thumbs]}
                 className="mySwiper2 rounded-2xl overflow-hidden"
               >
+                {activeColor && (
+                  <>
+                    {JSON.parse(productMain.variation)
+                      .filter((item: any, idx: any) => {
+                        return item.color === activeColor;
+                      })
+                      .map((filteredItem: any, idx: any) => (
+                        <SwiperSlide key={idx}>
+                          <Image
+                            key={idx}
+                            src={filteredItem.image}
+                            width={1000}
+                            height={1000}
+                            alt={productMain.name}
+                            className="w-full aspect-[3/4] object-cover rounded-xl"
+                          />
+                        </SwiperSlide>
+                      ))}
+                  </>
+                )}
+
                 {productMain?.images.map((item, index) => (
                   <SwiperSlide key={index}>
                     <Image
@@ -174,17 +206,40 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 modules={[Navigation, Thumbs]}
                 className="mySwiper"
               >
-                {productMain?.images.map((item, index) => (
-                  <SwiperSlide key={index}>
-                    <Image
-                      src={item}
-                      width={1000}
-                      height={1000}
-                      alt="prd-img"
-                      className="w-full aspect-[3/4] object-cover rounded-xl"
-                    />
-                  </SwiperSlide>
-                ))}
+                {activeColor && (
+                  <>
+                    {JSON.parse(productMain.variation)
+                      .filter((item: any, idx: any) => {
+                        return item.color === activeColor;
+                      })
+                      .map((filteredItem: any, idx: any) => (
+                        <SwiperSlide key={idx}>
+                          <Image
+                            key={idx}
+                            src={filteredItem.image}
+                            width={1000}
+                            height={1000}
+                            alt={productMain.name}
+                            className="w-full aspect-[3/4] object-cover rounded-xl"
+                          />
+                        </SwiperSlide>
+                      ))}
+                  </>
+                )}
+
+                <>
+                  {productMain?.images.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <Image
+                        src={item}
+                        width={1000}
+                        height={1000}
+                        alt="prd-img"
+                        className="w-full aspect-[3/4] object-cover rounded-xl"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </>
               </Swiper>
             </div>
             <div className="product-infor md:w-1/2 w-full lg:pl-[15px] md:pl-2">
@@ -228,11 +283,13 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               </div>
               <div className="flex items-center gap-3 flex-wrap mt-5 pb-6 border-b border-line">
                 <div className="product-price heading5">
-                  ₹{productMain.price}.00
+                  ₹{price ? price.price : productMain.price}.00
                 </div>
                 <div className="w-px h-4 bg-line"></div>
                 <div className="product-origin-price font-normal text-secondary2">
-                  <del>₹{productMain.originPrice}.00</del>
+                  <del>
+                    ₹{price ? price.oldPrice : productMain.originPrice}.00
+                  </del>
                 </div>
                 {productMain.originPrice && (
                   <div className="product-sale caption2 font-semibold bg-green px-3 py-0.5 inline-block rounded-full">
@@ -252,46 +309,35 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                 <div className="choose-color">
                   <div className="text-title">
                     Colors:{" "}
-                    {/* <span className="text-title color">{activeColor}</span> */}
+                    <span className="text-title color">{activeColor}</span>
                   </div>
                   <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                    {JSON.parse(productMain.variation).map(
-                      (item: any, index: any) => (
-                        console.log("item: ", item),
-                        (
-                          <div
-                            className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
-                              activeColor === item.color ? "active" : ""
-                            }`}
-                            key={index}
-                            // datatype={item.image}
-                            onClick={() => {
-                              handleActiveColor(item.color);
-                            }}
-                          >
-                            <input
-                              className="rounded-xl"
-                              disabled
-                              type="color"
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                padding: 0,
-                                margin: 0,
-                                border: "none",
-                              }}
-                              value={item?.colorCode}
-                              onClick={() => {
-                                handleActiveColor(item.color);
-                              }}
-                            />
-                            {/* <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                            {item.color}
-                          </div> */}
-                          </div>
-                        )
+                    {JSON.parse(productMain.variation)
+                      .filter(
+                        (item: any, index: any, self: any) =>
+                          index ===
+                          self.findIndex((t: any) => t.color === item.color)
                       )
-                    )}
+                      .map((item: any, index: any) => (
+                        <div
+                          key={index}
+                          className={`color-item w-8 h-8 rounded-full duration-300 relative ${
+                            activeColor === item.color ? "active" : ""
+                          }`}
+                          style={{
+                            backgroundColor: `${item.colorCode}`,
+                            border: "1px solid",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleActiveColor(item.color);
+                          }}
+                        >
+                          <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                            {item.color}
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <div className="choose-size mt-5">
@@ -313,8 +359,13 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                     />
                   </div>
                   <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                    {JSON.parse(productMain.variation).map(
-                      (item: any, index: any) => (
+                    {JSON.parse(productMain.variation)
+                      .filter(
+                        (item: any, index: any, self: any) =>
+                          index ===
+                          self.findIndex((t: any) => t.size === item.size)
+                      )
+                      .map((item: any, index: any) => (
                         <div
                           className={`size-item ${
                             item.size === "freesize" ? "px-3 py-2" : "w-12 h-12"
@@ -326,8 +377,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                         >
                           {item.size}
                         </div>
-                      )
-                    )}
+                      ))}
                   </div>
                 </div>
                 <div className="text-title mt-5">Quantity:</div>

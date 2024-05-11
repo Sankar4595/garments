@@ -62,7 +62,15 @@ const ModalQuickview = () => {
     }
   };
 
+  let price =
+    selectedProduct &&
+    JSON.parse(selectedProduct.variation).find(
+      (item: any) => item.size === activeSize && item.color === activeColor
+    );
+
   const handleAddToCart = () => {
+    let newPrice = parseInt(price.price);
+    let oldPrice = parseInt(price.oldPrice);
     if (selectedProduct) {
       if (
         !cartState.cartArray.find((item) => item._id === selectedProduct._id)
@@ -72,14 +80,18 @@ const ModalQuickview = () => {
           selectedProduct._id,
           selectedProduct.quantityPurchase,
           activeSize,
-          activeColor
+          activeColor,
+          newPrice,
+          oldPrice
         );
       } else {
         updateCart(
           selectedProduct._id,
           selectedProduct.quantityPurchase,
           activeSize,
-          activeColor
+          activeColor,
+          newPrice,
+          oldPrice
         );
       }
       openModalCart();
@@ -140,6 +152,44 @@ const ModalQuickview = () => {
             <div className="flex h-full max-md:flex-col-reverse gap-y-6">
               <div className="left lg:w-[388px] md:w-[300px] flex-shrink-0 px-6">
                 <div className="list-img max-md:flex items-center gap-4">
+                  {activeColor ? (
+                    <>
+                      {
+                        <div className="bg-img w-full aspect-[3/4] max-md:w-[150px] max-md:flex-shrink-0 rounded-[20px] overflow-hidden md:mt-6">
+                          <Image
+                            src={
+                              JSON.parse(selectedProduct.variation).find(
+                                (item: any) => item.color === activeColor
+                              )?.image || ""
+                            }
+                            width={500}
+                            height={500}
+                            priority={true}
+                            alt={activeColor}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      }
+                    </>
+                  ) : (
+                    <>
+                      {selectedProduct?.images.map((item, index) => (
+                        <div
+                          className="bg-img w-full aspect-[3/4] max-md:w-[150px] max-md:flex-shrink-0 rounded-[20px] overflow-hidden md:mt-6"
+                          key={index}
+                        >
+                          <Image
+                            src={item}
+                            width={1500}
+                            height={2000}
+                            alt={item}
+                            priority={true}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </>
+                  )}
                   {selectedProduct?.images.map((item, index) => (
                     <div
                       className="bg-img w-full aspect-[3/4] max-md:w-[150px] max-md:flex-shrink-0 rounded-[20px] overflow-hidden md:mt-6"
@@ -214,11 +264,14 @@ const ModalQuickview = () => {
                   </div>
                   <div className="flex items-center gap-3 flex-wrap mt-5 pb-6 border-b border-line">
                     <div className="product-price heading5">
-                      ₹{selectedProduct?.price}.00
+                      ₹{price ? price.price : selectedProduct?.price}.00
                     </div>
                     <div className="w-px h-4 bg-line"></div>
                     <div className="product-origin-price font-normal text-secondary2">
-                      <del>₹{selectedProduct?.originPrice}.00</del>
+                      <del>
+                        ₹{price ? price.oldPrice : selectedProduct?.originPrice}
+                        .00
+                      </del>
                     </div>
                     {selectedProduct?.originPrice && (
                       <div className="product-sale caption2 font-semibold bg-green px-3 py-0.5 inline-block rounded-full">
@@ -239,41 +292,34 @@ const ModalQuickview = () => {
                         Colors:{" "}
                         <span className="text-title color">{activeColor}</span>
                       </div>
-                      <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                        {JSON.parse(selectedProduct?.variation).map(
-                          (item: any, index: any) => (
+                      <div className="list-color py-2 max-md:hidden flex items-center gap-3 flex-wrap duration-500">
+                        {JSON.parse(selectedProduct.variation)
+                          // Remove duplicates based on color name
+                          .filter(
+                            (item: any, index: any, self: any) =>
+                              index ===
+                              self.findIndex((t: any) => t.color === item.color)
+                          )
+                          .map((item: any, index: any) => (
                             <div
-                              className={`color-item w-12 h-12 rounded-xl duration-300 relative ${
+                              key={index}
+                              className={`color-item w-8 h-8 rounded-full duration-300 relative ${
                                 activeColor === item.color ? "active" : ""
                               }`}
-                              key={index}
-                              datatype={item.image}
-                              onClick={() => {
+                              style={{
+                                backgroundColor: `${item.colorCode}`,
+                                border: "1px solid",
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleActiveColor(item.color);
                               }}
                             >
-                              <input
-                                className="rounded-xl"
-                                disabled
-                                type="color"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  padding: 0,
-                                  margin: 0,
-                                  border: "none",
-                                }}
-                                value={item?.colorCode}
-                                onClick={() => {
-                                  handleActiveColor(item.color);
-                                }}
-                              />
                               <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
                                 {item.color}
                               </div>
                             </div>
-                          )
-                        )}
+                          ))}
                       </div>
                     </div>
                     <div className="choose-size mt-5">
@@ -287,8 +333,14 @@ const ModalQuickview = () => {
                         </div>
                       </div>
                       <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                        {JSON.parse(selectedProduct?.variation).map(
-                          (item: any, index: any) => (
+                        {JSON.parse(selectedProduct?.variation)
+                          // Remove duplicates based on size
+                          .filter(
+                            (item: any, index: any, self: any) =>
+                              index ===
+                              self.findIndex((t: any) => t.size === item.size)
+                          )
+                          .map((item: any, index: any) => (
                             <div
                               className={`size-item ${
                                 item.size === "freesize"
@@ -302,8 +354,7 @@ const ModalQuickview = () => {
                             >
                               {item.size}
                             </div>
-                          )
-                        )}
+                          ))}
                       </div>
                     </div>
                     <div className="text-title mt-5">Quantity:</div>

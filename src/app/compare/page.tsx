@@ -151,14 +151,19 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-1">
-                          {JSON.parse(item.variation).map(
-                            (size: any, i: any) => (
+                          {JSON.parse(item.variation)
+                            // Remove duplicates based on size
+                            .filter(
+                              (size: any, i: any, self: any) =>
+                                i ===
+                                self.findIndex((s: any) => s.size === size.size)
+                            )
+                            .map((size: any, i: any) => (
                               <p key={i}>
                                 {size.size}
                                 <span>,</span>
                               </p>
-                            )
-                          )}
+                            ))}
                         </div>
                       </td>
                     ))}
@@ -170,17 +175,26 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-2">
-                          {JSON.parse(item.variation).map(
-                            (colorItem: any, i: any) => (
+                          {JSON.parse(item.variation)
+                            // Remove duplicates based on color
+                            .filter(
+                              (colorItem: any, i: any, self: any) =>
+                                i ===
+                                self.findIndex(
+                                  (c: any) =>
+                                    c.colorCode === colorItem.colorCode
+                                )
+                            )
+                            .map((colorItem: any, i: any) => (
                               <span
                                 key={i}
                                 className={`w-6 h-6 rounded-full`}
                                 style={{
                                   backgroundColor: `${colorItem.colorCode}`,
+                                  border: "1px solid",
                                 }}
                               ></span>
-                            )
-                          )}
+                            ))}
                         </div>
                       </td>
                     ))}
