@@ -18,6 +18,7 @@ interface CartItem extends ProductType {
   selectedColor?: string | any;
   originPrice: any;
   price: any;
+  quantity: number | any;
 }
 
 interface CartState {
@@ -37,6 +38,7 @@ type CartAction =
         selectedColor?: string;
         originPrice?: number;
         price?: number;
+        quantity?: number;
       };
     }
   | { type: "LOAD_CART"; payload: CartItem[] };
@@ -47,11 +49,12 @@ interface CartContextProps {
   removeFromCart: (itemId: string) => void;
   updateCart: (
     itemId: string,
-    quantity: number,
+    quantityPurchase: number,
     selectedSize: string,
     selectedColor: string,
     originPrice?: any,
-    price?: any
+    price?: any,
+    quantity?: number
   ) => void;
 }
 
@@ -87,6 +90,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
                 selectedColor: action.payload.selectedColor,
                 originPrice: action.payload.originPrice,
                 price: action.payload.price,
+                quantity: action.payload.quantity,
               }
             : item
         ),
@@ -175,7 +179,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     selectedSize: string,
     selectedColor: string,
     price?: any,
-    originPrice?: any
+    originPrice?: any,
+    quantity?: number
   ) => {
     try {
       if (authState.user !== null) {
@@ -184,11 +189,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           {
             userId: authState.user._id,
             productId: itemId,
-            quantity: quantityPurchase,
+            quantityPurchase: quantityPurchase,
             selectedSize: selectedSize,
             selectedColor: selectedColor,
             originPrice: originPrice,
             price: price,
+            quantity: quantity,
           }
         );
       }
@@ -201,6 +207,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           selectedColor,
           price: price,
           originPrice: originPrice,
+          quantity: quantity,
         },
       });
     } catch (error) {
@@ -221,6 +228,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           selectedColor: val.selectedColor,
           originPrice: val.originPrice,
           price: val.price,
+          quantity: val.quantity,
         };
       });
       console.log("json: ", json);

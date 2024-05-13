@@ -18,6 +18,8 @@ import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useCompare } from "@/context/CompareContext";
 import { useModalCompareContext } from "@/context/ModalCompareContext";
 import ModalSizeguide from "@/components/Modal/ModalSizeguide";
+import { toast } from "react-toastify";
+import { message } from "antd";
 
 SwiperCore.use([Navigation, Thumbs]);
 
@@ -42,6 +44,12 @@ const Default: React.FC<Props> = ({ data, productId }) => {
     (product) => product._id === productId
   ) as ProductType;
 
+  let price =
+    productMain &&
+    JSON.parse(productMain.variation).find(
+      (item: any) => item.size === activeSize && item.color === activeColor
+    );
+
   const handleOpenSizeGuide = () => {
     setOpenSizeGuide(true);
   };
@@ -64,7 +72,13 @@ const Default: React.FC<Props> = ({ data, productId }) => {
   };
 
   const handleIncreaseQuantity = () => {
-    productMain.quantityPurchase += 1;
+    if (activeColor && activeSize) {
+      if (productMain.quantityPurchase < parseInt(price.quantity)) {
+        productMain.quantityPurchase += 1;
+      }
+    } else {
+      message.error("Please Select Color & Size");
+    }
     updateCart(
       productMain._id,
       productMain.quantityPurchase + 1,
@@ -85,14 +99,10 @@ const Default: React.FC<Props> = ({ data, productId }) => {
     }
   };
 
-  let price =
-    productMain &&
-    JSON.parse(productMain.variation).find(
-      (item: any) => item.size === activeSize && item.color === activeColor
-    );
   const handleAddToCart = () => {
     let newPrice = parseInt(price.price);
     let oldPrice = parseInt(price.oldPrice);
+    let quantity = parseInt(price.quantity);
     if (!cartState.cartArray.find((item) => item._id === productMain._id)) {
       addToCart({ ...productMain });
       updateCart(
@@ -101,7 +111,8 @@ const Default: React.FC<Props> = ({ data, productId }) => {
         activeSize,
         activeColor,
         newPrice,
-        oldPrice
+        oldPrice,
+        quantity
       );
     } else {
       updateCart(
@@ -110,7 +121,8 @@ const Default: React.FC<Props> = ({ data, productId }) => {
         activeSize,
         activeColor,
         newPrice,
-        oldPrice
+        oldPrice,
+        quantity
       );
     }
     openModalCart();

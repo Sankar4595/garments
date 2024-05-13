@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.14",
+    "antd": "^5.17.0",
     "axios": "^1.6.8",
     "framer-motion": "^10.17.4",
     "next": "14.0.3",

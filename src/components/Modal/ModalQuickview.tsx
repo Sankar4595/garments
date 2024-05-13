@@ -13,6 +13,7 @@ import { useModalWishlistContext } from "@/context/ModalWishlistContext";
 import { useCompare } from "@/context/CompareContext";
 import { useModalCompareContext } from "@/context/ModalCompareContext";
 import Rate from "../Other/Rate";
+import { message } from "antd";
 
 const ModalQuickview = () => {
   const { selectedProduct, closeQuickview } = useModalQuickviewContext();
@@ -30,6 +31,12 @@ const ModalQuickview = () => {
       100 - (selectedProduct.price / selectedProduct.originPrice) * 100
     );
 
+  let selectvariation: any =
+    selectedProduct &&
+    JSON.parse(selectedProduct.variation).find(
+      (item: any) => item.size === activeSize && item.color === activeColor
+    );
+
   const handleActiveColor = (item: string) => {
     setActiveColor(item);
   };
@@ -39,14 +46,21 @@ const ModalQuickview = () => {
   };
 
   const handleIncreaseQuantity = () => {
-    if (selectedProduct) {
-      selectedProduct.quantityPurchase += 1;
-      updateCart(
-        selectedProduct._id,
-        selectedProduct.quantityPurchase + 1,
-        activeSize,
-        activeColor
-      );
+    if (activeColor && activeSize) {
+      if (
+        selectedProduct &&
+        selectedProduct.quantityPurchase < selectvariation.quantity
+      ) {
+        selectedProduct.quantityPurchase += 1;
+        updateCart(
+          selectedProduct._id,
+          selectedProduct.quantityPurchase + 1,
+          activeSize,
+          activeColor
+        );
+      }
+    } else {
+      message.error("Please Choose Color and Size");
     }
   };
 

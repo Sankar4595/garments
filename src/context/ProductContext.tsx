@@ -77,7 +77,9 @@ const productReducer = (
       return {
         ...state,
         loading: false,
-        products: action.payload.data,
+        products: action.payload.data.filter(
+          (product: any) => product.isPublish === true
+        ),
         error: null,
       };
     case "FETCH_PRODUCTS_FAILURE":
@@ -161,6 +163,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/product`
       );
+      console.log("response: ", response);
       productDispatch({
         type: "FETCH_PRODUCTS_SUCCESS",
         payload: response.data,
