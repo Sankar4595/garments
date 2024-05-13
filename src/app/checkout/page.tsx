@@ -64,6 +64,8 @@ const Checkout = () => {
               product: val._id,
               price: val.price * val.quantityPurchase,
               quantity: val.quantityPurchase,
+              selectedSize: val.selectedSize,
+              selectedColor: val.selectedColor,
             };
           }),
           total: totalPrice,

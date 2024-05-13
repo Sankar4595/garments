@@ -74,10 +74,10 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          JSON.parse(product.type).some(
+                          product.type.some(
                             (val: any) => val.label === "accessories"
                           ) &&
-                          JSON.parse(product.category).some(
+                          product.category.some(
                             (val: any) => val.label === "fashion"
                           )
                       )
@@ -123,10 +123,10 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          JSON.parse(product.type).some(
+                          product.type.some(
                             (val: any) => val.label === "accessories"
                           ) &&
-                          JSON.parse(product.category).some(
+                          product.category.some(
                             (val: any) => val.label === "fashion"
                           )
                       )
@@ -172,10 +172,10 @@ const ShopCollection: React.FC<Props> = ({ data }) => {
                     {data
                       .filter(
                         (product) =>
-                          JSON.parse(product.type).some(
+                          product.type.some(
                             (val: any) => val.label === "accessories"
                           ) &&
-                          JSON.parse(product.category).some(
+                          product.category.some(
                             (val: any) => val.label === "fashion"
                           )
                       )

@@ -38,9 +38,7 @@ const Wishlist = () => {
     filteredData = wishlistState.wishlistArray.filter((product) => {
       let isTypeMatched = true;
       if (type) {
-        isTypeMatched = JSON.parse(product.type).some(
-          (val: any) => val.label === type
-        );
+        isTypeMatched = product.type.some((val: any) => val.label === type);
       }
 
       return isTypeMatched;

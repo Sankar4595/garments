@@ -1,7 +1,7 @@
 "use client";
 
 // Quickview.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ProductType } from "@/type/ProductType";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
@@ -16,7 +16,8 @@ import Rate from "../Other/Rate";
 import { message } from "antd";
 
 const ModalQuickview = () => {
-  const { selectedProduct, closeQuickview } = useModalQuickviewContext();
+  const { selectedProduct, closeQuickview, setSelectedProduct } =
+    useModalQuickviewContext();
   const [activeColor, setActiveColor] = useState<string>("");
   const [activeSize, setActiveSize] = useState<string>("");
   const { addToCart, updateCart, cartState } = useCart();
@@ -33,7 +34,7 @@ const ModalQuickview = () => {
 
   let selectvariation: any =
     selectedProduct &&
-    JSON.parse(selectedProduct.variation).find(
+    selectedProduct.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
     );
 
@@ -47,6 +48,9 @@ const ModalQuickview = () => {
 
   const handleIncreaseQuantity = () => {
     if (activeColor && activeSize) {
+      let newPrice = parseInt(selectvariation.price);
+      let oldPrice = parseInt(selectvariation.oldPrice);
+      let qty = parseInt(selectvariation.quantity);
       if (
         selectedProduct &&
         selectedProduct.quantityPurchase < selectvariation.quantity
@@ -56,13 +60,26 @@ const ModalQuickview = () => {
           selectedProduct._id,
           selectedProduct.quantityPurchase + 1,
           activeSize,
-          activeColor
+          activeColor,
+          newPrice,
+          oldPrice,
+          qty
         );
       }
     } else {
       message.error("Please Choose Color and Size");
     }
   };
+
+  useEffect(() => {
+    if (activeColor && activeSize) {
+      let prd: any = {
+        ...selectedProduct,
+        quantity: parseInt(selectvariation.quantity),
+      };
+      setSelectedProduct(prd);
+    }
+  }, [activeColor, activeSize]);
 
   const handleDecreaseQuantity = () => {
     if (selectedProduct && selectedProduct.quantityPurchase > 1) {
@@ -78,7 +95,7 @@ const ModalQuickview = () => {
 
   let price =
     selectedProduct &&
-    JSON.parse(selectedProduct.variation).find(
+    selectedProduct.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
     );
 
@@ -172,7 +189,7 @@ const ModalQuickview = () => {
                         <div className="bg-img w-full aspect-[3/4] max-md:w-[150px] max-md:flex-shrink-0 rounded-[20px] overflow-hidden md:mt-6">
                           <Image
                             src={
-                              JSON.parse(selectedProduct.variation).find(
+                              selectedProduct.variation.find(
                                 (item: any) => item.color === activeColor
                               )?.image || ""
                             }
@@ -235,9 +252,7 @@ const ModalQuickview = () => {
                   <div className="flex justify-between">
                     <div>
                       <div className="caption2 text-secondary font-semibold uppercase">
-                        {JSON.parse(selectedProduct?.type).map(
-                          (val: any) => val.label
-                        )}
+                        {(selectedProduct?.type).map((val: any) => val.label)}
                       </div>
                       <div className="heading4 mt-1">
                         {selectedProduct?.name}
@@ -307,7 +322,7 @@ const ModalQuickview = () => {
                         <span className="text-title color">{activeColor}</span>
                       </div>
                       <div className="list-color py-2 max-md:hidden flex items-center gap-3 flex-wrap duration-500">
-                        {JSON.parse(selectedProduct.variation)
+                        {selectedProduct.variation
                           // Remove duplicates based on color name
                           .filter(
                             (item: any, index: any, self: any) =>
@@ -347,7 +362,7 @@ const ModalQuickview = () => {
                         </div>
                       </div>
                       <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                        {JSON.parse(selectedProduct?.variation)
+                        {(selectedProduct?.variation)
                           // Remove duplicates based on size
                           .filter(
                             (item: any, index: any, self: any) =>
@@ -454,7 +469,7 @@ const ModalQuickview = () => {
                       <div className="flex items-center gap-1 mt-3">
                         <div className="text-title">Categories:</div>
                         <div className="text-secondary">
-                          {JSON.parse(selectedProduct?.category).map(
+                          {(selectedProduct?.category).map(
                             (val: any) => val.label
                           )}
                           , {selectedProduct?.gender}
@@ -463,9 +478,7 @@ const ModalQuickview = () => {
                       <div className="flex items-center gap-1 mt-3">
                         <div className="text-title">Tag:</div>
                         <div className="text-secondary">
-                          {JSON.parse(selectedProduct?.type).map(
-                            (val: any) => val.label
-                          )}
+                          {(selectedProduct?.type).map((val: any) => val.label)}
                         </div>
                       </div>
                     </div>

@@ -74,7 +74,6 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
         `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/apps/order`,
         item
       );
-      console.log("response: ", response);
     } catch (error) {
       console.log("error: ", error);
     }

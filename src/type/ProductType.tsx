@@ -39,6 +39,8 @@ export interface ProductType {
   slug: string;
   discount: string;
   shippingdays?: number;
+  selectedSize?: string;
+  selectedColor?: string;
 }
 
 // export interface IProduct {

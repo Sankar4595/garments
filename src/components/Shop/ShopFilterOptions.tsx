@@ -80,9 +80,7 @@ const ShopFilterOptions: React.FC<Props> = ({ data, productPerPage }) => {
 
     let isTypeMatched = true;
     if (type) {
-      isTypeMatched = JSON.parse(product.type).some(
-        (val: any) => val.label === type
-      );
+      isTypeMatched = product.type.some((val: any) => val.label === type);
     }
 
     let isSizeMatched = true;
@@ -98,7 +96,7 @@ const ShopFilterOptions: React.FC<Props> = ({ data, productPerPage }) => {
 
     let isColorMatched = true;
     if (color) {
-      isColorMatched = JSON.parse(product.variation).some(
+      isColorMatched = product.variation.some(
         (item: any) => item.color === color
       );
     }
@@ -115,7 +113,7 @@ const ShopFilterOptions: React.FC<Props> = ({ data, productPerPage }) => {
       isColorMatched &&
       isBrandMatched &&
       isPriceRangeMatched &&
-      JSON.parse(product.category).some((val: any) => val.label === "fashion")
+      product.category.some((val: any) => val.label === "fashion")
     );
   });
 

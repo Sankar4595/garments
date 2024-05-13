@@ -411,10 +411,10 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
                         {
                           data.filter(
                             (dataItem) =>
-                              JSON.parse(dataItem.type).some(
+                              dataItem.type.some(
                                 (val: any) => val.label === item.name
                               ) &&
-                              JSON.parse(dataItem.category).some(
+                              dataItem.category.some(
                                 (val: any) => val.value === item.category
                               )
                           ).length
@@ -583,7 +583,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
                             data.filter(
                               (dataItem) =>
                                 dataItem.brand === item &&
-                                JSON.parse(dataItem.category).some(
+                                dataItem.category.some(
                                   (val: any) => val.label === "fashion"
                                 )
                             ).length

@@ -12,6 +12,7 @@ import { useCompare } from "@/context/CompareContext";
 import { useModalCompareContext } from "@/context/ModalCompareContext";
 import { useModalQuickviewContext } from "@/context/ModalQuickviewContext";
 import { useRouter } from "next/navigation";
+import { message } from "antd";
 
 interface ProductProps {
   data: ProductType;
@@ -32,7 +33,6 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
   const router = useRouter();
 
   const handleActiveColor = (item: string) => {
-    console.log("item: ", item);
     setActiveColor(item);
   };
 
@@ -42,34 +42,48 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
 
   let price =
     data &&
-    JSON.parse(data.variation).find(
+    data.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
     );
 
   const handleAddToCart = () => {
-    let newPrice = parseInt(price.price);
-    let oldPrice = parseInt(price.oldPrice);
-    if (!cartState.cartArray.find((item) => item._id === data._id)) {
-      addToCart({ ...data });
-      updateCart(
-        data._id,
-        data.quantityPurchase,
-        activeSize,
-        activeColor,
-        newPrice,
-        oldPrice
-      );
+    if (activeColor !== "" && activeSize !== "") {
+      let newPrice = parseInt(price.price);
+      let oldPrice = parseInt(price.oldPrice);
+      let qty = parseInt(price.quantity);
+      if (!cartState.cartArray.find((item) => item._id === data._id)) {
+        addToCart({
+          ...data,
+          selectedSize: activeSize,
+          selectedColor: activeColor,
+          price: newPrice,
+          originPrice: oldPrice,
+          quantity: qty,
+        });
+        updateCart(
+          data._id,
+          data.quantityPurchase,
+          activeSize,
+          activeColor,
+          newPrice,
+          oldPrice,
+          qty
+        );
+      } else {
+        updateCart(
+          data._id,
+          data.quantityPurchase,
+          activeSize,
+          activeColor,
+          newPrice,
+          oldPrice,
+          qty
+        );
+      }
+      openModalCart();
     } else {
-      updateCart(
-        data._id,
-        data.quantityPurchase,
-        activeSize,
-        activeColor,
-        newPrice,
-        oldPrice
-      );
+      message.error("Please select color and size");
     }
-    openModalCart();
   };
 
   const handleAddToWishlist = () => {
@@ -192,7 +206,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     {
                       <Image
                         src={
-                          JSON.parse(data.variation).find(
+                          data.variation.find(
                             (item: any) => item.color === activeColor
                           )?.image || ""
                         }
@@ -260,7 +274,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       }}
                     >
                       <div className="list-size flex items-center justify-center flex-wrap gap-2">
-                        {JSON.parse(data.variation)
+                        {data.variation
                           // Remove duplicates based on size
                           .filter(
                             (item: any, index: any, self: any) =>
@@ -323,7 +337,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
               </div>
               {data.variation.length > 0 && data.action === "quick shop" && (
                 <div className="list-color py-2 max-md:hidden flex items-center gap-3 flex-wrap duration-500">
-                  {JSON.parse(data.variation)
+                  {data.variation
                     // Remove duplicates based on color name
                     .filter(
                       (item: any, index: any, self: any) =>
@@ -354,7 +368,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
               )}
               {/* {data.variation.length > 0 && data.action === "quick shop" && (
                 <div className="list-color-image max-md:hidden flex items-center gap-3 flex-wrap duration-500">
-                  {JSON.parse(data.variation)
+                  {(data.variation)
                     // Remove duplicates based on color
                     .filter(
                       (item: any, index: any, self: any) =>
@@ -460,23 +474,21 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                         }}
                       >
                         <div className="list-size flex items-center justify-center flex-wrap gap-2">
-                          {JSON.parse(data.variation).map(
-                            (item: any, index: any) => (
-                              <div
-                                className={`size-item ${
-                                  item.size !== "freesize"
-                                    ? "w-10 h-10"
-                                    : "h-10 px-4"
-                                } flex items-center justify-center text-button bg-white rounded-full border border-line ${
-                                  activeSize === item.size ? "active" : ""
-                                }`}
-                                key={index}
-                                onClick={() => handleActiveSize(item.size)}
-                              >
-                                {item.size}
-                              </div>
-                            )
-                          )}
+                          {data.variation.map((item: any, index: any) => (
+                            <div
+                              className={`size-item ${
+                                item.size !== "freesize"
+                                  ? "w-10 h-10"
+                                  : "h-10 px-4"
+                              } flex items-center justify-center text-button bg-white rounded-full border border-line ${
+                                activeSize === item.size ? "active" : ""
+                              }`}
+                              key={index}
+                              onClick={() => handleActiveSize(item.size)}
+                            >
+                              {item.size}
+                            </div>
+                          ))}
                         </div>
                         <div
                           className="button-main w-full text-center rounded-full py-3 mt-4"
@@ -514,19 +526,17 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       {data.variation.length > 0 &&
                       data.action === "quick shop" ? (
                         <div className="list-color max-md:hidden py-2 mt-5 mb-1 flex items-center gap-3 flex-wrap duration-300">
-                          {JSON.parse(data.variation).map(
-                            (item: any, index: any) => (
-                              <div
-                                key={index}
-                                className={`color-item w-8 h-8 rounded-full duration-300 relative`}
-                                style={{ backgroundColor: `${item.colorCode}` }}
-                              >
-                                <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                                  {item.color}
-                                </div>
+                          {data.variation.map((item: any, index: any) => (
+                            <div
+                              key={index}
+                              className={`color-item w-8 h-8 rounded-full duration-300 relative`}
+                              style={{ backgroundColor: `${item.colorCode}` }}
+                            >
+                              <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                                {item.color}
                               </div>
-                            )
-                          )}
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <>
@@ -534,7 +544,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                           data.action === "quick shop" ? (
                             <>
                               <div className="list-color flex items-center gap-2 flex-wrap mt-5">
-                                {JSON.parse(data.variation).map(
+                                {(data.variation).map(
                                   (item: any, index: any) => (
                                     <div
                                       className={`color-item w-12 h-12 rounded-xl duration-300 relative ${

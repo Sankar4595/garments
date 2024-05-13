@@ -127,7 +127,7 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize">
-                          {JSON.parse(item.type).map((val: any) => val.label)}
+                          {item.type.map((val: any) => val.label)}
                         </div>
                       </td>
                     ))}
@@ -151,7 +151,7 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-1">
-                          {JSON.parse(item.variation)
+                          {item.variation
                             // Remove duplicates based on size
                             .filter(
                               (size: any, i: any, self: any) =>
@@ -175,7 +175,7 @@ const Compare = () => {
                         key={index}
                       >
                         <div className="h-full flex items-center justify-center capitalize gap-2">
-                          {JSON.parse(item.variation)
+                          {item.variation
                             // Remove duplicates based on color
                             .filter(
                               (colorItem: any, i: any, self: any) =>

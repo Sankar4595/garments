@@ -11,6 +11,7 @@ interface ModalQuickviewContextProps {
 interface ModalQuickviewContextValue {
   selectedProduct: ProductType | null | undefined;
   openQuickview: (product: ProductType) => void;
+  setSelectedProduct: (product: ProductType) => void;
   closeQuickview: () => void;
 }
 
@@ -35,7 +36,12 @@ export const ModalQuickviewProvider: React.FC<ModalQuickviewContextProps> = ({
 
   return (
     <ModalQuickviewContext.Provider
-      value={{ selectedProduct, openQuickview, closeQuickview }}
+      value={{
+        selectedProduct,
+        openQuickview,
+        closeQuickview,
+        setSelectedProduct,
+      }}
     >
       {children}
     </ModalQuickviewContext.Provider>

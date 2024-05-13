@@ -30,10 +30,10 @@ const Cart = () => {
     price: any,
     orginPrice: any
   ) => {
-    const itemToUpdate = cartState.cartArray.find(
+    const itemToUpdate: any = cartState.cartArray.find(
       (item) => item._id === productId
     );
-
+    let qty = parseInt(itemToUpdate.quantity);
     if (itemToUpdate) {
       updateCart(
         productId,
@@ -41,7 +41,8 @@ const Cart = () => {
         itemToUpdate.selectedSize,
         itemToUpdate.selectedColor,
         price,
-        orginPrice
+        orginPrice,
+        qty
       );
     }
   };
@@ -179,7 +180,13 @@ const Cart = () => {
                             <div className="flex items-center gap-6">
                               <div className="bg-img md:w-[100px] w-20 aspect-[3/4]">
                                 <Image
-                                  src={product.images[0]}
+                                  src={
+                                    product.variation.find(
+                                      (val: any) =>
+                                        val.color === product.selectedColor &&
+                                        val.size === product.selectedSize
+                                    ).image
+                                  }
                                   width={1000}
                                   height={1000}
                                   alt={product.name}

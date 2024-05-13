@@ -130,6 +130,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
               selectedColor: item.selectedColor,
               originPrice: item.originPrice,
               price: item.price,
+              quantity: item.quantity,
             }
           );
           dispatch({
@@ -142,11 +143,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
             {
               userId: authState.user._id,
               productId: item._id,
-              quantity: item.quantityPurchase,
+              quantityPurchase: item.quantityPurchase,
               selectedSize: item.selectedSize,
               selectedColor: item.selectedColor,
               originPrice: item.originPrice,
               price: item.price,
+              quantity: item.quantity,
             }
           );
           dispatch({ type: "ADD_TO_CART", payload: item });
@@ -223,7 +225,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       let json = response.data.data.items.map((val: any) => {
         return {
           ...val.product,
-          quantityPurchase: val.quantity,
+          quantityPurchase: val.quantityPurchase,
           selectedSize: val.selectedSize,
           selectedColor: val.selectedColor,
           originPrice: val.originPrice,
@@ -231,7 +233,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           quantity: val.quantity,
         };
       });
-      console.log("json: ", json);
       json.map((val: any) => {
         dispatch({ type: "ADD_TO_CART", payload: val });
       });

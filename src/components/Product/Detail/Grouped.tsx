@@ -194,7 +194,7 @@ const Grouped: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {JSON.parse(productMain.type).map((val: any) => val.label)}
+                    {productMain.type.map((val: any) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -394,18 +394,14 @@ const Grouped: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Categories:</div>
                     <div className="text-secondary">
-                      {JSON.parse(productMain.category).map(
-                        (val: any) => val.label
-                      )}
-                      , {productMain.gender}
+                      {productMain.category.map((val: any) => val.label)},{" "}
+                      {productMain.gender}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Tag:</div>
                     <div className="text-secondary">
-                      {JSON.parse(productMain.type).map(
-                        (val: any) => val.label
-                      )}
+                      {productMain.type.map((val: any) => val.label)}
                     </div>
                   </div>
                 </div>

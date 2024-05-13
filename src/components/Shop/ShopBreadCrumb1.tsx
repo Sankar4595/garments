@@ -88,14 +88,14 @@ const ShopBreadCrumb1: React.FC<Props> = ({
 
     let isDataCategoryMatched = true;
     if (category) {
-      isDataCategoryMatched = JSON.parse(product.category).some(
+      isDataCategoryMatched = product.category.some(
         (val: any) => val.label === category
       );
     }
 
     let isDataTypeMatched = true;
     if (dataType) {
-      isDataTypeMatched = JSON.parse(product.type).some(
+      isDataTypeMatched = product.type.some(
         (val: any) => val.label === dataType
       );
     }
@@ -103,14 +103,12 @@ const ShopBreadCrumb1: React.FC<Props> = ({
     let isTypeMatched = true;
     if (type) {
       dataType = type;
-      isTypeMatched = JSON.parse(product.type).some(
-        (val: any) => val.label === type
-      );
+      isTypeMatched = product.type.some((val: any) => val.label === type);
     }
 
     let isSizeMatched = true;
     if (size) {
-      // isSizeMatched = JSON.parse(product.variation).includes(s:anyize);
+      // isSizeMatched = (product.variation).includes(s:anyize);
     }
 
     let isPriceRangeMatched = true;
@@ -121,7 +119,7 @@ const ShopBreadCrumb1: React.FC<Props> = ({
 
     let isColorMatched = true;
     if (color) {
-      isColorMatched = JSON.parse(product.variation).some(
+      isColorMatched = product.variation.some(
         (item: any) => item.color === color
       );
     }
@@ -278,10 +276,10 @@ const ShopBreadCrumb1: React.FC<Props> = ({
                         {
                           data.filter(
                             (dataItem) =>
-                              JSON.parse(dataItem.type).some(
+                              dataItem.type.some(
                                 (val: any) => val.label === item
                               ) &&
-                              JSON.parse(dataItem.category).some(
+                              dataItem.category.some(
                                 (val: any) => val.label === "fashion"
                               )
                           ).length
@@ -448,7 +446,7 @@ const ShopBreadCrumb1: React.FC<Props> = ({
                             data.filter(
                               (dataItem) =>
                                 dataItem.brand === item &&
-                                JSON.parse(dataItem.category).some(
+                                dataItem.category.some(
                                   (val: any) => val.label === "fashion"
                                 )
                             ).length

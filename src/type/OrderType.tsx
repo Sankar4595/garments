@@ -1,9 +1,9 @@
 interface OrderItem {
   product: string; // You can use the type that represents your Product ID
-  color?: string; // You can use the type that represents your Color ID
-  variation?: string; // You can use the type that represents your Variation ID
   quantity: number;
   price: number;
+  selectedSize: string;
+  selectedColor: string;
 }
 
 export interface IOrder {

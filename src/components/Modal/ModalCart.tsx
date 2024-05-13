@@ -166,7 +166,7 @@ const ModalCart = ({
                     <div className="bg-img w-[100px] aspect-square flex-shrink-0 rounded-lg overflow-hidden">
                       {product.selectedColor ? (
                         <>
-                          {JSON.parse(product.variation)
+                          {product.variation
                             .filter((item: any, idx: any) => {
                               return (
                                 item.color === product.selectedColor &&
@@ -206,9 +206,7 @@ const ModalCart = ({
                       </div>
                       <div className="flex items-center justify-between gap-2 mt-3 w-full">
                         <div className="flex items-center text-secondary2 capitalize">
-                          {product.selectedSize}/
-                          {product.selectedColor ||
-                            JSON.parse(product.variation)[0].color}
+                          {product.selectedSize}/{product.selectedColor}
                         </div>
                         <div className="product-price text-title">
                           {product.quantityPurchase} x ₹{product.price}.00

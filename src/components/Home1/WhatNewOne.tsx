@@ -17,7 +17,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
   useEffect(() => {
     if (data.length > 0) {
       let s: any = data[0]?.category;
-      let r: any = JSON.parse(s);
+      let r: any = s;
       setActiveTab(r[0]?.label);
     }
   }, [data]);
@@ -26,7 +26,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit, categoryState }) => {
   };
 
   const filteredProducts = data.filter((product: any) =>
-    JSON.parse(product.category).some((val: any) => val.label === activeTab)
+    product.category.some((val: any) => val.label === activeTab)
   );
 
   return (

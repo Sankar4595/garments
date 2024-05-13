@@ -46,7 +46,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
 
   let price =
     productMain &&
-    JSON.parse(productMain.variation).find(
+    productMain.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
     );
 
@@ -178,7 +178,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               >
                 {activeColor && (
                   <>
-                    {JSON.parse(productMain.variation)
+                    {productMain.variation
                       .filter((item: any, idx: any) => {
                         return item.color === activeColor;
                       })
@@ -220,7 +220,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               >
                 {activeColor && (
                   <>
-                    {JSON.parse(productMain.variation)
+                    {productMain.variation
                       .filter((item: any, idx: any) => {
                         return item.color === activeColor;
                       })
@@ -258,7 +258,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {JSON.parse(productMain?.type).map((val: any) => val.label)}
+                    {(productMain?.type).map((val: any) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>
@@ -324,7 +324,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                     <span className="text-title color">{activeColor}</span>
                   </div>
                   <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                    {JSON.parse(productMain.variation)
+                    {productMain.variation
                       .filter(
                         (item: any, index: any, self: any) =>
                           index ===
@@ -371,7 +371,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                     />
                   </div>
                   <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                    {JSON.parse(productMain.variation)
+                    {productMain.variation
                       .filter(
                         (item: any, index: any, self: any) =>
                           index ===
@@ -475,18 +475,14 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Categories:</div>
                     <div className="text-secondary">
-                      {JSON.parse(productMain.category).map(
-                        (val: any) => val.label
-                      )}
-                      , {productMain.gender}
+                      {productMain.category.map((val: any) => val.label)},{" "}
+                      {productMain.gender}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-3">
                     <div className="text-title">Tag:</div>
                     <div className="text-secondary">
-                      {JSON.parse(productMain.type).map(
-                        (val: any) => val.label
-                      )}
+                      {productMain.type.map((val: any) => val.label)}
                     </div>
                   </div>
                 </div>
