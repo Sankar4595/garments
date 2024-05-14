@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // Check if user data exists in sessionStorage
-    const storedUser = sessionStorage.getItem("user");
+    const storedUser: any = sessionStorage.getItem("user");
     if (storedUser) {
       dispatch({ type: "LOGIN_SUCCESS", payload: storedUser });
     }
