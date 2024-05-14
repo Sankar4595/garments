@@ -8,7 +8,7 @@ interface OrderItem {
 
 export interface IOrder {
   _id?: string;
-  user?: string;
+  userId?: string;
   items: OrderItem[];
   name?: string;
   lastName?: string;

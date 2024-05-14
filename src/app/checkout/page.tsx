@@ -21,7 +21,7 @@ const Checkout = () => {
   let ship = searchParams.get("ship");
   const { authState, login } = useAuth();
   const { cartState } = useCart();
-  const { addToOrder } = useOrder();
+  const { addToOrder, orderState } = useOrder();
   let [totalCart, setTotalCart] = useState<number>(0);
   const [activePayment, setActivePayment] = useState<string>("credit-card");
   const [loginData, setLoginData] = useState<IUser>({
@@ -30,7 +30,7 @@ const Checkout = () => {
   });
   const router = useRouter();
   const [orderData, setOrderData] = useState<IOrder>({
-    user: "",
+    userId: "",
     items: [],
     name: "",
     lastName: "",
@@ -58,7 +58,7 @@ const Checkout = () => {
       setOrderData((prev: IOrder) => {
         return {
           ...prev,
-          user: authState.user?._id,
+          userId: authState.user?._id,
           items: cartState.cartArray.map((val) => {
             return {
               product: val._id,
@@ -77,7 +77,8 @@ const Checkout = () => {
   const handlePayment = async (e: any) => {
     e.preventDefault;
     try {
-      let res = await addToOrder(orderData);
+      let res = addToOrder(orderData);
+      console.log("res: ", res);
       router.push("/");
     } catch (error) {
       router.push("/");

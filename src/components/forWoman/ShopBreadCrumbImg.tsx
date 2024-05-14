@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
@@ -25,9 +25,9 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
   const [showOnlySale, setShowOnlySale] = useState(false);
   const [sortOption, setSortOption] = useState("");
   const [openSidebar, setOpenSidebar] = useState(false);
-  const [type, setType] = useState<string | null>(dataType);
-  const [size, setSize] = useState<string | null>();
-  const [color, setColor] = useState<string | null>();
+  const [type, setType] = useState<string | null>(null);
+  const [size, setSize] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(null);
   const [brand, setBrand] = useState<string | null>();
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
     min: 0,
@@ -37,14 +37,50 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
   const productsPerPage = productPerPage;
   const offset = currentPage * productsPerPage;
   const { categoryState, subCategoryState } = useProduct();
-  const [filteredData, setFilteredData] = useState<any>(data);
+  const [filteredData, setFilteredData] = useState<ProductType[]>(data);
+  const sidebarRef: any = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setOpenSidebar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (data.length > 0) {
-      let r = data.filter((val) => val.gender === "male");
-      setFilteredData(r);
+      setFilteredData(data);
     }
-  }, [data]);
+    if (type !== null) {
+      let typeFilterData: ProductType[] = data.filter(
+        (val: ProductType) =>
+          val.category.some((item: any) => item.label === type) ||
+          val.type.some((item: any) => item.label === type)
+      );
+      setFilteredData(typeFilterData);
+    }
+    if (size !== null) {
+      let typeFilterData: ProductType[] = data.filter((val: ProductType) =>
+        val.variation.some((item: any) => item.size === size)
+      );
+      setFilteredData(typeFilterData);
+    }
+    if (color !== null) {
+      let typeFilterData: ProductType[] = data.filter((val: ProductType) =>
+        val.variation.some(
+          (item: any) => item.color.toLowerCase() === color.toLowerCase()
+        )
+      );
+      setFilteredData(typeFilterData);
+    }
+  }, [data, type, size, color, brand]);
 
   const handleLayoutCol = (col: number) => {
     setLayoutCol(col);
@@ -182,13 +218,13 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
             <div className="main-content w-full h-full flex flex-col items-center justify-center relative z-[1]">
               <div className="text-content">
                 <div className="heading2 text-center">
-                  {dataType === null ? "For-Men" : dataType}
+                  {dataType === null ? "For-Woman" : dataType}
                 </div>
                 <div className="link flex items-center justify-center gap-1 caption1 mt-3">
                   <Link href={"/"}>Homepage</Link>
                   <Icon.CaretRight size={14} className="text-secondary2" />
                   <div className="text-secondary2 capitalize">
-                    {dataType === null ? "For-Men" : dataType}
+                    {dataType === null ? "For-Woman" : dataType}
                   </div>
                 </div>
               </div>
@@ -389,6 +425,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
             </div>
 
             <div
+              ref={sidebarRef}
               className={`sidebar style-dropdown bg-white grid md:grid-cols-4 grid-cols-2 md:gap-[30px] gap-6 ${
                 openSidebar ? "open" : ""
               }`}

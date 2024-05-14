@@ -7,12 +7,16 @@ import MenuOne from "@/components/Header/Menu/MenuOne";
 import ShopBreadCrumbImg from "@/components/forWoman/ShopBreadCrumbImg";
 import Footer from "@/components/Footer/Footer";
 import { useProduct } from "@/context/ProductContext";
+import { ProductType } from "@/type/ProductType";
 
 export default function Default() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const category = searchParams.get("category");
   const { productState } = useProduct();
+  let result: ProductType[] = productState.products.filter(
+    (val) => val.gender === "female" || val.gender === "both"
+  );
   return (
     <>
       <TopNavOne
@@ -22,11 +26,7 @@ export default function Default() {
       <div id="header" className="relative w-full">
         <MenuOne props="bg-transparent" />
       </div>
-      <ShopBreadCrumbImg
-        data={productState.products}
-        productPerPage={12}
-        dataType={type}
-      />
+      <ShopBreadCrumbImg data={result} productPerPage={12} dataType={type} />
       <Footer />
     </>
   );
