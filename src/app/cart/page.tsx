@@ -185,7 +185,7 @@ const Cart = () => {
                                       (val: any) =>
                                         val.color === product.selectedColor &&
                                         val.size === product.selectedSize
-                                    ).image
+                                    )?.image ?? ""
                                   }
                                   width={1000}
                                   height={1000}
