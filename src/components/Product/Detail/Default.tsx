@@ -44,7 +44,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
     (product) => product._id === productId
   ) as ProductType;
 
-  let price =
+  let price: any =
     productMain &&
     productMain.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
@@ -258,7 +258,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
               <div className="flex justify-between">
                 <div>
                   <div className="caption2 text-secondary font-semibold uppercase">
-                    {(productMain?.type).map((val: any) => val.label)}
+                    {productMain?.type.map((val: any) => val.label)}
                   </div>
                   <div className="heading4 mt-1">{productMain.name}</div>
                 </div>

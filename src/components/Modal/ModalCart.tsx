@@ -241,16 +241,47 @@ const ModalCart = ({
                   <div className="caption1">Coupon</div>
                 </div>
               </div>
-              <div className="flex items-center justify-between pt-6 px-6">
-                {cartState.cartArray.map((product) => (
+              {cartState.cartArray.map((product) => {
+                let discount: any =
+                  product.discountType === "flat"
+                    ? `${product.discount} - ${product.discountType}`
+                    : `${product.discount}${product.discountType}`;
+                let discountamount: any =
+                  product.discountType === "flat"
+                    ? product.discount
+                    : (product.originPrice *
+                        product.quantityPurchase *
+                        parseInt(product.discount)) /
+                      100;
+                let gst: any =
+                  (product.originPrice *
+                    product.quantityPurchase *
+                    parseInt(product.cgst)) /
+                  100;
+                return (
                   <>
-                    <div className="heading5">Subtotal</div>
-                    <div className="heading5">
-                      ₹{product.price * product.quantityPurchase}
+                    <div className="flex items-center justify-between pt-6 px-6">
+                      <p>
+                        GST - {product.cgst}% - {product.gstvariation}
+                      </p>
+                      <del>₹{gst}</del>
+                    </div>
+                    <div className="flex items-center justify-between pt-6 px-6">
+                      <p>Discount - {discount}</p>
+                      <del>₹{discountamount}</del>
+                    </div>
+                    <div className="flex items-center justify-between pt-6 px-6">
+                      <div className="heading5">Subtotal</div>
+                      <div className="heading5">
+                        ₹
+                        {parseInt(product.price) -
+                          parseInt(gst) -
+                          parseInt(discountamount)}
+                      </div>
                     </div>
                   </>
-                ))}
-              </div>
+                );
+              })}
               <div className="block-button text-center p-6">
                 <div className="flex items-center gap-4">
                   <Link
