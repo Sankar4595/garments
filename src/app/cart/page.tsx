@@ -80,10 +80,32 @@ const Cart = () => {
   };
 
   let totalPrice = 0;
+  let subTotalPrice = 0;
+  let discountPrice = 0;
+  let GST = 0;
 
   cartState.cartArray.map((product: any) => {
-    const productPrice = product.quantityPurchase * product.price;
+    let discount: any =
+      product.discountType === "flat"
+        ? `${product.discount} - ${product.discountType}`
+        : `${product.discount}${product.discountType}`;
+    let discountamount: any =
+      product.discountType === "flat"
+        ? product.discount
+        : (product.price *
+            product.quantityPurchase *
+            parseInt(product.discount)) /
+          100;
+    let gst: any =
+      (product.price * product.quantityPurchase * parseInt(product.cgst)) / 100;
+    let finalPrice =
+      parseInt(product.price) - parseInt(gst) - parseInt(discountamount);
+    const productPrice = product.quantityPurchase * finalPrice;
+    const subtoalPrice = product.quantityPurchase * product.price;
     totalPrice += productPrice;
+    subTotalPrice += subtoalPrice;
+    discountPrice += discountamount * product.quantityPurchase;
+    GST += gst * product.quantityPurchase;
   });
 
   return (
@@ -371,7 +393,7 @@ const Cart = () => {
                 <div className="total-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Subtotal</div>
                   <div className="text-title">
-                    ₹<span className="total-product">{totalCart}</span>
+                    ₹<span className="total-product">{subTotalPrice}</span>
                     <span>.00</span>
                   </div>
                 </div>
@@ -380,11 +402,20 @@ const Cart = () => {
                   <div className="text-title">
                     {" "}
                     <span>-₹</span>
-                    <span className="discount">{discountCart}</span>
+                    <span className="discount">{discountPrice}</span>
                     <span>.00</span>
                   </div>
                 </div>
-                <div className="ship-block py-5 flex justify-between border-b border-line">
+                <div className="discount-block py-5 flex justify-between border-b border-line">
+                  <div className="text-title">GST</div>
+                  <div className="text-title">
+                    {" "}
+                    <span>-₹</span>
+                    <span className="discount">{GST}</span>
+                    <span>.00</span>
+                  </div>
+                </div>
+                {/* <div className="ship-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Shipping</div>
                   <div className="choose-type flex gap-12">
                     <div className="left">
@@ -452,7 +483,7 @@ const Cart = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="total-cart-block pt-4 pb-4 flex justify-between">
                   <div className="heading5">Total</div>
 

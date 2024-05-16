@@ -55,14 +55,31 @@ const Checkout = () => {
       const totalPrice = cartState.cartArray.reduce((acc, val) => {
         return acc + val.price * val.quantityPurchase;
       }, 0);
+
       setOrderData((prev: IOrder) => {
         return {
           ...prev,
           userId: authState.user?._id,
           items: cartState.cartArray.map((val) => {
+            let discount: any =
+              val.discountType === "flat"
+                ? `${val.discount} - ${val.discountType}`
+                : `${val.discount}${val.discountType}`;
+            let discountamount: any =
+              val.discountType === "flat"
+                ? val.discount
+                : (val.originPrice *
+                    val.quantityPurchase *
+                    parseInt(val.discount)) /
+                  100;
+            let gst: any =
+              (val.originPrice * val.quantityPurchase * parseInt(val.cgst)) /
+              100;
+            let finalPrice =
+              parseInt(val.price) - parseInt(gst) - parseInt(discountamount);
             return {
               product: val._id,
-              price: val.price * val.quantityPurchase,
+              price: finalPrice * val.quantityPurchase,
               quantity: val.quantityPurchase,
               selectedSize: val.selectedSize,
               selectedColor: val.selectedColor,
@@ -717,7 +734,7 @@ const Checkout = () => {
                     ))
                   )}
                 </div>
-                <div className="discount-block py-5 flex justify-between border-b border-line">
+                {/* <div className="discount-block py-5 flex justify-between border-b border-line">
                   <div className="text-title">Discounts</div>
                   {cartState.cartArray.map((product) => (
                     <>
@@ -727,29 +744,95 @@ const Checkout = () => {
                       </div>
                     </>
                   ))}
-                </div>
-                <div className="ship-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">Shipping</div>
-                  <div className="text-title">
-                    {Number(ship) === 0 ? "Free" : `$${ship}.00`}
-                  </div>
-                </div>
-                <div className="total-cart-block pt-5 flex justify-between">
+                </div> */}
+                {cartState.cartArray.map((product) => {
+                  let discount: any =
+                    product.discountType === "flat"
+                      ? `${product.discount} - ${product.discountType}`
+                      : `${product.discount}${product.discountType}`;
+                  let discountamount: any =
+                    product.discountType === "flat"
+                      ? product.discount
+                      : (product.originPrice *
+                          product.quantityPurchase *
+                          parseInt(product.discount)) /
+                        100;
+                  let gst: any =
+                    (product.originPrice *
+                      product.quantityPurchase *
+                      parseInt(product.cgst)) /
+                    100;
+                  return (
+                    <>
+                      <div className="ship-block py-5 flex justify-between border-b border-line">
+                        <p>
+                          GST - {product.cgst}% - {product.gstvariation}
+                        </p>
+                        <del>₹{gst}</del>
+                      </div>
+                      {/* <div className="ship-block py-5 flex justify-between border-b border-line">
+                        <div className="text-title">Shipping</div>
+                        <div className="text-title">
+                          {Number(ship) === 0 ? "Free" : `₹${ship}.00`}
+                        </div>
+                      </div> */}
+                      <div className="ship-block py-5 flex justify-between border-b border-line">
+                        <p>Discount - {discount}</p>
+                        <del>₹{discountamount}</del>
+                      </div>
+                      <div className="total-cart-block pt-5 flex justify-between">
+                        <div className="heading5">Total</div>
+                        <div className="heading5">
+                          ₹
+                          {parseInt(product.price) -
+                            parseInt(gst) -
+                            parseInt(discountamount)}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+
+                {/* <div className="total-cart-block pt-5 flex justify-between">
                   <div className="heading5">Total</div>
                   <div
                     style={{ display: "flex", gap: "10px" }}
                     className="heading5 total-cart"
                   >
-                    {cartState.cartArray.map((product, index) => (
-                      <div key={index}>
-                        <del style={{ fontSize: "12px", opacity: "0.8" }}>
-                          ₹{product.quantityPurchase * product.originPrice}.00
-                        </del>{" "}
-                        ₹{product.quantityPurchase * product.price}.00
-                      </div>
-                    ))}
+                    {cartState.cartArray.map((product) => {
+                      let discount: any =
+                        product.discountType === "flat"
+                          ? `${product.discount} - ${product.discountType}`
+                          : `${product.discount}${product.discountType}`;
+                      let discountamount: any =
+                        product.discountType === "flat"
+                          ? product.discount
+                          : (product.originPrice *
+                              product.quantityPurchase *
+                              parseInt(product.discount)) /
+                            100;
+                      let gst: any =
+                        (product.originPrice *
+                          product.quantityPurchase *
+                          parseInt(product.cgst)) /
+                        100;
+                      return (
+                        <>
+                          <div>
+                            <del style={{ fontSize: "12px", opacity: "0.8" }}>
+                              ₹{product.quantityPurchase * product.originPrice}
+                              .00
+                            </del>{" "}
+                            ₹
+                            {parseInt(product.price) -
+                              parseInt(gst) -
+                              parseInt(discountamount)}
+                          </div>
+                        </>
+                      );
+                    })}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
