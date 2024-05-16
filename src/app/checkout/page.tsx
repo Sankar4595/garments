@@ -61,25 +61,17 @@ const Checkout = () => {
           ...prev,
           userId: authState.user?._id,
           items: cartState.cartArray.map((val) => {
-            let discount: any =
-              val.discountType === "flat"
-                ? `${val.discount} - ${val.discountType}`
-                : `${val.discount}${val.discountType}`;
+            let fx = parseInt(val.price) * val.quantityPurchase;
             let discountamount: any =
               val.discountType === "flat"
-                ? val.discount
-                : (val.originPrice *
-                    val.quantityPurchase *
-                    parseInt(val.discount)) /
-                  100;
+                ? parseInt(val.discount) * val.quantityPurchase
+                : (fx * parseInt(val.discount)) / 100;
             let gst: any =
-              (val.originPrice * val.quantityPurchase * parseInt(val.cgst)) /
-              100;
-            let finalPrice =
-              parseInt(val.price) - parseInt(gst) - parseInt(discountamount);
+              fx * ((parseInt(val.cgst) * val.quantityPurchase) / 100);
+            let finalPrice = fx - gst - discountamount;
             return {
               product: val._id,
-              price: finalPrice * val.quantityPurchase,
+              price: finalPrice,
               quantity: val.quantityPurchase,
               selectedSize: val.selectedSize,
               selectedColor: val.selectedColor,
@@ -750,18 +742,16 @@ const Checkout = () => {
                     product.discountType === "flat"
                       ? `${product.discount} - ${product.discountType}`
                       : `${product.discount}${product.discountType}`;
+                  let fx = parseInt(product.price) * product.quantityPurchase;
                   let discountamount: any =
                     product.discountType === "flat"
-                      ? product.discount
-                      : (product.originPrice *
-                          product.quantityPurchase *
-                          parseInt(product.discount)) /
-                        100;
+                      ? parseInt(product.discount) * product.quantityPurchase
+                      : (fx * parseInt(product.discount)) / 100;
+
                   let gst: any =
-                    (product.originPrice *
-                      product.quantityPurchase *
-                      parseInt(product.cgst)) /
-                    100;
+                    fx *
+                    ((parseInt(product.cgst) * product.quantityPurchase) / 100);
+                  let finalPrice = fx - gst - discountamount;
                   return (
                     <>
                       <div className="ship-block py-5 flex justify-between border-b border-line">
@@ -782,12 +772,7 @@ const Checkout = () => {
                       </div>
                       <div className="total-cart-block pt-5 flex justify-between">
                         <div className="heading5">Total</div>
-                        <div className="heading5">
-                          ₹
-                          {parseInt(product.price) -
-                            parseInt(gst) -
-                            parseInt(discountamount)}
-                        </div>
+                        <div className="heading5">₹{finalPrice}</div>
                       </div>
                     </>
                   );

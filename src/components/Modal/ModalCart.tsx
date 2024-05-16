@@ -246,18 +246,16 @@ const ModalCart = ({
                   product.discountType === "flat"
                     ? `${product.discount} - ${product.discountType}`
                     : `${product.discount}${product.discountType}`;
+                let fx = parseInt(product.price) * product.quantityPurchase;
                 let discountamount: any =
                   product.discountType === "flat"
-                    ? product.discount
-                    : (product.originPrice *
-                        product.quantityPurchase *
-                        parseInt(product.discount)) /
-                      100;
+                    ? parseInt(product.discount) * product.quantityPurchase
+                    : (fx * parseInt(product.discount)) / 100;
+
                 let gst: any =
-                  (product.originPrice *
-                    product.quantityPurchase *
-                    parseInt(product.cgst)) /
-                  100;
+                  fx *
+                  ((parseInt(product.cgst) * product.quantityPurchase) / 100);
+                let finalPrice = fx - gst - discountamount;
                 return (
                   <>
                     <div className="flex items-center justify-between pt-6 px-6">
@@ -272,12 +270,7 @@ const ModalCart = ({
                     </div>
                     <div className="flex items-center justify-between pt-6 px-6">
                       <div className="heading5">Subtotal</div>
-                      <div className="heading5">
-                        ₹
-                        {parseInt(product.price) -
-                          parseInt(gst) -
-                          parseInt(discountamount)}
-                      </div>
+                      <div className="heading5">₹{finalPrice}</div>
                     </div>
                   </>
                 );

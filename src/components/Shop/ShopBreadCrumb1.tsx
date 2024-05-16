@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { ProductType } from "@/type/ProductType";
@@ -8,6 +8,7 @@ import Product from "../Product/Product";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import HandlePagination from "../Other/HandlePagination";
+import { useProduct } from "@/context/ProductContext";
 
 interface Props {
   data: Array<ProductType>;
@@ -24,11 +25,13 @@ const ShopBreadCrumb1: React.FC<Props> = ({
   gender,
   category,
 }) => {
+  const [layoutCol, setLayoutCol] = useState<number | null>(4);
   const [showOnlySale, setShowOnlySale] = useState(false);
   const [sortOption, setSortOption] = useState("");
-  const [type, setType] = useState<string | null | undefined>(dataType);
-  const [size, setSize] = useState<string | null>();
-  const [color, setColor] = useState<string | null>();
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const [type, setType] = useState<string | null>(null);
+  const [size, setSize] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(null);
   const [brand, setBrand] = useState<string | null>();
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
     min: 0,
@@ -37,9 +40,59 @@ const ShopBreadCrumb1: React.FC<Props> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = productPerPage;
   const offset = currentPage * productsPerPage;
+  const { categoryState, subCategoryState } = useProduct();
+  const [filteredData, setFilteredData] = useState<ProductType[]>(data);
+  const sidebarRef: any = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setOpenSidebar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setFilteredData(data);
+    }
+    if (type !== null) {
+      let typeFilterData: ProductType[] = data.filter(
+        (val: ProductType) =>
+          val.category.some((item: any) => item.label === type) ||
+          val.type.some((item: any) => item.label === type)
+      );
+      setFilteredData(typeFilterData);
+    }
+    if (size !== null) {
+      let typeFilterData: ProductType[] = data.filter((val: ProductType) =>
+        val.variation.some((item: any) => item.size === size)
+      );
+      setFilteredData(typeFilterData);
+    }
+    if (color !== null) {
+      let typeFilterData: ProductType[] = data.filter((val: ProductType) =>
+        val.variation.some(
+          (item: any) => item.color.toLowerCase() === color.toLowerCase()
+        )
+      );
+      setFilteredData(typeFilterData);
+    }
+  }, [data, type, size, color]);
+
+  const handleLayoutCol = (col: number) => {
+    setLayoutCol(col);
+  };
 
   const handleShowOnlySale = () => {
     setShowOnlySale((toggleSelect) => !toggleSelect);
+    setCurrentPage(0);
   };
 
   const handleSortChange = (option: string) => {
@@ -47,13 +100,18 @@ const ShopBreadCrumb1: React.FC<Props> = ({
     setCurrentPage(0);
   };
 
-  const handleType = (type: string | null) => {
-    setType((prevType) => (prevType === type ? null : type));
+  const handleOpenSidebar = () => {
+    setOpenSidebar((toggleOpen) => !toggleOpen);
+    setCurrentPage(0);
+  };
+
+  const handleType = (type: string) => {
+    setType(type);
     setCurrentPage(0);
   };
 
   const handleSize = (size: string) => {
-    setSize((prevSize) => (prevSize === size ? null : size));
+    setSize(size);
     setCurrentPage(0);
   };
 
@@ -74,128 +132,77 @@ const ShopBreadCrumb1: React.FC<Props> = ({
     setCurrentPage(0);
   };
 
-  // Filter product
-  let filteredData = data.filter((product) => {
-    let isShowOnlySaleMatched = true;
-    if (showOnlySale) {
-      isShowOnlySaleMatched = product.sale;
-    }
+  // Function to filter data based on current filters
+  // const filterData = () => {
+  //   const newData = data.filter((product) => {
+  //     const isShowOnlySaleMatched = !showOnlySale || product.sale;
+  //     const isDataTypeMatched =
+  //       !dataType || product.type.some((val) => val.label === dataType);
+  //     const isTypeMatched =
+  //       !type || product.type.some((val) => val.label === type);
+  //     const isSizeMatched =
+  //       !size || product.variation.some((val) => val.size === size);
+  //     const isPriceRangeMatched =
+  //       product.price >= priceRange.min && product.price <= priceRange.max;
+  //     const isColorMatched =
+  //       !color || product.variation.some((item) => item.color === color);
+  //     const isBrandMatched = !brand || product.brand === brand;
 
-    let isDatagenderMatched = true;
-    if (gender) {
-      isDatagenderMatched = product.gender === gender;
-    }
+  //     return (
+  //       isShowOnlySaleMatched &&
+  //       isDataTypeMatched &&
+  //       isTypeMatched &&
+  //       isSizeMatched &&
+  //       isColorMatched &&
+  //       isBrandMatched &&
+  //       isPriceRangeMatched &&
+  //       product.category.some((val) => val.label !== "")
+  //     );
+  //   });
+  //   console.log("newData: ", newData);
+  //   setFilteredData(newData);
+  // };
 
-    let isDataCategoryMatched = true;
-    if (category) {
-      isDataCategoryMatched = product.category.some(
-        (val: any) => val.label === category
+  // Function to sort data based on current sort option
+  const sortData = () => {
+    const sortedData = [...filteredData];
+    if (sortOption === "soldQuantityHighToLow") {
+      sortedData.sort((a, b) => b.sold - a.sold);
+    } else if (sortOption === "discountHighToLow") {
+      sortedData.sort(
+        (a, b) => b.price / b.originPrice - a.price / a.originPrice
       );
+    } else if (sortOption === "priceHighToLow") {
+      sortedData.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "priceLowToHigh") {
+      sortedData.sort((a, b) => a.price - b.price);
     }
+    setFilteredData(sortedData);
+  };
 
-    let isDataTypeMatched = true;
-    if (dataType) {
-      isDataTypeMatched = product.type.some(
-        (val: any) => val.label === dataType
-      );
-    }
+  // useEffect(() => {
+  //   filterData();
+  // }, [showOnlySale, dataType, type, size, color, brand, priceRange]);
 
-    let isTypeMatched = true;
-    if (type) {
-      dataType = type;
-      isTypeMatched = product.type.some((val: any) => val.label === type);
-    }
+  useEffect(() => {
+    sortData();
+  }, [sortOption]);
 
-    let isSizeMatched = true;
-    if (size) {
-      // isSizeMatched = (product.variation).includes(s:anyize);
-    }
-
-    let isPriceRangeMatched = true;
-    if (priceRange.min !== 0 || priceRange.max !== 100) {
-      isPriceRangeMatched =
-        product.price >= priceRange.min && product.price <= priceRange.max;
-    }
-
-    let isColorMatched = true;
-    if (color) {
-      isColorMatched = product.variation.some(
-        (item: any) => item.color === color
-      );
-    }
-
-    let isBrandMatched = true;
-    if (brand) {
-      isBrandMatched = product.brand === brand;
-    }
-
-    return (
-      isShowOnlySaleMatched &&
-      isDatagenderMatched &&
-      isDataCategoryMatched &&
-      isDataTypeMatched &&
-      isTypeMatched &&
-      isSizeMatched &&
-      isColorMatched &&
-      isBrandMatched &&
-      isPriceRangeMatched
-    );
-  });
-
-  // Create a copy array filtered to sort
-  let sortedData = [...filteredData];
-
-  if (sortOption === "soldQuantityHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.sold - a.sold);
-  }
-
-  if (sortOption === "discountHighToLow") {
-    filteredData = sortedData.sort(
-      (a, b) =>
-        Math.floor(100 - (b.price / b.originPrice) * 100) -
-        Math.floor(100 - (a.price / a.originPrice) * 100)
-    );
-  }
-
-  if (sortOption === "priceHighToLow") {
-    filteredData = sortedData.sort((a, b) => b.price - a.price);
-  }
-
-  if (sortOption === "priceLowToHigh") {
-    filteredData = sortedData.sort((a, b) => a.price - b.price);
-  }
-
-  const totalProducts = filteredData.length;
+  const totalProducts = filteredData?.length;
   const selectedType = type;
   const selectedSize = size;
   const selectedColor = color;
   const selectedBrand = brand;
+  // Pagination
+  const pageCount = Math.ceil(filteredData?.length / productsPerPage);
 
-  if (filteredData.length === 0) {
-    filteredData = [];
-  }
-
-  // Find page number base on filteredData
-  const pageCount = Math.ceil(filteredData.length / productsPerPage);
-
-  // If page number 0, set current page = 0
-
-  // Get product data for current page
-  let currentProducts: ProductType[];
-
-  if (filteredData.length > 0) {
-    currentProducts = filteredData.slice(offset, offset + productsPerPage);
-  } else {
-    currentProducts = [];
-  }
+  const currentProducts = filteredData?.slice(offset, offset + productsPerPage);
 
   const handlePageChange = (selected: number) => {
     setCurrentPage(selected);
   };
 
   const handleClearAll = () => {
-    dataType = null;
-    setShowOnlySale(false);
     setSortOption("");
     setType(null);
     setSize(null);
@@ -203,7 +210,8 @@ const ShopBreadCrumb1: React.FC<Props> = ({
     setBrand(null);
     setPriceRange({ min: 0, max: 100 });
     setCurrentPage(0);
-    handleType(null);
+    dataType = null;
+    setType(dataType);
   };
 
   return (

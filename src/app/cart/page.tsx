@@ -85,27 +85,20 @@ const Cart = () => {
   let GST = 0;
 
   cartState.cartArray.map((product: any) => {
-    let discount: any =
-      product.discountType === "flat"
-        ? `${product.discount} - ${product.discountType}`
-        : `${product.discount}${product.discountType}`;
+    let fx = parseInt(product.price) * product.quantityPurchase;
     let discountamount: any =
       product.discountType === "flat"
-        ? product.discount
-        : (product.price *
-            product.quantityPurchase *
-            parseInt(product.discount)) /
-          100;
+        ? parseInt(product.discount) * product.quantityPurchase
+        : (fx * parseInt(product.discount)) / 100;
+
     let gst: any =
-      (product.price * product.quantityPurchase * parseInt(product.cgst)) / 100;
-    let finalPrice =
-      parseInt(product.price) - parseInt(gst) - parseInt(discountamount);
-    const productPrice = product.quantityPurchase * finalPrice;
+      fx * ((parseInt(product.cgst) * product.quantityPurchase) / 100);
+    let finalPrice = fx - gst - discountamount;
     const subtoalPrice = product.quantityPurchase * product.price;
-    totalPrice += productPrice;
+    totalPrice += finalPrice;
     subTotalPrice += subtoalPrice;
-    discountPrice += discountamount * product.quantityPurchase;
-    GST += gst * product.quantityPurchase;
+    discountPrice += discountamount;
+    GST += gst;
   });
 
   return (

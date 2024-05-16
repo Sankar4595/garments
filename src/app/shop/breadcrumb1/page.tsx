@@ -6,6 +6,7 @@ import TopNavOne from "@/components/Header/TopNav/TopNavOne";
 import MenuOne from "@/components/Header/Menu/MenuOne";
 import ShopBreadCrumb1 from "@/components/Shop/ShopBreadCrumb1";
 import Footer from "@/components/Footer/Footer";
+import { useProduct } from "@/context/ProductContext";
 
 export default function BreadCrumb1() {
   const searchParams = useSearchParams();
@@ -13,7 +14,7 @@ export default function BreadCrumb1() {
   let datatype = searchParams.get("type");
   let gender = searchParams.get("gender");
   let category = searchParams.get("category");
-
+  let { productState } = useProduct();
   useEffect(() => {
     setType(datatype);
   }, [datatype]);
@@ -28,7 +29,7 @@ export default function BreadCrumb1() {
         <MenuOne props="bg-transparent" />
       </div>
       <ShopBreadCrumb1
-        data={[]}
+        data={productState.products}
         productPerPage={9}
         dataType={type}
         gender={gender}
