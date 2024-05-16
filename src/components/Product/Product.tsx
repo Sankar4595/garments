@@ -40,7 +40,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
     setActiveSize(item);
   };
 
-  let price =
+  let price: any =
     data &&
     data.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
