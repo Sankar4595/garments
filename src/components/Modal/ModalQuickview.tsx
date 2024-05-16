@@ -93,15 +93,15 @@ const ModalQuickview = () => {
     }
   };
 
-  let price =
+  let price: any =
     selectedProduct &&
     selectedProduct.variation.find(
       (item: any) => item.size === activeSize && item.color === activeColor
     );
 
   const handleAddToCart = () => {
-    let newPrice = parseInt(price.price);
-    let oldPrice = parseInt(price.oldPrice);
+    let newPrice: any = parseInt(price.price);
+    let oldPrice: any = parseInt(price.oldPrice);
     if (selectedProduct) {
       if (
         !cartState.cartArray.find((item) => item._id === selectedProduct._id)
