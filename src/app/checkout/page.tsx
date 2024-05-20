@@ -14,6 +14,7 @@ import { IUser } from "@/type/authTypes";
 import { toast } from "react-toastify";
 import { IOrder } from "@/type/OrderType";
 import { useOrder } from "@/context/OrderContext";
+import { ProductType } from "@/type/ProductType";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
@@ -60,18 +61,10 @@ const Checkout = () => {
         return {
           ...prev,
           userId: authState.user?._id,
-          items: cartState.cartArray.map((val) => {
-            let fx = parseInt(val.price) * val.quantityPurchase;
-            let discountamount: any =
-              val.discountType === "flat"
-                ? parseInt(val.discount) * val.quantityPurchase
-                : (fx * parseInt(val.discount)) / 100;
-            let gst: any =
-              fx * ((parseInt(val.cgst) * val.quantityPurchase) / 100);
-            let finalPrice = fx - gst - discountamount;
+          items: cartState.cartArray.map((val: any) => {
             return {
               product: val._id,
-              price: finalPrice,
+              price: val.price * val.quantityPurchase,
               quantity: val.quantityPurchase,
               selectedSize: val.selectedSize,
               selectedColor: val.selectedColor,
@@ -103,6 +96,29 @@ const Checkout = () => {
       toast.error("Login Failed!");
     }
   };
+
+  let totalPrice = 0;
+  let subTotalPrice = 0;
+  let discountPrice = 0;
+  let GST = 0;
+  let gstvariation = "";
+  let discountVariation = "";
+  let gstType = "";
+  cartState.cartArray.map((product: ProductType) => {
+    let fx = product.price * product.quantityPurchase;
+    let discountamount: any = product.originPrice - product.price;
+    let gst: any =
+      fx * ((parseInt(product.cgst) * product.quantityPurchase) / 100);
+    const subtoalPrice = product.quantityPurchase * product.originPrice;
+    totalPrice += fx;
+    subTotalPrice += subtoalPrice;
+    discountPrice += discountamount * product.quantityPurchase;
+    GST += gst * product.quantityPurchase;
+    gstvariation = product.gstvariation;
+    discountVariation = product.discountType;
+    gstType = product.cgst;
+  });
+
   return (
     <>
       <TopNavOne
@@ -376,7 +392,7 @@ const Checkout = () => {
                       </div>
                     </div>
                     <div className="payment-block md:mt-10 mt-6">
-                      <div className="heading5">Choose payment Option:</div>
+                      {/* <div className="heading5">Choose payment Option:</div> */}
                       {/* <div className="list-payment mt-5">
                         <div
                           className={`type bg-surface p-5 border border-line rounded-lg ${
@@ -719,6 +735,14 @@ const Checkout = () => {
                               </span>
                               <span className="px-1">x</span>
                               <span>₹{product.price}.00</span>
+                              <del
+                                style={{
+                                  paddingLeft: "10px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                ₹{product.originPrice}.00
+                              </del>
                             </div>
                           </div>
                         </div>
@@ -737,46 +761,28 @@ const Checkout = () => {
                     </>
                   ))}
                 </div> */}
-                {cartState.cartArray.map((product) => {
-                  let discount: any =
-                    product.discountType === "flat"
-                      ? `${product.discount} - ${product.discountType}`
-                      : `${product.discount}${product.discountType}`;
-                  let fx = parseInt(product.price) * product.quantityPurchase;
-                  let discountamount: any =
-                    product.discountType === "flat"
-                      ? parseInt(product.discount) * product.quantityPurchase
-                      : (fx * parseInt(product.discount)) / 100;
-
-                  let gst: any =
-                    fx *
-                    ((parseInt(product.cgst) * product.quantityPurchase) / 100);
-                  let finalPrice = fx - gst - discountamount;
-                  return (
-                    <>
-                      <div className="ship-block py-5 flex justify-between border-b border-line">
-                        <p>
-                          GST - {product.cgst}% - {product.gstvariation}
-                        </p>
-                        <del>₹{gst}</del>
-                      </div>
-                      {/* <div className="ship-block py-5 flex justify-between border-b border-line">
+                <>
+                  <div className="ship-block py-5 flex justify-between border-b border-line">
+                    <p>
+                      GST - {gstType}% - {gstvariation}
+                    </p>
+                    <del>₹{GST}</del>
+                  </div>
+                  {/* <div className="ship-block py-5 flex justify-between border-b border-line">
                         <div className="text-title">Shipping</div>
                         <div className="text-title">
                           {Number(ship) === 0 ? "Free" : `₹${ship}.00`}
                         </div>
                       </div> */}
-                      <div className="ship-block py-5 flex justify-between border-b border-line">
-                        <p>Discount - {discount}</p>
-                        <del>₹{discountamount}</del>
-                      </div>
-                      <div className="total-cart-block pt-5 flex justify-between">
-                        <div className="heading5">Total</div>
-                        <div className="heading5">₹{finalPrice}</div>
-                      </div>
-                    </>
-                  );
-                })}
+                  <div className="ship-block py-5 flex justify-between border-b border-line">
+                    <p>Discount - {discountVariation}</p>
+                    <del>₹{discountPrice}</del>
+                  </div>
+                  <div className="total-cart-block pt-5 flex justify-between">
+                    <div className="heading5">Total</div>
+                    <div className="heading5">₹{totalPrice}</div>
+                  </div>
+                </>
 
                 {/* <div className="total-cart-block pt-5 flex justify-between">
                   <div className="heading5">Total</div>

@@ -47,6 +47,28 @@ const ModalCart = ({
   let [totalCart, setTotalCart] = useState<number>(0);
   let [discountCart, setDiscountCart] = useState<number>(0);
 
+  let totalPrice = 0;
+  let subTotalPrice = 0;
+  let discountPrice = 0;
+  let GST = 0;
+  let gstvariation = "";
+  let discountVariation = "";
+  let gstType = "";
+  cartState.cartArray.map((product: ProductType) => {
+    let fx = product.price * product.quantityPurchase;
+    let discountamount: any = product.originPrice - product.price;
+    let gst: any =
+      fx * ((parseInt(product.cgst) * product.quantityPurchase) / 100);
+    const subtoalPrice = product.quantityPurchase * product.originPrice;
+    totalPrice += fx;
+    subTotalPrice += subtoalPrice;
+    discountPrice += discountamount * product.quantityPurchase;
+    GST += gst * product.quantityPurchase;
+    gstvariation = product.gstvariation;
+    discountVariation = product.discountType;
+    gstType = product.cgst;
+  });
+
   return (
     <>
       <div className={`modal-cart-block`} onClick={closeModalCart}>
@@ -209,7 +231,15 @@ const ModalCart = ({
                           {product.selectedSize}/{product.selectedColor}
                         </div>
                         <div className="product-price text-title">
-                          {product.quantityPurchase} x ₹{product.price}.00
+                          {product.quantityPurchase} x ₹{product.price}.00{" "}
+                          <del
+                            style={{
+                              paddingLeft: "10px",
+                              fontSize: "12px",
+                            }}
+                          >
+                            ₹{product.originPrice}.00
+                          </del>
                         </div>
                       </div>
                     </div>
@@ -241,40 +271,23 @@ const ModalCart = ({
                   <div className="caption1">Coupon</div>
                 </div>
               </div>
-              {cartState.cartArray.map((product) => {
-                let discount: any =
-                  product.discountType === "flat"
-                    ? `${product.discount} - ${product.discountType}`
-                    : `${product.discount}${product.discountType}`;
-                let fx = parseInt(product.price) * product.quantityPurchase;
-                let discountamount: any =
-                  product.discountType === "flat"
-                    ? parseInt(product.discount) * product.quantityPurchase
-                    : (fx * parseInt(product.discount)) / 100;
+              <>
+                <div className="flex items-center justify-between pt-6 px-6">
+                  <p>
+                    GST - {gstType}% - {gstvariation}
+                  </p>
+                  <p>₹{GST}</p>
+                </div>
+                <div className="flex items-center justify-between pt-6 px-6">
+                  <p>Discount - {discountVariation}</p>
+                  <p>₹{discountPrice}</p>
+                </div>
+                <div className="flex items-center justify-between pt-6 px-6">
+                  <div className="heading5">Subtotal</div>
+                  <div className="heading5">₹{totalPrice}</div>
+                </div>
+              </>
 
-                let gst: any =
-                  fx *
-                  ((parseInt(product.cgst) * product.quantityPurchase) / 100);
-                let finalPrice = fx - gst - discountamount;
-                return (
-                  <>
-                    <div className="flex items-center justify-between pt-6 px-6">
-                      <p>
-                        GST - {product.cgst}% - {product.gstvariation}
-                      </p>
-                      <del>₹{gst}</del>
-                    </div>
-                    <div className="flex items-center justify-between pt-6 px-6">
-                      <p>Discount - {discount}</p>
-                      <del>₹{discountamount}</del>
-                    </div>
-                    <div className="flex items-center justify-between pt-6 px-6">
-                      <div className="heading5">Subtotal</div>
-                      <div className="heading5">₹{finalPrice}</div>
-                    </div>
-                  </>
-                );
-              })}
               <div className="block-button text-center p-6">
                 <div className="flex items-center gap-4">
                   <Link

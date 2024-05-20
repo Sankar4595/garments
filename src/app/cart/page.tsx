@@ -10,6 +10,7 @@ import Footer from "@/components/Footer/Footer";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useCart } from "@/context/CartContext";
 import { countdownTime } from "@/store/countdownTime";
+import { ProductType } from "@/type/ProductType";
 
 const Cart = () => {
   const [timeLeft, setTimeLeft] = useState(countdownTime());
@@ -83,22 +84,18 @@ const Cart = () => {
   let subTotalPrice = 0;
   let discountPrice = 0;
   let GST = 0;
-
-  cartState.cartArray.map((product: any) => {
-    let fx = parseInt(product.price) * product.quantityPurchase;
-    let discountamount: any =
-      product.discountType === "flat"
-        ? parseInt(product.discount) * product.quantityPurchase
-        : (fx * parseInt(product.discount)) / 100;
-
+  let gstvariation = "";
+  cartState.cartArray.map((product: ProductType) => {
+    let fx = product.price * product.quantityPurchase;
+    let discountamount: any = product.originPrice - product.price;
     let gst: any =
       fx * ((parseInt(product.cgst) * product.quantityPurchase) / 100);
-    let finalPrice = fx - gst - discountamount;
-    const subtoalPrice = product.quantityPurchase * product.price;
-    totalPrice += finalPrice;
+    const subtoalPrice = product.quantityPurchase * product.originPrice;
+    totalPrice += fx;
     subTotalPrice += subtoalPrice;
-    discountPrice += discountamount;
-    GST += gst;
+    discountPrice += discountamount * product.quantityPurchase;
+    GST += gst * product.quantityPurchase;
+    gstvariation = product.gstvariation;
   });
 
   return (
@@ -260,7 +257,8 @@ const Cart = () => {
                           </div>
                           <div className="w-1/6 flex total-price items-center justify-center">
                             <div className="text-title text-center">
-                              ₹{product.quantityPurchase * product.price}.00
+                              ₹{product.quantityPurchase * product.price}
+                              .00
                             </div>
                           </div>
                           <div className="w-1/12 flex items-center justify-center">
@@ -394,16 +392,16 @@ const Cart = () => {
                   <div className="text-title">Discounts</div>
                   <div className="text-title">
                     {" "}
-                    <span>-₹</span>
+                    <span>₹</span>
                     <span className="discount">{discountPrice}</span>
                     <span>.00</span>
                   </div>
                 </div>
                 <div className="discount-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">GST</div>
+                  <div className="text-title">GST - {gstvariation}</div>
                   <div className="text-title">
                     {" "}
-                    <span>-₹</span>
+                    <span>₹</span>
                     <span className="discount">{GST}</span>
                     <span>.00</span>
                   </div>
@@ -481,7 +479,10 @@ const Cart = () => {
                   <div className="heading5">Total</div>
 
                   <div className="heading5">
-                    ₹<span className="total-cart heading5">{totalPrice}</span>
+                    ₹
+                    <span className="total-cart heading5">
+                      {totalPrice.toFixed()}
+                    </span>
                     <span className="heading5">.00</span>
                   </div>
                 </div>
