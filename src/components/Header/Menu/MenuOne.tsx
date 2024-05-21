@@ -118,7 +118,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                       <div className="container">
                         <div className="flex justify-between py-8">
                           <div className="nav-link basis-2/3 grid grid-cols-4 gap-y-8">
-                            {categoryState.categories.map((val) => {
+                            {categoryState.categories.slice(0, 5).map((val) => {
                               const subCategory =
                                 subCategoryState.subCategories.filter(
                                   (item) => item.category === val._id
@@ -134,7 +134,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                   </div>
                                   <ul>
                                     {subCategory &&
-                                      subCategory.map((i, idx) => {
+                                      subCategory.slice(0, 5).map((i, idx) => {
                                         return (
                                           <li key={i._id}>
                                             <div
@@ -401,7 +401,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                       </div>
                       <div className="list-nav-item w-full pt-3 pb-12">
                         <div className="nav-link grid grid-cols-2 gap-5 gap-y-6">
-                          {categoryState.categories.map((val) => {
+                          {categoryState.categories.slice(0, 5).map((val) => {
                             const subCategory =
                               subCategoryState.subCategories.filter(
                                 (item) => item.category === val._id
@@ -417,7 +417,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 </div>
                                 <ul>
                                   {subCategory &&
-                                    subCategory.map((i, idx) => {
+                                    subCategory.slice(0, 5).map((i, idx) => {
                                       return (
                                         <li key={i._id}>
                                           <div
