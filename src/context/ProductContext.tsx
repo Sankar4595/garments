@@ -1,6 +1,7 @@
 "use client"; // ProductContext.tsx
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import axios from "axios";
+import { ProductType } from "@/type/ProductType";
 
 interface ProductState {
   products: any[];
@@ -24,7 +25,8 @@ type ProductAction =
   | { type: "SET_PRODUCTS"; payload: any }
   | { type: "FETCH_PRODUCTS_REQUEST" }
   | { type: "FETCH_PRODUCTS_SUCCESS"; payload: any }
-  | { type: "FETCH_PRODUCTS_FAILURE"; payload: string };
+  | { type: "FETCH_PRODUCTS_FAILURE"; payload: string }
+  | { type: "UPDATE_PRODUCT"; payload: ProductType[] };
 
 type CategoryAction =
   | { type: "SET_CATEGORIES"; payload: any }
@@ -70,6 +72,8 @@ const productReducer = (
 ): ProductState => {
   switch (action.type) {
     case "SET_PRODUCTS":
+      return { ...state, products: action.payload };
+    case "UPDATE_PRODUCT":
       return { ...state, products: action.payload };
     case "FETCH_PRODUCTS_REQUEST":
       return { ...state, loading: true, error: null };

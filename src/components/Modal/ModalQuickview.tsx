@@ -14,6 +14,7 @@ import { useCompare } from "@/context/CompareContext";
 import { useModalCompareContext } from "@/context/ModalCompareContext";
 import Rate from "../Other/Rate";
 import { message } from "antd";
+import { useProduct } from "@/context/ProductContext";
 
 const ModalQuickview = () => {
   const { selectedProduct, closeQuickview, setSelectedProduct } =
@@ -21,6 +22,7 @@ const ModalQuickview = () => {
   const [activeColor, setActiveColor] = useState<string>("");
   const [activeSize, setActiveSize] = useState<string>("");
   const { addToCart, updateCart, cartState } = useCart();
+  const { productState, setProducts } = useProduct();
   const { openModalCart } = useModalCartContext();
   const { addToWishlist, removeFromWishlist, wishlistState } = useWishlist();
   const { openModalWishlist } = useModalWishlistContext();
@@ -78,6 +80,18 @@ const ModalQuickview = () => {
         quantity: parseInt(selectvariation.quantity),
       };
       setSelectedProduct(prd);
+    }
+    if (activeColor && activeSize) {
+      let prdNew: any = productState.products.map((val: ProductType) => {
+        return {
+          ...val,
+          quantity: val.variation.find(
+            (item: any) =>
+              item.color === activeColor && item.size === activeSize
+          )?.quantity,
+        };
+      });
+      setProducts(prdNew);
     }
   }, [activeColor, activeSize]);
 

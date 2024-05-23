@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ProductType } from "@/type/ProductType";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
@@ -13,6 +13,7 @@ import { useModalCompareContext } from "@/context/ModalCompareContext";
 import { useModalQuickviewContext } from "@/context/ModalQuickviewContext";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
+import { useProduct } from "@/context/ProductContext";
 
 interface ProductProps {
   data: ProductType;
@@ -24,6 +25,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
   const [activeSize, setActiveSize] = useState<string>("");
   const [openQuickShop, setOpenQuickShop] = useState<boolean>(false);
   const { addToCart, updateCart, cartState } = useCart();
+  const { setProducts, productState } = useProduct();
   const { openModalCart } = useModalCartContext();
   const { addToWishlist, removeFromWishlist, wishlistState } = useWishlist();
   const { openModalWishlist } = useModalWishlistContext();
@@ -39,6 +41,21 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
   const handleActiveSize = (item: string) => {
     setActiveSize(item);
   };
+
+  useEffect(() => {
+    if (activeColor && activeSize) {
+      let prdNew: any = productState.products.map((val: ProductType) => {
+        return {
+          ...val,
+          quantity: val.variation.find(
+            (item: any) =>
+              item.color === activeColor && item.size === activeSize
+          )?.quantity,
+        };
+      });
+      setProducts(prdNew);
+    }
+  }, [activeColor, activeSize]);
 
   let price: any =
     data &&
@@ -139,9 +156,9 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                   New
                 </div>
               )}
-              {data.sale && (
-                <div className="product-tag text-button-uppercase text-white bg-red px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
-                  Sale
+              {data.quantity < 4 && (
+                <div className="product-tag text-white bg-red px-3 py-0.5 inline-block rounded-full absolute top-3 right-3 z-[1]">
+                  only left {data.quantity}
                 </div>
               )}
               <div className="list-action-right absolute top-3 right-3 max-lg:hidden">
@@ -220,7 +237,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                   </>
                 ) : (
                   <>
-                    {data.images.map((img, index) => (
+                    {data.images.slice(0, 2).map((img, index) => (
                       <Image
                         key={index}
                         src={img}
@@ -344,6 +361,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                         index ===
                         self.findIndex((t: any) => t.color === item.color)
                     )
+                    .slice(0, 6)
                     .map((item: any, index: any) => (
                       <div
                         key={index}
@@ -452,7 +470,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                       </div>
                     )}
                     <div className="product-img w-full aspect-[3/4] rounded-2xl overflow-hidden">
-                      {data.images.map((img, index) => (
+                      {data.images.slice(0, 2).map((img, index) => (
                         <Image
                           key={index}
                           src={img}
