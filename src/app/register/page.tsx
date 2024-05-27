@@ -9,6 +9,7 @@ import * as Icon from "@phosphor-icons/react/dist/ssr";
 import { useAuth } from "@/context/AuthContext";
 import { IUser } from "@/type/authTypes";
 import { useRouter } from "next/navigation";
+import { message } from "antd";
 
 const Register = () => {
   const { register, authState } = useAuth();
@@ -30,7 +31,8 @@ const Register = () => {
     try {
       let res = await register(loginData);
       console.log("res: ", res);
-      //   message.success("Login successful!");
+      router.push("/");
+      message.success("Login successful!");
     } catch (error) {
       console.log("error: ", error);
       //   toast.error("Login Failed!");

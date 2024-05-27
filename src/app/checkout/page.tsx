@@ -15,6 +15,8 @@ import { toast } from "react-toastify";
 import { IOrder } from "@/type/OrderType";
 import { useOrder } from "@/context/OrderContext";
 import { ProductType } from "@/type/ProductType";
+import Razorpay from "razorpay";
+import { message } from "antd";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
@@ -79,14 +81,139 @@ const Checkout = () => {
   const handlePayment = async (e: any) => {
     e.preventDefault;
     try {
+      const options: any = {
+        key: "rzp_test_heaiUIHYeBVaCd", // Enter the Key ID generated from the Dashboard
+        amount: orderData.items.map((val) => val.price * val.quantity),
+        currency: "INR",
+        name: "Your Company Name",
+        description: "Test Transaction",
+        order_id: orderData._id,
+        handler: function (response: any) {
+          alert(response.razorpay_payment_id);
+          alert(response.razorpay_order_id);
+          alert(response.razorpay_signature);
+          // Handle the response here (you can save the payment details in your database)
+        },
+        prefill: {
+          name: "Your Name",
+          email: "your.email@example.com",
+          contact: "9999999999",
+        },
+        notes: {
+          address: "Corporate Office",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp1: any = new Razorpay(options);
+      rzp1.open();
       let res = addToOrder(orderData);
       console.log("res: ", res);
-      router.push("/");
+      // router.push("/");
     } catch (error) {
       router.push("/");
       console.log("error: ", error);
     }
   };
+
+  let country = "India";
+
+  function loadScript(src: any) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  async function displayRazorpay() {
+    let ConvertAmt;
+    let currency;
+    let amt: any = orderData?.total;
+
+    if (country === "India") {
+      ConvertAmt = amt;
+      currency = "INR";
+    } else {
+      ConvertAmt = orderData.total;
+      currency = "USD";
+    }
+    const createBillingInfo: any = {
+      companyid: orderData._id,
+      subscriptionid: "21",
+      subscriptionpk: 2,
+      paymentId: "123",
+      currency: currency,
+      billingdate: "63",
+      amountdue: "60",
+      paymentstatus: "ok",
+      orderjson: {},
+      successjson: {},
+      amountreceived: ConvertAmt,
+      createdat: "any",
+      createdby: "string",
+    };
+    try {
+      let result: any = addToOrder(orderData);
+      if (result.data) {
+        message.success("Billing Information Created Successfully");
+      } else if (result.error.data === "Duplicate record found") {
+        message.error(result.error.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+
+    const res: any = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+    if (!res) {
+      alert("Razropay failed to load!!");
+      return;
+    }
+
+    const options = await {
+      key: "rzp_test_heaiUIHYeBVaCd",
+      amount: amt * 100,
+      currency: currency,
+      name: "Eezer",
+      description: "Test Transaction",
+      image:
+        "http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.504dcd7c.jpg&w=96&q=75",
+      order_id: orderData._id,
+      method: "card",
+      config: {
+        display: {
+          hide: [
+            {
+              method: "paylater",
+            },
+          ],
+          preferences: {
+            show_default_blocks: true,
+          },
+        },
+      },
+      notes: {
+        address: "Eezer Private Limited",
+      },
+      theme: {
+        color: "#5f63f2",
+      },
+    };
+    //@ts-ignore
+    const paymentObject = await new window.Razorpay(options);
+    paymentObject.open();
+  }
+
   const handleSubmitLogin = async (e: any) => {
     e.preventDefault();
     try {
@@ -391,300 +518,9 @@ const Checkout = () => {
                         ></textarea>
                       </div>
                     </div>
-                    <div className="payment-block md:mt-10 mt-6">
-                      {/* <div className="heading5">Choose payment Option:</div> */}
-                      {/* <div className="list-payment mt-5">
-                        <div
-                          className={`type bg-surface p-5 border border-line rounded-lg ${
-                            activePayment === "credit-card" ? "open" : ""
-                          }`}
-                        >
-                          <input
-                            className="cursor-pointer"
-                            type="radio"
-                            id="credit"
-                            name="payment"
-                            checked={activePayment === "credit-card"}
-                            onChange={() => handlePayment("credit-card")}
-                          />
-                          <label
-                            className="text-button pl-2 cursor-pointer"
-                            htmlFor="credit"
-                          >
-                            Credit Card
-                          </label>
-                          <div className="infor">
-                            <div className="text-on-surface-variant1 pt-4">
-                              Make your payment directly into our bank account.
-                              Your order will not be shipped until the funds
-                              have cleared in our account.
-                            </div>
-                            <div className="row">
-                              <div className="col-12 mt-3">
-                                <label htmlFor="cardNumberCredit">
-                                  Card Numbers
-                                </label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="cardNumberCredit"
-                                  placeholder="ex.1234567290"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="dateCredit">Date</label>
-                                <input
-                                  className="border-line px-4 py-3 w-full rounded mt-2"
-                                  type="date"
-                                  id="dateCredit"
-                                  name="date"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="ccvCredit">CCV</label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="ccvCredit"
-                                  placeholder="****"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mt-3">
-                              <input
-                                type="checkbox"
-                                id="saveCredit"
-                                name="save"
-                              />
-                              <label
-                                className="text-button"
-                                htmlFor="saveCredit"
-                              >
-                                Save Card Details
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className={`type bg-surface p-5 border border-line rounded-lg mt-5 ${
-                            activePayment === "cash-delivery" ? "open" : ""
-                          }`}
-                        >
-                          <input
-                            className="cursor-pointer"
-                            type="radio"
-                            id="delivery"
-                            name="payment"
-                            checked={activePayment === "cash-delivery"}
-                            onChange={() => handlePayment("cash-delivery")}
-                          />
-                          <label
-                            className="text-button pl-2 cursor-pointer"
-                            htmlFor="delivery"
-                          >
-                            Cash on delivery
-                          </label>
-                          <div className="infor">
-                            <div className="text-on-surface-variant1 pt-4">
-                              Make your payment directly into our bank account.
-                              Your order will not be shipped until the funds
-                              have cleared in our account.
-                            </div>
-                            <div className="row">
-                              <div className="col-12 mt-3">
-                                <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div>
-                                <label htmlFor="cardNumberDelivery">
-                                  Card Numbers
-                                </label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="cardNumberDelivery"
-                                  placeholder="ex.1234567290"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="dateDelivery">Date</label>
-                                <input
-                                  className="border-line px-4 py-3 w-full rounded mt-2"
-                                  type="date"
-                                  id="dateDelivery"
-                                  name="date"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="ccvDelivery">CCV</label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="ccvDelivery"
-                                  placeholder="****"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mt-3">
-                              <input
-                                type="checkbox"
-                                id="saveDelivery"
-                                name="save"
-                              />
-                              <label
-                                className="text-button"
-                                htmlFor="saveDelivery"
-                              >
-                                Save Card Details
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className={`type bg-surface p-5 border border-line rounded-lg mt-5 ${
-                            activePayment === "apple-pay" ? "open" : ""
-                          }`}
-                        >
-                          <input
-                            className="cursor-pointer"
-                            type="radio"
-                            id="apple"
-                            name="payment"
-                            checked={activePayment === "apple-pay"}
-                            onChange={() => handlePayment("apple-pay")}
-                          />
-                          <label
-                            className="text-button pl-2 cursor-pointer"
-                            htmlFor="apple"
-                          >
-                            Apple Pay
-                          </label>
-                          <div className="infor">
-                            <div className="text-on-surface-variant1 pt-4">
-                              Make your payment directly into our bank account.
-                              Your order will not be shipped until the funds
-                              have cleared in our account.
-                            </div>
-                            <div className="row">
-                              <div className="col-12 mt-3">
-                                <div className="bg-img"><Image src="assets/images/component/payment.png" alt="" /></div>
-                                <label htmlFor="cardNumberApple">
-                                  Card Numbers
-                                </label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="cardNumberApple"
-                                  placeholder="ex.1234567290"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="dateApple">Date</label>
-                                <input
-                                  className="border-line px-4 py-3 w-full rounded mt-2"
-                                  type="date"
-                                  id="dateApple"
-                                  name="date"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="ccvApple">CCV</label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="ccvApple"
-                                  placeholder="****"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mt-3">
-                              <input
-                                type="checkbox"
-                                id="saveApple"
-                                name="save"
-                              />
-                              <label
-                                className="text-button"
-                                htmlFor="saveApple"
-                              >
-                                Save Card Details
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className={`type bg-surface p-5 border border-line rounded-lg mt-5 ${
-                            activePayment === "paypal" ? "open" : ""
-                          }`}
-                        >
-                          <input
-                            className="cursor-pointer"
-                            type="radio"
-                            id="paypal"
-                            name="payment"
-                            checked={activePayment === "paypal"}
-                            onChange={() => handlePayment("paypal")}
-                          />
-                          <label
-                            className="text-button pl-2 cursor-pointer"
-                            htmlFor="paypal"
-                          >
-                            PayPal
-                          </label>
-                          <div className="infor">
-                            <div className="text-on-surface-variant1 pt-4">
-                              Make your payment directly into our bank account.
-                              Your order will not be shipped until the funds
-                              have cleared in our account.
-                            </div>
-                            <div className="row">
-                              <div className="col-12 mt-3">
-                                <label htmlFor="cardNumberPaypal">
-                                  Card Numbers
-                                </label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="cardNumberPaypal"
-                                  placeholder="ex.1234567290"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="datePaypal">Date</label>
-                                <input
-                                  className="border-line px-4 py-3 w-full rounded mt-2"
-                                  type="date"
-                                  id="datePaypal"
-                                  name="date"
-                                />
-                              </div>
-                              <div className=" mt-3">
-                                <label htmlFor="ccvPaypal">CCV</label>
-                                <input
-                                  className="cursor-pointer border-line px-4 py-3 w-full rounded mt-2"
-                                  type="text"
-                                  id="ccvPaypal"
-                                  placeholder="****"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mt-3">
-                              <input
-                                type="checkbox"
-                                id="savePaypal"
-                                name="save"
-                              />
-                              <label
-                                className="text-button"
-                                htmlFor="savePaypal"
-                              >
-                                Save Card Details
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
-                    </div>
                     <div className="block-button md:mt-10 mt-6">
                       <button
-                        onClick={(e) => handlePayment(e)}
+                        onClick={displayRazorpay}
                         className="button-main w-full"
                       >
                         Payment
@@ -750,17 +586,6 @@ const Checkout = () => {
                     ))
                   )}
                 </div>
-                {/* <div className="discount-block py-5 flex justify-between border-b border-line">
-                  <div className="text-title">Discounts</div>
-                  {cartState.cartArray.map((product) => (
-                    <>
-                      <div className="text-title">
-                        -<span className="discount">{product.discount}</span>
-                        <span>%</span>
-                      </div>
-                    </>
-                  ))}
-                </div> */}
                 <>
                   <div className="ship-block py-5 flex justify-between border-b border-line">
                     <p>
@@ -768,12 +593,6 @@ const Checkout = () => {
                     </p>
                     <del>₹{GST}</del>
                   </div>
-                  {/* <div className="ship-block py-5 flex justify-between border-b border-line">
-                        <div className="text-title">Shipping</div>
-                        <div className="text-title">
-                          {Number(ship) === 0 ? "Free" : `₹${ship}.00`}
-                        </div>
-                      </div> */}
                   <div className="ship-block py-5 flex justify-between border-b border-line">
                     <p>Discount - {discountVariation}</p>
                     <del>₹{discountPrice}</del>
@@ -783,47 +602,6 @@ const Checkout = () => {
                     <div className="heading5">₹{totalPrice}</div>
                   </div>
                 </>
-
-                {/* <div className="total-cart-block pt-5 flex justify-between">
-                  <div className="heading5">Total</div>
-                  <div
-                    style={{ display: "flex", gap: "10px" }}
-                    className="heading5 total-cart"
-                  >
-                    {cartState.cartArray.map((product) => {
-                      let discount: any =
-                        product.discountType === "flat"
-                          ? `${product.discount} - ${product.discountType}`
-                          : `${product.discount}${product.discountType}`;
-                      let discountamount: any =
-                        product.discountType === "flat"
-                          ? product.discount
-                          : (product.originPrice *
-                              product.quantityPurchase *
-                              parseInt(product.discount)) /
-                            100;
-                      let gst: any =
-                        (product.originPrice *
-                          product.quantityPurchase *
-                          parseInt(product.cgst)) /
-                        100;
-                      return (
-                        <>
-                          <div>
-                            <del style={{ fontSize: "12px", opacity: "0.8" }}>
-                              ₹{product.quantityPurchase * product.originPrice}
-                              .00
-                            </del>{" "}
-                            ₹
-                            {parseInt(product.price) -
-                              parseInt(gst) -
-                              parseInt(discountamount)}
-                          </div>
-                        </>
-                      );
-                    })}
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
