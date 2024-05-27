@@ -276,7 +276,7 @@ const ModalCart = ({
                   <p>
                     GST - {gstType}% - {gstvariation}
                   </p>
-                  <p>₹{GST}</p>
+                  <p>₹{GST.toFixed()}</p>
                 </div>
                 <div className="flex items-center justify-between pt-6 px-6">
                   <p>Discount - {discountVariation}</p>

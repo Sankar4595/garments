@@ -85,6 +85,7 @@ const Cart = () => {
   let discountPrice = 0;
   let GST = 0;
   let gstvariation = "";
+  let selectedVariation: any = "";
   cartState.cartArray.map((product: ProductType) => {
     let fx = product.price * product.quantityPurchase;
     let discountamount: any = product.originPrice - product.price;
@@ -96,6 +97,10 @@ const Cart = () => {
     discountPrice += discountamount * product.quantityPurchase;
     GST += gst * product.quantityPurchase;
     gstvariation = product.gstvariation;
+    selectedVariation = product.variation.find(
+      (val: any) =>
+        val.color === product.selectedColor && val.size === product.selectedSize
+    );
   });
 
   return (
@@ -192,13 +197,7 @@ const Cart = () => {
                             <div className="flex items-center gap-6">
                               <div className="bg-img md:w-[100px] w-20 aspect-[3/4]">
                                 <Image
-                                  src={
-                                    product.variation.find(
-                                      (val: any) =>
-                                        val.color === product.selectedColor &&
-                                        val.size === product.selectedSize
-                                    )?.image ?? ""
-                                  }
+                                  src={selectedVariation?.image}
                                   width={1000}
                                   height={1000}
                                   alt={product.name}
@@ -402,7 +401,7 @@ const Cart = () => {
                   <div className="text-title">
                     {" "}
                     <span>₹</span>
-                    <span className="discount">{GST}</span>
+                    <span className="discount">{GST.toFixed()}</span>
                     <span>.00</span>
                   </div>
                 </div>

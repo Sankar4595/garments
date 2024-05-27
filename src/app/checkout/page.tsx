@@ -20,13 +20,9 @@ import { message } from "antd";
 
 const Checkout = () => {
   const searchParams = useSearchParams();
-  let discount = searchParams.get("discount");
-  let ship = searchParams.get("ship");
   const { authState, login } = useAuth();
   const { cartState } = useCart();
   const { addToOrder, orderState } = useOrder();
-  let [totalCart, setTotalCart] = useState<number>(0);
-  const [activePayment, setActivePayment] = useState<string>("credit-card");
   const [loginData, setLoginData] = useState<IUser>({
     email: "",
     password: "",
@@ -52,6 +48,8 @@ const Checkout = () => {
     pincode: "",
     notes: "",
   });
+  const [errors, setErrors] = useState<any>({});
+  console.log("orderData: ", orderData);
 
   useEffect(() => {
     if (cartState.cartArray.length > 0) {
@@ -78,43 +76,40 @@ const Checkout = () => {
     }
   }, [cartState]);
 
-  const handlePayment = async (e: any) => {
-    e.preventDefault;
-    try {
-      const options: any = {
-        key: "rzp_test_heaiUIHYeBVaCd", // Enter the Key ID generated from the Dashboard
-        amount: orderData.items.map((val) => val.price * val.quantity),
-        currency: "INR",
-        name: "Your Company Name",
-        description: "Test Transaction",
-        order_id: orderData._id,
-        handler: function (response: any) {
-          alert(response.razorpay_payment_id);
-          alert(response.razorpay_order_id);
-          alert(response.razorpay_signature);
-          // Handle the response here (you can save the payment details in your database)
-        },
-        prefill: {
-          name: "Your Name",
-          email: "your.email@example.com",
-          contact: "9999999999",
-        },
-        notes: {
-          address: "Corporate Office",
-        },
-        theme: {
-          color: "#3399cc",
-        },
-      };
+  const validateForm = () => {
+    const newErrors: any = {};
+    if (!orderData.name) newErrors.name = "First Name is required";
+    if (!orderData.lastName) newErrors.lastName = "Last Name is required";
+    if (!orderData.email) newErrors.email = "Email is required";
+    if (!orderData.phoneNumber)
+      newErrors.phoneNumber = "Phone Number is required";
+    if (!orderData.country) newErrors.country = "Country is required";
+    if (!orderData.city) newErrors.city = "City is required";
+    if (!orderData.shippingAddress)
+      newErrors.shippingAddress = "Shipping Address is required";
+    if (!orderData.state) newErrors.state = "State is required";
+    if (!orderData.pincode) newErrors.pincode = "Postal Code is required";
 
-      const rzp1: any = new Razorpay(options);
-      rzp1.open();
-      let res = addToOrder(orderData);
-      console.log("res: ", res);
-      // router.push("/");
-    } catch (error) {
-      router.push("/");
-      console.log("error: ", error);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e: any) => {
+    const { id, value } = e.target;
+    setOrderData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (validateForm()) {
+      if (authState.user) {
+        await displayRazorpay();
+      }
+    } else {
+      message.error("Please fill all required fields");
     }
   };
 
@@ -146,21 +141,6 @@ const Checkout = () => {
       ConvertAmt = orderData.total;
       currency = "USD";
     }
-    const createBillingInfo: any = {
-      companyid: orderData._id,
-      subscriptionid: "21",
-      subscriptionpk: 2,
-      paymentId: "123",
-      currency: currency,
-      billingdate: "63",
-      amountdue: "60",
-      paymentstatus: "ok",
-      orderjson: {},
-      successjson: {},
-      amountreceived: ConvertAmt,
-      createdat: "any",
-      createdby: "string",
-    };
     try {
       let result: any = addToOrder(orderData);
       if (result.data) {
@@ -206,7 +186,7 @@ const Checkout = () => {
         address: "Eezer Private Limited",
       },
       theme: {
-        color: "#5f63f2",
+        color: "#281F59",
       },
     };
     //@ts-ignore
@@ -331,24 +311,23 @@ const Checkout = () => {
               <div className="information mt-5">
                 <div className="heading5">Information</div>
                 <div className="form-checkout mt-5">
-                  <form>
+                  <form onSubmit={handleSubmit}>
                     <div className="grid sm:grid-cols-2 gap-4 gap-y-5 flex-wrap">
                       <div className="">
                         <input
                           className="border-line px-4 py-3 w-full rounded-lg"
-                          id="firstName"
+                          id="name"
                           type="text"
                           placeholder="First Name *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                name: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.name}
                         />
+                        {errors.name && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.name}
+                          </span>
+                        )}
                       </div>
                       <div className="">
                         <input
@@ -357,15 +336,14 @@ const Checkout = () => {
                           type="text"
                           placeholder="Last Name *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                lastName: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.lastName}
                         />
+                        {errors.lastName && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.lastName}
+                          </span>
+                        )}
                       </div>
                       <div className="">
                         <input
@@ -374,15 +352,14 @@ const Checkout = () => {
                           type="email"
                           placeholder="Email Address *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                email: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.email}
                         />
+                        {errors.email && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.email}
+                          </span>
+                        )}
                       </div>
                       <div className="">
                         <input
@@ -391,31 +368,23 @@ const Checkout = () => {
                           type="number"
                           placeholder="Phone Numbers *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                phoneNumber: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.phoneNumber}
                         />
+                        {errors.phoneNumber && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.phoneNumber}
+                          </span>
+                        )}
                       </div>
                       <div className="col-span-full select-block">
                         <select
                           className="border border-line px-4 py-3 w-full rounded-lg"
-                          id="region"
+                          id="country"
                           name="region"
                           defaultValue={"default"}
-                          onChange={(e) => {
-                            console.log("se1: ", e);
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                country: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.country}
                         >
                           <option value="default" disabled>
                             Choose Country/Region
@@ -424,6 +393,11 @@ const Checkout = () => {
                           <option value="France">France</option>
                           <option value="Singapore">Singapore</option>
                         </select>
+                        {errors.country && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.country}
+                          </span>
+                        )}
                         <Icon.CaretDown className="arrow-down" />
                       </div>
                       <div className="">
@@ -433,47 +407,39 @@ const Checkout = () => {
                           type="text"
                           placeholder="Town/City *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                city: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.city}
                         />
+                        {errors.city && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.city}
+                          </span>
+                        )}
                       </div>
                       <div className="">
                         <input
                           className="border-line px-4 py-3 w-full rounded-lg"
-                          id="apartment"
+                          id="shippingAddress"
                           type="text"
                           placeholder="Street,..."
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                shippingAddress: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.shippingAddress}
                         />
+                        {errors.shippingAddress && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.shippingAddress}
+                          </span>
+                        )}
                       </div>
                       <div className="select-block">
                         <select
                           className="border border-line px-4 py-3 w-full rounded-lg"
-                          id="country"
+                          id="state"
                           name="country"
                           defaultValue={"default"}
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                state: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.state}
                         >
                           <option value="default" disabled>
                             Choose State
@@ -482,45 +448,44 @@ const Checkout = () => {
                           <option value="France">France</option>
                           <option value="Singapore">Singapore</option>
                         </select>
+                        {errors.state && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.state}
+                          </span>
+                        )}
                         <Icon.CaretDown className="arrow-down" />
                       </div>
                       <div className="">
                         <input
                           className="border-line px-4 py-3 w-full rounded-lg"
-                          id="postal"
+                          id="pincode"
                           type="text"
                           placeholder="Postal Code *"
                           required
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                pincode: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.pincode}
                         />
+                        {errors.pincode && (
+                          <span className="error" style={{ color: "red" }}>
+                            {errors.pincode}
+                          </span>
+                        )}
                       </div>
                       <div className="col-span-full">
                         <textarea
                           className="border border-line px-4 py-3 w-full rounded-lg"
-                          id="note"
+                          id="notes"
                           name="note"
                           placeholder="Write note..."
-                          onChange={(e) => {
-                            setOrderData((prev: any) => {
-                              return {
-                                ...prev,
-                                notes: e.target.value,
-                              };
-                            });
-                          }}
+                          onChange={handleChange}
+                          value={orderData.notes}
                         ></textarea>
                       </div>
                     </div>
                     <div className="block-button md:mt-10 mt-6">
                       <button
-                        onClick={displayRazorpay}
+                        type="submit"
+                        style={{ background: "black" }}
                         className="button-main w-full"
                       >
                         Payment
@@ -591,11 +556,11 @@ const Checkout = () => {
                     <p>
                       GST - {gstType}% - {gstvariation}
                     </p>
-                    <del>₹{GST}</del>
+                    <p>₹{GST.toFixed()}</p>
                   </div>
                   <div className="ship-block py-5 flex justify-between border-b border-line">
                     <p>Discount - {discountVariation}</p>
-                    <del>₹{discountPrice}</del>
+                    <p>₹{discountPrice}</p>
                   </div>
                   <div className="total-cart-block pt-5 flex justify-between">
                     <div className="heading5">Total</div>
